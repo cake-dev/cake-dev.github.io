@@ -25,8 +25,11 @@
           .append("g")
           .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
-  d3.csv("Two_Nums.csv").then(function(data) {
+  d3.csv("TwoNum.csv").then(function(data) {
       // add X axis
+      const x_extent = d3.extent(data, function(d) { return d.GrLivArea; } );
+      const y_extent = d3.extent(data, function(d) { return d.SalePrice; } );
+      console.log(y_extent)
       const x = d3.scaleLinear()
           .domain([0,4000])
           .range([0, width]);
