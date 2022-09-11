@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Series Bigfoot</title>
+</head>
+<body>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v6.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="chart_title">
+    <p>Bigfoot Sightings per year (US)</p>
+</div>
+<div id="my_dataviz"></div>
+<script>
+
+    // set the dimensions and margins of the graph
+    const margin = {top: 10, right: 30, bottom: 30, left: 60},
+        width = 760 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    const svg = d3.select("#my_dataviz")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    //Read the data
+    d3.csv('bf_p_year.csv').then(
+
+        // Now I can use this dataset:
+        function(data) {
+
+            // Add X axis --> it is a date format
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, function(d) { return d.Year; }))
+                .range([ 0, width ]);
+            svg.append("g")
+                .attr("transform", `translate(0, ${height})`)
+                .call(d3.axisBottom(x));
+
+            // Add Y axis
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return +d.Count; })])
+                .range([ height, 0 ]);
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+            // Add the line
+            svg.append("path")
+                .datum(data)
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function(d) { return x(d.Year) })
+                    .y(function(d) { return y(d.Count) })
+                )
+
+            svg.append("line")
+                .attr("x1", 2005)  //<<== change your code here
+                .attr("y1", 0)
+                .attr("x2", 2005)  //<<== and here
+                .attr("y2", height - margin.top - margin.bottom)
+                .style("stroke-width", 2)
+                .style("stroke", "red")
+                .style("fill", "none");
+
+        })
+</script>
+</body>
+</html>
