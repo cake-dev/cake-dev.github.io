@@ -26,6 +26,15 @@
             margin-left: 10%;
             margin-right: 10%;
         }
+        #image_div {
+            text-align: center;
+            margin-left: 20%;
+            margin-right: 20%;
+        }
+        #map_image {
+            width: auto;
+            height: 300px;
+        }
     </style>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -47,6 +56,9 @@
 </header>
 <div id="chart_title">
     <p class="title">Did Smartphones kill Bigfoot?</p>
+</div>
+<div id="image_div">
+    <img src="bf_map_clipped.png" id="map_image">
 </div>
 <div class="chart_div">
     <div id="93118d7d-9932-4c77-bd06-c7cdfa7d8f5a" class="plotly-graph-div" style="height:100%; width:100%;"></div>
@@ -302,7 +314,7 @@
             "type": "scatter"
         }], {
             "annotations": [{
-                "font": {"color": "#CE5B1B", "family": "Raleway", "size": 14},
+                "font": {"color": "#CE5B1B", "family": "Raleway", "size": 16},
                 "showarrow": false,
                 "text": ">50% smart phone sales with camera (2004)",
                 "x": 2004,
@@ -312,19 +324,19 @@
                 "yanchor": "top",
                 "yref": "y domain"
             }, {
-                "font": {"color": "#536D18", "family": "Raleway", "size": 12},
+                "font": {"color": "#536D18", "family": "Raleway", "size": 14},
                 "showarrow": false,
                 "text": "Sasquatch, the Legend of Bigfoot released (1976)",
                 "x": 1976,
                 "y": 151
             }, {
-                "font": {"color": "#536D18", "family": "Raleway", "size": 12},
+                "font": {"color": "#536D18", "family": "Raleway", "size": 14},
                 "showarrow": false,
                 "text": "Widespread internet usage takes off",
                 "x": 1995,
                 "y": 201
             }, {
-                "font": {"color": "#536D18", "family": "Raleway", "size": 12},
+                "font": {"color": "#536D18", "family": "Raleway", "size": 14},
                 "showarrow": false,
                 "text": "<a href=\"https://www.youtube.com/watch?v=Q60mSMmhTZU\">The Patterson/Gimlin Film gains popularity (1967)\nclick here to see it</a>",
                 "x": 1967,
