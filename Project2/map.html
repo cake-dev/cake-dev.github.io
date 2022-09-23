@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Map Example</title>
+    <style>
+        .message {
+            font-size: 2em;
+            text-align: center;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+
+<body>
+    <div class="message">D3 Map</div>
+    <div id="the_map"></div>
+</body>
+<script>
+    d3.json('walmart.geojson').then(function (bb) {
+        let width = 300, height = 300;
+        let projection = d3.geoEqualEarth();
+        projection.fitSize([width, height], bb);
+        let geoGenerator = d3.geoPath().projection(projection);
+        let svg = d3.select('#the_map').append('svg').attr('width', width).attr('height', height);
+        svg.append('g').selectAll('path').data(bb.features).join('path').attr('d', geoGenerator).attr('fill', 'red');
+    });
+</script>
+
+
+</html>
