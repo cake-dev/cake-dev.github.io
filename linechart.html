@@ -4,6 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Time Series</title>
+    <style>
+        body {
+            background-color: rgba(245, 245, 220, 0.623);
+        }
+
+        #chart_title {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #my_dataviz {
+            text-align: center;
+        }
+
+        #graph {
+            background-color: rgb(236, 236, 219);
+        }
+    </style>
 </head>
 
 <body>
@@ -18,13 +37,14 @@
     <script>
 
         // set the dimensions and margins of the graph
-        const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+        const margin = { top: 20, right: 30, bottom: 30, left: 60 },
             width = 860 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
         const svg = d3.select("#my_dataviz")
             .append("svg")
+            .attr('id', 'graph')
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -42,7 +62,7 @@
                     .range([0, width]);
                 svg.append("g")
                     .attr("transform", `translate(0, ${height})`)
-                    .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+                    .call(d3.axisBottom(x).tickFormat(d3.format("d"))); //this formats the number to not have a comma
 
 
                 // Add Y axis
@@ -59,10 +79,46 @@
                 svg.append('g')
                     .attr('class', 'x axis-grid')
                     .attr('transform', 'translate(0,' + height + ')')
+                    .attr('opacity', 0.3)
                     .call(xAxisGrid);
                 svg.append('g')
                     .attr('class', 'y axis-grid')
+                    .attr('opacity', 0.3)
                     .call(yAxisGrid);
+
+
+                /***
+                 * To add a line at the data values rather than the SVG coordinates,
+                 * use x(val) or y(val) resepctively before the value you want to have the line
+                 * point at (see example below)
+                 */
+                svg.append("line")
+                    .attr("id", "2004line")
+                    .attr("x1", x(2004))  //<<== change your code here
+                    .attr("y1", 0)
+                    .attr("x2", x(2004))  //<<== and here
+                    .attr("y2", height)
+                    .style("stroke-width", 1)
+                    .style("stroke", "red")
+                    .style("fill", "red")
+                    .style('stroke-dasharray', '5,5');
+
+
+                svg.append("text")
+                    .attr("x", x(2004) - 30)
+                    .attr("y", 0)
+                    .text("2004");
+
+
+                // add dots at data points
+                svg.append("g")
+                    .selectAll("dot")
+                    .data(data)
+                    .join("circle")
+                    .attr("cx", function (d) { return x(d.Year) })
+                    .attr("cy", function (d) { return y(d.Count) })
+                    .attr("r", 3.0)
+                    .style("fill", "#69b3a2")
 
                 // Add the line
                 svg.append("path")
@@ -74,25 +130,6 @@
                         .x(function (d) { return x(d.Year) })
                         .y(function (d) { return y(d.Count) })
                     )
-
-                svg.append("line")
-                    .attr("x1", 2004)  //<<== change your code here
-                    .attr("y1", 0)
-                    .attr("x2", 2004)  //<<== and here
-                    .attr("y2", height - margin.top - margin.bottom)
-                    .style("stroke-width", 10)
-                    .style("stroke", "red")
-                    .style("fill", "red");
-
-                // add dots at data points
-                svg.append("g")
-                    .selectAll("dot")
-                    .data(data)
-                    .join("circle")
-                    .attr("cx", function (d) { return x(d.Year) })
-                    .attr("cy", function (d) { return y(d.Count) })
-                    .attr("r", 3.0)
-                    .style("fill", "#69b3a2")
 
             })
     </script>
