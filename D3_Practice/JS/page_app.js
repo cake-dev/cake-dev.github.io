@@ -1,3 +1,5 @@
+import * as d3 from 'd3'
+
 const DUMMY_DATA = [
     { id: 'd1', value: 18, region: 'USA' },
     { id: 'd2', value: 11, region: 'India' },
