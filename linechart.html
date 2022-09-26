@@ -38,8 +38,8 @@
 
         // set the dimensions and margins of the graph
         const margin = { top: 20, right: 30, bottom: 30, left: 60 },
-            width = 860 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            width = 1280 - margin.left - margin.right,
+            height = 720 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
         const svg = d3.select("#my_dataviz")
@@ -49,6 +49,9 @@
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
+
+
+
 
         //Read the data
         d3.csv('Project1/bf_per_year.csv').then(
@@ -103,11 +106,79 @@
                     .style("fill", "red")
                     .style('stroke-dasharray', '5,5');
 
+                svg.append("line")
+                    .attr("id", "1967line")
+                    .attr("x1", x(1967))  //<<== change your code here
+                    .attr("y1", height / 2)
+                    .attr("x2", x(1967))  //<<== and here
+                    .attr("y2", y(14))
+                    .style("stroke-width", 1)
+                    .style("stroke", "green")
+                    .style("fill", "red")
+                    .style('stroke-dasharray', '5,5');
 
-                svg.append("text")
-                    .attr("x", x(2004) - 30)
-                    .attr("y", 0)
-                    .text("2004");
+
+                // The code below is for adding text to the vis with a data driven method
+                // TODO get the rect to fit behind the text
+                var text_data = [
+                    { "text": "The Patterson/Gimlin Film gains popularity (1967)", "x": x(1967), "y": height / 2 - 10 },
+                    { "text": ">50% smart phone sales with camera (2004)", "x": x(2004), "y": -5 }
+                ]
+
+                function update(text_data) {
+                    svg.selectAll("text")
+                        .join(text_data)
+                        .each(function (text_data) { text_data.bbox = this.getBBox(); });
+                }
+
+
+                const xMargin = 4
+                const yMargin = 2
+                svg.append("g")
+                    .style("font", "14px sans-serif")
+                    .style("fill", "#FFF")
+                    .selectAll("text")
+                    .data(text_data)
+                    .join("text")
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y)
+                    .attr("stroke", "black")
+                    .text(d => d.text);
+                svg.append("g")
+                    .selectAll("rect")
+                    .data(text_data)
+                    .join("rect")
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y)
+                    .style("fill", "black")
+                    .style("opacity", "0.5")
+                    .attr("width", function (d) { return this.parentNode.getBBox().width + 2 * xMargin; })
+                    .attr("height", function (d) { return this.parentNode.getBBox().height + 2 * yMargin; })
+                // .attr('transform', function (d) {
+                //     return `translate(-${xMargin}, -${function (d) { return this.parentNode.getBBox().height + 2 * yMargin; } * 0.8 + yMargin})`
+                // });
+
+                update(text_data);
+                // svg.append("text")
+                //     .attr("x", x(2004) - 40)
+                //     .attr("y", -5)
+                //     .text(">50% smart phone sales with camera (2004)");
+
+                // svg.append("rect")
+                //     .attr("x", x(1967) - 40)
+                //     .attr("y", height / 2 - 20)
+                //     .attr("width", 200)
+                //     .attr("height", 20)
+                //     .attr("fill", "white");
+                // svg.append("text")
+                //     .attr("x", x(1967) - 40)
+                //     .attr("y", height / 2 - 10)
+                //     .attr("xlink:href", "https://www.youtube.com/watch?v=Q60mSMmhTZU")
+                //     .attr("background-color", "white")
+                //     .text("The Patterson/Gimlin Film gains popularity (1967)\nclick here to see it");
+
+
+
 
 
                 // add dots at data points
