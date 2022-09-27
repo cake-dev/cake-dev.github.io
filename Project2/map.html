@@ -4,27 +4,128 @@
 <head>
     <title>Map Example</title>
     <style>
+        text {
+            font-family: Verdana, Geneva, Tahoma, sans-serif
+        }
+
         .message {
             font-size: 2em;
             text-align: center;
         }
+
+        path {
+            fill: none;
+            stroke-width: 1px;
+            stroke: #222;
+        }
+
+        .grat {
+            stroke: #222;
+            stroke-dasharray: 4px;
+            stroke-width: 1px;
+            opacity: .5
+        }
     </style>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
     <div class="message">D3 Map</div>
-    <div id="the_map"></div>
+    <svg id="viz" width="1000" height="800"></svg>
 </body>
 <script>
-    d3.json('walmart.geojson').then(function (bb) {
-        let width = 300, height = 300;
-        let projection = d3.geoEqualEarth();
-        projection.fitSize([width, height], bb);
-        let geoGenerator = d3.geoPath().projection(projection);
-        let svg = d3.select('#the_map').append('svg').attr('width', width).attr('height', height);
-        svg.append('g').selectAll('path').data(bb.features).join('path').attr('d', geoGenerator).attr('fill', 'red');
-    });
+
+    function create_svg_border(svg, h, w) {
+        svg.attr('border', 1);
+        svg.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", h)
+            .attr("width", w)
+            .style("stroke", "black")
+            .style("fill", "none")
+            .style("stroke-width", 1);
+    }
+
+
+    // {
+    //     let d = {
+    //         'lon': -83.903347,
+    //         'lat': 38.769315
+    //     };
+    //     let svg = d3.select("svg");
+    //     let width = parseInt(svg.attr("width"));
+    //     let height = parseInt(svg.attr("height"));
+
+    //     create_svg_border(svg, height, width);
+
+    //     // In order to convert lat / lon (spherical!) coordinates to fit in the 2D
+    //     // coordinate system of our screen, we need to create a projection function:
+    //     let projection = d3.geoAlbersUsa(); // a USA-specific projection (that deals with Hawaii / Alaska)
+    //     projection.translate([width / 2, height / 2]); // this centers the map in our SVG element
+
+    //     let point = projection([d.lon, d.lat]);
+    //     console.log("Original positions:");
+    //     console.log(d);
+    //     console.log("Projected positions: " + point);
+    //     svg.append('text').text('X').datum(point).attr('x', d => d[0]).attr('y', d => d[1]).attr('fill', 'purple');
+    // }
+
+
+    createMap = async function () {
+        let svg = d3.select("#viz");
+        let width = parseInt(svg.attr("width"));
+        let height = parseInt(svg.attr("height"));
+
+        create_svg_border(svg, height, width);
+
+        svg.append("g").attr("id", "mapLayer");
+        d3.select("#mapLayer").append("text").text("US Map").attr("x", 10).attr("y", 20);
+
+        // In order to convert lat / lon (spherical!) coordinates to fit in the 2D
+        // coordinate system of our screen, we need to create a projection function:
+
+        let projection = d3.geoAlbersUsa()      // a USA-specific projection (that deals with Hawaii / Alaska)
+            .translate([width / 2, height / 2]) // this centers the map in our SVG element
+            .scale([1000]);                     // this specifies how much to zoom
+
+        // This converts the projected lat/lon coordinates into an SVG path string
+        let path = d3.geoPath()
+            .projection(projection);
+
+        // Load in GeoJSON data    
+        let us_json = await d3.json("us-states.json");
+
+        // Bind data and create one path per GeoJSON feature
+        paths = d3.select("#mapLayer").selectAll("path")
+            .data(us_json.features)
+            .join("path")
+            // use d attribute to define the path
+            .attr("d", path);
+
+
+    }
+    createMap();
+
+
+
+    // svg_map.append('rect')
+    //     .attr('x', 0)
+    //     .attr('y', 0)
+    //     .attr('width', 123123)
+    //     .attr('height', 123123)
+    //     .attr('fill', 'lightblue');
+
+
+
+    // d3.json('walmart.geojson').then(function (bb) {
+    //     let width = 300, height = 300;
+    //     let projection = d3.geoEqualEarth();
+    //     projection.fitSize([width, height], bb);
+    //     let geoGenerator = d3.geoPath().projection(projection);
+    //     let svg = d3.select('#the_map').append('svg').attr('width', width).attr('height', height);
+    //     svg.append('g').selectAll('path').data(bb.features).join('path').attr('d', geoGenerator).attr('fill', 'red');
+    // });
 </script>
 
 
