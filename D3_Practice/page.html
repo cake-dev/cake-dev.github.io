@@ -35,43 +35,43 @@
 
 
     // NOTE: The below code is for random shape sizes and size transitions
-    // const shape_data = [
-    //     { id: 'p1', x: 10, y: 10 },
-    //     { id: 'p2', x: 30, y: 30 },
-    //     { id: 'p3', x: 50, y: 50 },
-    //     { id: 'p4', x: 60, y: 60 },
-    //     { id: 'p5', x: 80, y: 80 },
-    //     { id: 'p6', x: 100, y: 100 },
-    //     { id: 'p7', x: 120, y: 120 },
-    //     { id: 'p8', x: 140, y: 140 },
-    //     { id: 'p9', x: 160, y: 160 },
-    //     { id: 'p10', x: 180, y: 180 },
-    // ]
+    const shape_data = [
+        { id: 'p1', x: 10, y: 10 },
+        { id: 'p2', x: 30, y: 30 },
+        { id: 'p3', x: 50, y: 50 },
+        { id: 'p4', x: 60, y: 60 },
+        { id: 'p5', x: 80, y: 80 },
+        { id: 'p6', x: 100, y: 100 },
+        { id: 'p7', x: 120, y: 120 },
+        { id: 'p8', x: 140, y: 140 },
+        { id: 'p9', x: 160, y: 160 },
+        { id: 'p10', x: 180, y: 180 },
+    ]
 
-    // execute = function () {
+    execute = function () {
 
-    //     let points = container.selectAll('circle').data(shape_data)
+        let points = container.selectAll('circle').data(shape_data)
 
-    //     points.enter()
-    //         .append('circle')
-    //         .classed('d_point', true)
-    //         .transition().duration(1000).delay((data, index) => index * 100).ease(d3.easeBack)
-    //         .attr('onmouseover', 'd3.select(this).transition().duration(500).attr("r", Math.floor(10 + Math.random()*300)).attr("fill", "red")')
-    //         .attr('onmouseout', 'd3.select(this).transition().duration(500).attr("r",  data => data.x / 3 + data.y / 3).attr("fill", "steelblue")')
-    //         .attr('cx', data => data.x * 5)
-    //         .attr('cy', data => data.y * 3)
-    //         .attr('r', data => data.x / 3 + data.y / 3);
+        points.enter()
+            .append('circle')
+            .classed('d_point', true)
+            .transition().duration(1000).delay((data, index) => index * 100).ease(d3.easeBack)
+            .attr('onmouseover', 'd3.select(this).transition().duration(500).attr("r", Math.floor(10 + Math.random()*300)).attr("fill", "red")')
+            .attr('onmouseout', 'd3.select(this).transition().duration(500).attr("r",  data => data.x / 3 + data.y / 3).attr("fill", "steelblue")')
+            .attr('cx', data => data.x * 5)
+            .attr('cy', data => data.y * 3)
+            .attr('r', data => data.x / 3 + data.y / 3);
 
-    //     let rects = container.selectAll('rect').data(shape_data)
+        let rects = container.selectAll('rect').data(shape_data)
 
-    //     rects.enter()
-    //         .append('rect')
-    //         .classed('bar', true)
-    //         .attr('x', data => data.x * 5)
-    //         .attr('y', data => data.y * 3)
-    //         .attr('width', data => data.x / 3 + data.y / 3)
-    //         .attr('height', data => data.x / 3 + data.y / 3);
-    // }
+        rects.enter()
+            .append('rect')
+            .classed('bar', true)
+            .attr('x', data => data.x * 5)
+            .attr('y', data => data.y * 3)
+            .attr('width', data => data.x / 3 + data.y / 3)
+            .attr('height', data => data.x / 3 + data.y / 3);
+    }
 
 </script>
 <script src="JS/runbutton.js" charset="utf-8"></script>
