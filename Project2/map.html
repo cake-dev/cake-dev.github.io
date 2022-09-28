@@ -170,8 +170,16 @@
             .attr("r", d => Math.sqrt(parseInt(d.population) * .00003))
             .attr("fill", d => c_scale(d.rank))
             .attr("opacity", .8)
-            .on("mouseover", mouseover)
-            .on("mousemove", mousemove);
+            .on("mouseover", event => {
+                tooltip.style("visibility", "visible");
+            })
+            .on("mousemove", (event, d) => {
+                tooltip
+                    .style("top", (event.pageY - 10) + "px")
+                    .style("left", (event.pageX + 10) + "px")
+                    .text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
+            })
+            .on("mouseleave", mouseleave);
         // .on("mouseover", function (d) {
         //     d3.select(this).attr("r", d => Math.sqrt(parseInt(d.population) * .00003) * 2);
         //     console.log(d.place)
