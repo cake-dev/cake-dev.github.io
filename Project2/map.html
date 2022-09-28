@@ -27,6 +27,7 @@
         }
     </style>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
 </head>
 
 <body>
@@ -97,8 +98,12 @@
 
 
         // Load in states GeoJSON data    
-        let us_json = await d3.json("us-states.json");
-        let um_oval = await d3.json("um_oval_point.geojson");
+        let us_json = await d3.json("Data/us-states.json");
+
+        // load point data
+        let um_oval = await d3.json("Data/um_oval_point.geojson");
+        let smile_points = await d3.json("Data/smile-points.geojson");
+        let us_cities = await d3.csv("Data/us-cities.csv");
 
         // Bind data and create one path per GeoJSON feature
         paths = d3.select("#mapLayer").selectAll("path")
@@ -107,15 +112,16 @@
             // use d attribute to define the path
             .attr("d", path);
 
-        // alternate method to put point on map as path, but its just a circle idk how to change any properties of it
-        // points = d3.select("#pointLayer").selectAll("path")
-        //     .data(um_oval.features)
-        //     .join("path")
-        //     // use d attribute to define the path
-        //     .attr("d", path);
 
+        // create points object and add to map
         let points = d3.select("#pointLayer").selectAll("circle")
             .data(um_oval.features)
+
+        let smile = d3.select("#pointLayer").selectAll("circle")
+            .data(smile_points.features)
+
+        let cities = d3.select("#pointLayer").selectAll("circle")
+            .data(us_cities)
 
         points
             .join("circle")
@@ -124,39 +130,90 @@
             .attr("r", 2)
             .attr("fill", "red");
 
+        var tooltip = d3.select("body")
+            .append("div")
+            .classed(".tooltip", true)
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden")
+            .style("background", "#ffffff")
+            .text("a simple tooltip");
 
+        var color_scale = d3.scaleLinear()
+            .domain([us_cities.length - us_cities.length + 1, us_cities.length])
+            .range(["#00ff00", "#ff0000"]);
+
+        var c_scale = d3.scaleSequential()
+            .domain([us_cities.length - us_cities.length + 1, us_cities.length])
+            .interpolator(d3.interpolateViridis);
+
+
+        const mouseover = (event, d) => {
+            tooltip.style("visibility", "visible");
+        };
+
+        const mousemove = (event, d) => {
+            tooltip
+                .style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px")
+                .text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
+        };
+
+        const mouseleave = (event, d) => {
+            tooltip.style("visibility", "hidden");
+        };
+
+        cities
+            .join("circle")
+            .attr("cx", d => (projection([d.lon, d.lat])[0]))
+            .attr("cy", d => (projection([d.lon, d.lat])[1]))
+            .attr("r", d => Math.sqrt(parseInt(d.population) * .00003))
+            .attr("fill", d => c_scale(d.rank))
+            .attr("opacity", .8)
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove);
+        // .on("mouseover", function (d) {
+        //     d3.select(this).attr("r", d => Math.sqrt(parseInt(d.population) * .00003) * 2);
+        //     console.log(d.place)
+        //     // tooltip.text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
+        //     // console.log(d);
+        //     // return tooltip.style("visibility", "visible");
+        // })
+        // .on("mousemove", function () {
+        //     // return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+        // })
+        // .on("mouseout", function () {
+        //     d3.select(this).attr("r", d => Math.sqrt(parseInt(d.population) * .00003));
+        //     // return tooltip.style("visibility", "hidden");
+        // });
+
+
+
+        //this also works
         // d3.select("#pointLayer").selectAll("circle")
-        //     .data(um_oval)
+        //     .data(um_oval.features)
         //     .join("circle")
-        //     .attr("cx", d => (path(d.features.geometry.coordinates)[0]))
-        //     .attr("cy", d => (path(d.features.geometry.coordinates)[1]))
+        //     .attr("cx", d => (projection(d.geometry.coordinates)[0]))
+        //     .attr("cy", d => (projection(d.geometry.coordinates)[1]))
         //     .attr("r", 100)
         //     .attr("fill", "red");
 
+        // alternate method to put point on map as path, but its just a circle idk how to change any properties of it
+        // points = d3.select("#pointLayer").selectAll("path")
+        //     .data(um_oval.features)
+        //     .join("path")
+        //     // use d attribute to define the path
+        //     .attr("d", path);
+
         console.log(um_oval);
     }
-    createMap();
 
+    async function main() {
+        await createMap();
+    }
 
+    main();
 
-
-    // svg_map.append('rect')
-    //     .attr('x', 0)
-    //     .attr('y', 0)
-    //     .attr('width', 123123)
-    //     .attr('height', 123123)
-    //     .attr('fill', 'lightblue');
-
-
-
-    // d3.json('walmart.geojson').then(function (bb) {
-    //     let width = 300, height = 300;
-    //     let projection = d3.geoEqualEarth();
-    //     projection.fitSize([width, height], bb);
-    //     let geoGenerator = d3.geoPath().projection(projection);
-    //     let svg = d3.select('#the_map').append('svg').attr('width', width).attr('height', height);
-    //     svg.append('g').selectAll('path').data(bb.features).join('path').attr('d', geoGenerator).attr('fill', 'red');
-    // });
 </script>
 
 

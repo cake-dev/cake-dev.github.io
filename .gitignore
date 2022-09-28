@@ -2,3 +2,9 @@
 /.vscode/*
 /.idea/*
 package-lock.json
+Project2/map.html
+Project2/Data/USA_Rivers_and_Streams.geojson
+Project2/map.html
+Project2/Data/ecoregions.geojson
+Project2/Data/mtbs_fire_locations.geojson
+Project2/Data/us-states_2.geojson
