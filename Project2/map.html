@@ -74,6 +74,10 @@
 
 
     createMap = async function () {
+
+        //Control variables here
+        var add_cities = false
+
         let svg = d3.select("#viz");
         let width = parseInt(svg.attr("width"));
         let height = parseInt(svg.attr("height"));
@@ -88,8 +92,8 @@
         // coordinate system of our screen, we need to create a projection function:
 
         let projection = d3.geoAlbersUsa()      // a USA-specific projection (that deals with Hawaii / Alaska)
-            .translate([width / 2, height / 2]) // this centers the map in our SVG element
-            .scale([1000]);                     // this specifies how much to zoom
+            .translate([width / 1.2, height / 2]) // this centers the map in our SVG element
+            .scale([1600]);                     // this specifies how much to zoom
 
         // This converts the projected lat/lon coordinates into an SVG path string
         let path = d3.geoPath()
@@ -99,22 +103,25 @@
 
         // Load in states GeoJSON data    
         let us_json = await d3.json("Data/us-states.json");
+        let west_us_json = await d3.json("Data/western_us.geojson");
 
         // load point data
         let um_oval = await d3.json("Data/um_oval_point.geojson");
         let smile_points = await d3.json("Data/smile-points.geojson");
         let us_cities = await d3.csv("Data/us-cities.csv");
+        let fire_locations = await d3.json("Data/fires_1985.geojson");
 
         // Bind data and create one path per GeoJSON feature
-        paths = d3.select("#mapLayer").selectAll("path")
-            .data(us_json.features)
+        var us_paths = d3.select("#mapLayer").selectAll("path")
+            .data(west_us_json.features)
             .join("path")
             // use d attribute to define the path
-            .attr("d", path);
+            .attr("d", path)
+            .style("fill", "none");
 
 
         // create points object and add to map
-        let points = d3.select("#pointLayer").selectAll("circle")
+        let um_point = d3.select("#pointLayer").selectAll("circle")
             .data(um_oval.features)
 
         let smile = d3.select("#pointLayer").selectAll("circle")
@@ -123,7 +130,10 @@
         let cities = d3.select("#pointLayer").selectAll("circle")
             .data(us_cities)
 
-        points
+        let fires = d3.select("#pointLayer").selectAll("circle")
+            .data(fire_locations.features)
+
+        um_point
             .join("circle")
             .attr("cx", d => (projection(d.geometry.coordinates)[0]))
             .attr("cy", d => (projection(d.geometry.coordinates)[1]))
@@ -147,6 +157,10 @@
             .domain([us_cities.length - us_cities.length + 1, us_cities.length])
             .interpolator(d3.interpolateViridis);
 
+        var fire_colors = d3.scaleThreshold()
+            .domain([500, 1000, 5000])
+            .range(["#ffffff", "#ffff00", "#ffcc00", "#ff9900", "#ff6600", "#ff3300", "#ff0000"]);
+
 
         const mouseover = (event, d) => {
             tooltip.style("visibility", "visible");
@@ -163,23 +177,36 @@
             tooltip.style("visibility", "hidden");
         };
 
-        cities
+        fires
             .join("circle")
-            .attr("cx", d => (projection([d.lon, d.lat])[0]))
-            .attr("cy", d => (projection([d.lon, d.lat])[1]))
-            .attr("r", d => Math.sqrt(parseInt(d.population) * .00003))
-            .attr("fill", d => c_scale(d.rank))
-            .attr("opacity", .8)
-            .on("mouseover", event => {
-                tooltip.style("visibility", "visible");
-            })
-            .on("mousemove", (event, d) => {
-                tooltip
-                    .style("top", (event.pageY - 10) + "px")
-                    .style("left", (event.pageX + 10) + "px")
-                    .text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
-            })
-            .on("mouseleave", mouseleave);
+            .attr("cx", d => (projection(d.geometry.coordinates)[0]))
+            .attr("cy", d => (projection(d.geometry.coordinates)[1]))
+            .attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0005))
+            .attr("fill", d => fire_colors(d.properties.BurnBndAc));
+
+
+
+
+        if (add_cities) {
+            cities
+                .join("circle")
+                .attr("cx", d => (projection([d.lon, d.lat])[0]))
+                .attr("cy", d => (projection([d.lon, d.lat])[1]))
+                .attr("r", d => Math.sqrt(parseInt(d.population) * .00003))
+                .attr("fill", d => c_scale(d.rank))
+                .attr("opacity", .8)
+                .on("mouseover", event => {
+                    tooltip.style("visibility", "visible");
+                })
+                .on("mousemove", (event, d) => {
+                    tooltip
+                        .style("top", (event.pageY - 10) + "px")
+                        .style("left", (event.pageX + 10) + "px")
+                        .text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
+                })
+                .on("mouseleave", mouseleave);
+        }
+
         // .on("mouseover", function (d) {
         //     d3.select(this).attr("r", d => Math.sqrt(parseInt(d.population) * .00003) * 2);
         //     console.log(d.place)
@@ -213,7 +240,6 @@
         //     // use d attribute to define the path
         //     .attr("d", path);
 
-        console.log(um_oval);
     }
 
     async function main() {
