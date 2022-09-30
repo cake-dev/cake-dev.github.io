@@ -36,6 +36,8 @@
 </body>
 <script>
 
+    const color_range = ['#fff5eb', '#fee6ce', '#fdd0a2', '#fdae6b', '#fd8d3c', '#f16913', '#d94801', '#8c2d04']
+
     function create_svg_border(svg, h, w) {
         svg.attr('border', 1);
         svg.append("rect")
@@ -48,35 +50,7 @@
             .style("stroke-width", 1);
     }
 
-
-    // {
-    //     let d = {
-    //         'lon': -83.903347,
-    //         'lat': 38.769315
-    //     };
-    //     let svg = d3.select("svg");
-    //     let width = parseInt(svg.attr("width"));
-    //     let height = parseInt(svg.attr("height"));
-
-    //     create_svg_border(svg, height, width);
-
-    //     // In order to convert lat / lon (spherical!) coordinates to fit in the 2D
-    //     // coordinate system of our screen, we need to create a projection function:
-    //     let projection = d3.geoAlbersUsa(); // a USA-specific projection (that deals with Hawaii / Alaska)
-    //     projection.translate([width / 2, height / 2]); // this centers the map in our SVG element
-
-    //     let point = projection([d.lon, d.lat]);
-    //     console.log("Original positions:");
-    //     console.log(d);
-    //     console.log("Projected positions: " + point);
-    //     svg.append('text').text('X').datum(point).attr('x', d => d[0]).attr('y', d => d[1]).attr('fill', 'purple');
-    // }
-
-
     createMap = async function () {
-
-        //Control variables here
-        var add_cities = false
 
         let svg = d3.select("#viz");
         let width = parseInt(svg.attr("width"));
@@ -86,7 +60,7 @@
 
         svg.append("g").attr("id", "mapLayer");
         svg.append("g").attr("id", "pointLayer");
-        d3.select("#mapLayer").append("text").text("US Map").attr("x", 10).attr("y", 20);
+        d3.select("#mapLayer").append("text").text("Class G Wildfires in the Western US in 1985").attr("x", 10).attr("y", 20).attr("id", "map_title");
 
         // In order to convert lat / lon (spherical!) coordinates to fit in the 2D
         // coordinate system of our screen, we need to create a projection function:
@@ -99,17 +73,9 @@
         let path = d3.geoPath()
             .projection(projection);
 
-
-
         // Load in states GeoJSON data    
-        let us_json = await d3.json("Data/us-states.json");
+        //let us_json = await d3.json("Data/us-states.json");
         let west_us_json = await d3.json("Data/western_us.geojson");
-
-        // load point data
-        let um_oval = await d3.json("Data/um_oval_point.geojson");
-        let smile_points = await d3.json("Data/smile-points.geojson");
-        let us_cities = await d3.csv("Data/us-cities.csv");
-        let fire_locations = await d3.json("Data/fires_1985.geojson");
 
         // Bind data and create one path per GeoJSON feature
         var us_paths = d3.select("#mapLayer").selectAll("path")
@@ -117,28 +83,9 @@
             .join("path")
             // use d attribute to define the path
             .attr("d", path)
-            .style("fill", "none");
+            .style("fill", "#E8F0F7")
+            .attr("opacity", "0.6");
 
-
-        // create points object and add to map
-        let um_point = d3.select("#pointLayer").selectAll("circle")
-            .data(um_oval.features)
-
-        let smile = d3.select("#pointLayer").selectAll("circle")
-            .data(smile_points.features)
-
-        let cities = d3.select("#pointLayer").selectAll("circle")
-            .data(us_cities)
-
-        let fires = d3.select("#pointLayer").selectAll("circle")
-            .data(fire_locations.features)
-
-        um_point
-            .join("circle")
-            .attr("cx", d => (projection(d.geometry.coordinates)[0]))
-            .attr("cy", d => (projection(d.geometry.coordinates)[1]))
-            .attr("r", 2)
-            .attr("fill", "red");
 
         var tooltip = d3.select("body")
             .append("div")
@@ -149,106 +96,118 @@
             .style("background", "#ffffff")
             .text("a simple tooltip");
 
-        var color_scale = d3.scaleLinear()
-            .domain([us_cities.length - us_cities.length + 1, us_cities.length])
-            .range(["#00ff00", "#ff0000"]);
+        await add_fires_1985()
 
-        var c_scale = d3.scaleSequential()
-            .domain([us_cities.length - us_cities.length + 1, us_cities.length])
-            .interpolator(d3.interpolateViridis);
+    }
 
-        var fire_colors = d3.scaleThreshold()
-            .domain([500, 1000, 5000])
-            .range(["#ffffff", "#ffff00", "#ffcc00", "#ff9900", "#ff6600", "#ff3300", "#ff0000"]);
+    add_fires_1985 = async function () {
+        let svg = d3.select("#viz");
+        let width = parseInt(svg.attr("width"));
+        let height = parseInt(svg.attr("height"));
 
+        let projection = d3.geoAlbersUsa()
+            .translate([width / 1.2, height / 2])
+            .scale([1600]);
 
-        const mouseover = (event, d) => {
-            tooltip.style("visibility", "visible");
-        };
+        let path = d3.geoPath()
+            .projection(projection);
 
-        const mousemove = (event, d) => {
-            tooltip
-                .style("top", (event.pageY - 10) + "px")
-                .style("left", (event.pageX + 10) + "px")
-                .text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
-        };
+        let fires_1985 = await d3.json("Data/fires_1985.geojson");
 
-        const mouseleave = (event, d) => {
-            tooltip.style("visibility", "hidden");
-        };
+        d3.selectAll(".fire_15").remove()
 
-        fires
+        let fires_85 = d3.select("#pointLayer").selectAll("circle")
+            .data(fires_1985.features)
+
+        var fire_colors = d3.scaleQuantize()
+            .domain([5071, 126854])
+            .range(color_range);
+
+        fires_85
             .join("circle")
+            .classed("fire_85", true)
             .attr("cx", d => (projection(d.geometry.coordinates)[0]))
             .attr("cy", d => (projection(d.geometry.coordinates)[1]))
-            .attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0005))
+            .attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0003))
             .attr("fill", d => fire_colors(d.properties.BurnBndAc));
+    }
 
+    add_fires_2015 = async function () {
+        let svg = d3.select("#viz");
+        let width = parseInt(svg.attr("width"));
+        let height = parseInt(svg.attr("height"));
 
+        let projection = d3.geoAlbersUsa()
+            .translate([width / 1.2, height / 2])
+            .scale([1600]);
 
+        let path = d3.geoPath()
+            .projection(projection);
 
-        if (add_cities) {
-            cities
-                .join("circle")
-                .attr("cx", d => (projection([d.lon, d.lat])[0]))
-                .attr("cy", d => (projection([d.lon, d.lat])[1]))
-                .attr("r", d => Math.sqrt(parseInt(d.population) * .00003))
-                .attr("fill", d => c_scale(d.rank))
-                .attr("opacity", .8)
-                .on("mouseover", event => {
-                    tooltip.style("visibility", "visible");
-                })
-                .on("mousemove", (event, d) => {
-                    tooltip
-                        .style("top", (event.pageY - 10) + "px")
-                        .style("left", (event.pageX + 10) + "px")
-                        .text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
-                })
-                .on("mouseleave", mouseleave);
+        let fires_2015 = await d3.json("Data/fires_2015.geojson");
+
+        d3.selectAll(".fire_85").remove()
+
+        let fires_15 = d3.select("#pointLayer").selectAll("circle")
+            .data(fires_2015.features)
+
+        var fire_colors = d3.scaleQuantize()
+            .domain([5052, 282888])
+            .range(color_range);
+
+        fires_15
+            .join("circle")
+            .classed("fire_15", true)
+            .attr("cx", d => (projection(d.geometry.coordinates)[0]))
+            .attr("cy", d => (projection(d.geometry.coordinates)[1]))
+            .attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0003))
+            .attr("fill", d => fire_colors(d.properties.BurnBndAc));
+    }
+
+    changeMap = async function () {
+        let map_title = d3.select("#map_title");
+        map_year = map_title.text().substring(map_title.text().length - 4, map_title.text().length)
+
+        if (map_year == "1985") {
+            map_title.text("Class G Wildfires in the Western US in 2015");
+            add_fires_2015();
+        } else {
+            map_title.text("Class G Wildfires in the Western US in 1985");
+            add_fires_1985();
         }
+    }
 
-        // .on("mouseover", function (d) {
-        //     d3.select(this).attr("r", d => Math.sqrt(parseInt(d.population) * .00003) * 2);
-        //     console.log(d.place)
-        //     // tooltip.text(d.place + " Rank: " + parseInt(d.rank) + " Population: " + parseInt(d.population));
-        //     // console.log(d);
-        //     // return tooltip.style("visibility", "visible");
-        // })
-        // .on("mousemove", function () {
-        //     // return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
-        // })
-        // .on("mouseout", function () {
-        //     d3.select(this).attr("r", d => Math.sqrt(parseInt(d.population) * .00003));
-        //     // return tooltip.style("visibility", "hidden");
-        // });
+    changeSize = async function () {
+        let map_title = d3.select("#map_title");
+        map_year = map_title.text().substring(map_title.text().length - 4, map_title.text().length)
 
-
-
-        //this also works
-        // d3.select("#pointLayer").selectAll("circle")
-        //     .data(um_oval.features)
-        //     .join("circle")
-        //     .attr("cx", d => (projection(d.geometry.coordinates)[0]))
-        //     .attr("cy", d => (projection(d.geometry.coordinates)[1]))
-        //     .attr("r", 100)
-        //     .attr("fill", "red");
-
-        // alternate method to put point on map as path, but its just a circle idk how to change any properties of it
-        // points = d3.select("#pointLayer").selectAll("path")
-        //     .data(um_oval.features)
-        //     .join("path")
-        //     // use d attribute to define the path
-        //     .attr("d", path);
-
+        if (map_year == "1985") {
+            if (d3.selectAll(".fire_85").attr("r") == 4) {
+                d3.selectAll(".fire_85").attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0003))
+            }
+            else {
+                d3.selectAll(".fire_85").attr("r", 4);
+            }
+        }
+        else {
+            if (d3.selectAll(".fire_15").attr("r") == 4) {
+                d3.selectAll(".fire_15").attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0003))
+            }
+            else {
+                d3.selectAll(".fire_15").attr("r", 4);
+            }
+        }
     }
 
     async function main() {
         await createMap();
+        await add_fires_1985();
     }
 
     main();
 
 </script>
+<script src="JS/runbutton.js" charset="utf-8"></script>
 
 
 </html>
