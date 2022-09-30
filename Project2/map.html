@@ -110,8 +110,6 @@
         //let us_json = await d3.json("Data/us-states.json");
         let west_us_json = await d3.json("Data/western_us.geojson");
 
-        let west_us_ag = await d3.csv("Data/western_ag.csv");
-
 
         // Bind data and create one path per GeoJSON feature
         var us_paths = d3.select("#mapLayer").selectAll("path")
@@ -120,7 +118,6 @@
             // use d attribute to define the path
             .attr("d", path)
             .classed("state", true)
-            .style("fill", d => "#d9d9d9")
             .attr("opacity", "0.6");
 
 
@@ -132,8 +129,6 @@
             .style("visibility", "hidden")
             .style("background", "#ffffff")
             .text("a simple tooltip");
-
-        await add_fires_1985()
 
     }
 
@@ -199,6 +194,19 @@
             .attr("cy", d => (projection(d.geometry.coordinates)[1]))
             .attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0003))
             .attr("fill", d => fire_colors(d.properties.BurnBndAc));
+    }
+
+    add_fires = async function () {
+        let svg = d3.select("#viz");
+        let width = parseInt(svg.attr("width"));
+        let height = parseInt(svg.attr("height"));
+
+        let projection = d3.geoAlbersUsa()
+            .translate([width / 1.2, height / 2])
+            .scale([1600]);
+
+        let path = d3.geoPath()
+            .projection(projection);
     }
 
     chloroplethView = async function () {
