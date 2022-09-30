@@ -1,12 +1,12 @@
-,state,value
-2,Arizona,1.3847
-3,California,1.7979
-4,Colorado,1.0325
-10,Idaho,1.4285
-23,Montana,0.8145
-29,New Mexico,0.8925
-30,Nevada,0.964
-34,Oregon,1.3154
-41,Utah,0.9638
-44,Washington,1.1457
-47,Wyoming,0.5712
+state,value
+Arizona,1.3847
+California,1.7979
+Colorado,1.0325
+Idaho,1.4285
+Montana,0.8145
+New Mexico,0.8925
+Nevada,0.964
+Oregon,1.3154
+Utah,0.9638
+Washington,1.1457
+Wyoming,0.5712

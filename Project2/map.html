@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Map Example</title>
+    <title>Mapping Assignment</title>
     <style>
         text {
             font-family: Verdana, Geneva, Tahoma, sans-serif
@@ -25,22 +25,55 @@
             stroke-width: 1px;
             opacity: .5
         }
+
+        #map_container {
+            text-align: center;
+        }
+
+        #master {
+            text-align: center;
+        }
+
+        #legendTable {
+            text-align: center;
+        }
+
+        .map_table {
+            font-family: 'Courier New', Courier, monospace;
+        }
     </style>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
 </head>
 
 <body>
-    <div class="message">D3 Map</div>
-    <svg id="viz" width="1000" height="800"></svg>
+
+    <div class="message">Have Wildfires in the West been Growing Larger?</div>
+    <div id="master">
+        <table border="0" cellpadding="10" style="overflow-y: scroll;" id="legendTable">
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <div id="map_container"><svg id="viz" width="800" height="800"></svg></div>
+                </td>
+                <td>
+                    <div id="legend_container"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
 <script>
 
-    const color_range = ['#fff5eb', '#fee6ce', '#fdd0a2', '#fdae6b', '#fd8d3c', '#f16913', '#d94801', '#8c2d04']
+    const color_fires = ['#fff5eb', '#fee6ce', '#fdd0a2', '#fdae6b', '#fd8d3c', '#f16913', '#d94801', '#8c2d04']
+    const color_map = ['#f7f7f7', '#d9d9d9', '#bdbdbd', '#969696', '#636363', '#252525']
+
 
     function create_svg_border(svg, h, w) {
         svg.attr('border', 1);
         svg.append("rect")
+            .classed("svg_border", true)
             .attr("x", 0)
             .attr("y", 0)
             .attr("height", h)
@@ -77,13 +110,17 @@
         //let us_json = await d3.json("Data/us-states.json");
         let west_us_json = await d3.json("Data/western_us.geojson");
 
+        let west_us_ag = await d3.csv("Data/western_ag.csv");
+
+
         // Bind data and create one path per GeoJSON feature
         var us_paths = d3.select("#mapLayer").selectAll("path")
             .data(west_us_json.features)
             .join("path")
             // use d attribute to define the path
             .attr("d", path)
-            .style("fill", "#E8F0F7")
+            .classed("state", true)
+            .style("fill", d => "#d9d9d9")
             .attr("opacity", "0.6");
 
 
@@ -121,7 +158,7 @@
 
         var fire_colors = d3.scaleQuantize()
             .domain([5071, 126854])
-            .range(color_range);
+            .range(color_fires);
 
         fires_85
             .join("circle")
@@ -153,7 +190,7 @@
 
         var fire_colors = d3.scaleQuantize()
             .domain([5052, 282888])
-            .range(color_range);
+            .range(color_fires);
 
         fires_15
             .join("circle")
@@ -164,16 +201,87 @@
             .attr("fill", d => fire_colors(d.properties.BurnBndAc));
     }
 
-    changeMap = async function () {
+    chloroplethView = async function () {
+
+        let svg = d3.select("#viz");
+        let width = parseInt(svg.attr("width"));
+        let height = parseInt(svg.attr("height"));
+        let projection = d3.geoAlbersUsa()
+            .translate([width / 1.2, height / 2])
+            .scale([1600]);
+        let path = d3.geoPath()
+            .projection(projection);
+
+        let west_us_json = await d3.json("Data/western_us.geojson");
+        let burned_state_area_1985 = await d3.csv("Data/burned_area_1985.csv");
+        let burned_state_area_2015 = await d3.csv("Data/burned_area_2015.csv");
+
+        let map_title = d3.select("#map_title");
+        map_year = map_title.text().substring(map_title.text().length - 4, map_title.text().length)
+
+        let burned_area;
+
+        if (map_year == "1985") {
+            burned_area = burned_state_area_1985;
+        } else {
+            burned_area = burned_state_area_2015;
+        }
+
+        let color = d3.scaleQuantize()
+            .range(
+                color_map
+            );
+
+        color.domain([
+            d3.min(burned_area, function (d) {
+                return d.acres;
+            }),
+            d3.max(burned_area, function (d) {
+                return d.acres;
+            })
+        ]);
+
+        // Convert the data array to an object, so that it's easy to look up
+        // data values by state names
+        let dataLookup = {};
+        burned_area.forEach(function (burned_area) {
+            // d3.csv will read the values as strings; we need to convert them to floats
+            dataLookup[burned_area.State] = parseFloat(burned_area.acres);
+        });
+        console.log(dataLookup)
+        // Now we add the data values to the geometry for every state
+
+        west_us_json.features.forEach(function (feature) {
+            feature.properties.acres = dataLookup[feature.properties.name];
+        });
+        console.log(west_us_json.features.properties)
+        var us_paths = d3.select("#mapLayer").selectAll("path")
+            .data(west_us_json.features)
+            .join("path")
+            // use d attribute to define the path
+            .attr("d", path)
+            .classed("state", true)
+            .style("fill", d => color(d.properties.acres))
+            .attr("opacity", "0.6");
+    }
+
+    changeYear = async function () {
         let map_title = d3.select("#map_title");
         map_year = map_title.text().substring(map_title.text().length - 4, map_title.text().length)
 
         if (map_year == "1985") {
             map_title.text("Class G Wildfires in the Western US in 2015");
-            add_fires_2015();
+            await add_fires_2015();
+            await chloroplethView();
+            d3.select(".map_table").remove();
+            await createLegend();
+
         } else {
             map_title.text("Class G Wildfires in the Western US in 1985");
-            add_fires_1985();
+            await add_fires_1985();
+            await chloroplethView();
+            d3.select(".map_table").remove();
+            await createLegend();
         }
     }
 
@@ -199,9 +307,86 @@
         }
     }
 
+    var tabulate = function (data, columns) {
+        var table = d3.select('#legend_container').append('table').classed("map_table", true)
+        var thead = table.append('thead')
+        var tbody = table.append('tbody')
+
+        thead.append('tr')
+            .selectAll('th')
+            .data(columns)
+            .enter()
+            .append('th')
+            .text(function (d) { return d })
+
+        var rows = tbody.selectAll('tr')
+            .data(data)
+            .enter()
+            .append('tr')
+
+        var cells = rows.selectAll('td')
+            .data(function (row) {
+                return columns.map(function (column) {
+                    return { column: column, value: row[column] }
+                })
+            })
+            .enter()
+            .append('td')
+            .text(function (d) { return d.value })
+
+        return table;
+    }
+
+    createLegend = async function () {
+
+        d3.selectAll(".map_table").remove();
+
+        let svg = d3.select("#viz");
+        let width = parseInt(svg.attr("width"));
+        let height = parseInt(svg.attr("height"));
+        let projection = d3.geoAlbersUsa()
+            .translate([width / 1.2, height / 2])
+            .scale([1600]);
+        let path = d3.geoPath()
+            .projection(projection);
+
+        let burned_state_area_1985 = await d3.csv("Data/burned_area_1985.csv");
+        let burned_state_area_2015 = await d3.csv("Data/burned_area_2015.csv");
+
+        let map_title = d3.select("#map_title");
+        map_year = map_title.text().substring(map_title.text().length - 4, map_title.text().length)
+
+        let burned_area;
+        cols = ["State", "acres"]
+
+        if (map_year == "1985") {
+            burned_area = burned_state_area_1985;
+        } else {
+            burned_area = burned_state_area_2015;
+        }
+        d3.select("#legend_container").append("p").text("Acres Burned by State in " + map_year).classed("map_table", true);
+        d3.select("#legend_container").append("p").text("Total acres burned: " + d3.sum(burned_area, d => parseInt(d.acres))).classed("map_table", true)
+        tabulate(burned_area, cols);
+
+        // let selection = svg.selectAll("rect").data([127, 61, 256, 71]);
+
+        // selection
+        //     .join("rect")
+        //     .attr("x", 0)
+        //     .attr("y", (d, i) => i * 60 + 50)
+        //     .attr("width", (d) => d)
+        //     .attr("height", 20)
+        //     .style("fill", "steelblue");
+
+
+
+    }
+
     async function main() {
         await createMap();
         await add_fires_1985();
+        await chloroplethView();
+        await createLegend();
     }
 
     main();
