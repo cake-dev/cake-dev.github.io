@@ -11,7 +11,7 @@ function create_svg_border(svg, h, w) {
         .attr("height", h)
         .attr("width", w)
         .style("stroke", "black")
-        .style("fill", "none")
+        .style("fill", "#F0EAD6")
         .style("stroke-width", 1);
 }
 
@@ -52,7 +52,7 @@ createMap = async function () {
         // use d attribute to define the path
         .attr("d", path)
         .classed("state", true)
-        .attr("opacity", "0.6");
+        .attr("opacity", "1");
 
 
     var tooltip = d3.select("body")
