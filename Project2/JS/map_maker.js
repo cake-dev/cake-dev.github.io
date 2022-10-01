@@ -1,5 +1,5 @@
 const color_fires = ['#fff5eb', '#fee6ce', '#fdd0a2', '#fdae6b', '#fd8d3c', '#f16913', '#d94801', '#8c2d04']
-const color_map = ['#f7f7f7', '#d9d9d9', '#bdbdbd', '#969696', '#636363', '#252525']
+const color_map = ['#ffffff', '#f0f0f0', '#d9d9d9', '#bdbdbd', '#969696', '#737373', '#525252', '#252525', '#000000']
 
 
 function create_svg_border(svg, h, w) {
@@ -11,7 +11,7 @@ function create_svg_border(svg, h, w) {
         .attr("height", h)
         .attr("width", w)
         .style("stroke", "black")
-        .style("fill", "#F0EAD6")
+        .style("fill", "none")
         .style("stroke-width", 1);
 }
 
@@ -156,7 +156,7 @@ addFires = async function (f_year) {
 
 }
 
-chloroplethView = async function () {
+chloroplethView = async function (m_year) {
 
     let svg = d3.select("#viz");
     let width = parseInt(svg.attr("width"));
@@ -189,10 +189,10 @@ chloroplethView = async function () {
 
     color.domain([
         d3.min(burned_area, function (d) {
-            return d.acres;
+            return d.Acres;
         }),
         d3.max(burned_area, function (d) {
-            return d.acres;
+            return d.Acres;
         })
     ]);
 
@@ -201,13 +201,13 @@ chloroplethView = async function () {
     let dataLookup = {};
     burned_area.forEach(function (burned_area) {
         // d3.csv will read the values as strings; we need to convert them to floats
-        dataLookup[burned_area.State] = parseFloat(burned_area.acres);
+        dataLookup[burned_area.State] = parseFloat(burned_area.Acres);
     });
     console.log(dataLookup)
     // Now we add the data values to the geometry for every state
 
     west_us_json.features.forEach(function (feature) {
-        feature.properties.acres = dataLookup[feature.properties.name];
+        feature.properties.Acres = dataLookup[feature.properties.name];
     });
     console.log(west_us_json.features.properties)
     var us_paths = d3.select("#mapLayer").selectAll("path")
@@ -216,8 +216,49 @@ chloroplethView = async function () {
         // use d attribute to define the path
         .attr("d", path)
         .classed("state", true)
-        .style("fill", d => color(d.properties.acres))
+        .style("fill", function (d) {
+            if (d.properties.Acres > 0) {
+                return color(d.properties.Acres);
+            } else {
+                return "#ffffff";
+            }
+        })
         .attr("opacity", "0.6");
+
+    // select the svg area
+    var SVG = d3.select("#my_legend")
+
+    // create a list of keys
+    var keys = ["Mister A", "Brigitte", "Eleonore", "Another friend", "Batman"]
+
+    // Usually you have a color scale in your chart already
+    var color2 = d3.scaleOrdinal()
+        .domain(keys)
+        .range(d3.schemeSet1);
+
+    // Add one dot in the legend for each name.
+    var size = 20
+    SVG.selectAll("mydots")
+        .data(keys)
+        .enter()
+        .append("rect")
+        .attr("x", 100)
+        .attr("y", function (d, i) { return 100 + i * (size + 5) }) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("width", size)
+        .attr("height", size)
+        .style("fill", function (d) { return color2(d) })
+
+    // Add one dot in the legend for each name.
+    SVG.selectAll("mylabels")
+        .data(keys)
+        .enter()
+        .append("text")
+        .attr("x", 100 + size * 1.2)
+        .attr("y", function (d, i) { return 100 + i * (size + 5) + (size / 2) }) // 100 is where the first dot appears. 25 is the distance between dots
+        .style("fill", function (d) { return color2(d) })
+        .text(function (d) { return d })
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
 }
 
 changeYear = async function () {
@@ -292,7 +333,7 @@ var tabulate = function (data, columns) {
     return table;
 }
 
-createLegend = async function (f_year) {
+createLegend = async function (m_year) {
 
     d3.selectAll(".map_table").remove();
 
@@ -312,7 +353,7 @@ createLegend = async function (f_year) {
     map_year = map_title.text().substring(map_title.text().length - 4, map_title.text().length)
 
     let burned_area;
-    cols = ["State", "acres"]
+    cols = ["State", "Acres"]
 
     if (map_year == "1985") {
         burned_area = burned_state_area_1985;
@@ -320,20 +361,8 @@ createLegend = async function (f_year) {
         burned_area = burned_state_area_2015;
     }
     d3.select("#legend_container").append("p").text("Acres Burned by State in " + map_year).classed("map_table", true);
-    d3.select("#legend_container").append("p").text("Total acres burned: " + d3.sum(burned_area, d => parseInt(d.acres))).classed("map_table", true)
+    d3.select("#legend_container").append("p").text("Total Acres burned: " + d3.sum(burned_area, d => parseInt(d.Acres))).classed("map_table", true)
     tabulate(burned_area, cols);
-
-    // let selection = svg.selectAll("rect").data([127, 61, 256, 71]);
-
-    // selection
-    //     .join("rect")
-    //     .attr("x", 0)
-    //     .attr("y", (d, i) => i * 60 + 50)
-    //     .attr("width", (d) => d)
-    //     .attr("height", 20)
-    //     .style("fill", "steelblue");
-
-
 
 }
 
