@@ -41,6 +41,7 @@
         .map_table {
             font-family: 'Courier New', Courier, monospace;
             font-size: large;
+            text-align: left;
             border-collapse: collapse;
             margin: 25px 0;
             font-size: 1.2em;
@@ -67,6 +68,10 @@
 
         .map_table tbody tr:nth-of-type(even) {
             background-color: #f3f3f3;
+        }
+
+        .map_table tbody tr:nth-of-type(odd) {
+            background-color: #ececec;
         }
 
         .map_table tbody tr:last-of-type {
@@ -109,6 +114,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/w3css.css" />
+
 </head>
 
 <body>
@@ -120,7 +126,7 @@
             </div>
             <div class="leftSide">
                 <div id="info_container">
-                    <svg id="my_legend" height=300 width=300></svg>
+                    <!-- <svg id="my_legend" height=300 width=300></svg> -->
                 </div>
             </div>
             <div class="body">
@@ -131,31 +137,184 @@
                     <div class="w3-dropdown-hover">
                         <button class="w3-button w3-black" onclick="dropFunction()">Select Year</button>
                         <div class="w3-dropdown-content w3-bar-block w3-card w3-light-grey" id="myDIV">
-                            <p><button class="w3-button w3-border w3-hover-deep-orange">Deep Orange</button></p>
-                            <p><button class="w3-button w3-border w3-hover-deep-orange">Deep Orange</button></p>
-                            <p><button class="w3-button w3-border w3-hover-deep-orange">Deep Orange</button></p>
-                            <p><button class="w3-button w3-border w3-hover-deep-orange">Deep Orange</button></p>
-                            <p><button class="w3-button w3-border w3-hover-deep-orange">Deep Orange</button></p>
-                            <p><button class="w3-button w3-border w3-hover-deep-orange">Deep Orange</button></p>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1985"
+                                                onclick="addFires(this.value)">1985</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1986"
+                                                onclick="addFires(this.value)">1986</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1987"
+                                                onclick="addFires(this.value)">1987</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1988"
+                                                onclick="addFires(this.value)">1988</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1989"
+                                                onclick="addFires(this.value)">1989</button></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1990"
+                                                onclick="addFires(this.value)">1990</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1991"
+                                                onclick="addFires(this.value)">1991</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1992"
+                                                onclick="addFires(this.value)">1992</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1993"
+                                                onclick="addFires(this.value)">1993</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1994"
+                                                onclick="addFires(this.value)">1994</button></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1995"
+                                                onclick="addFires(this.value)">1995</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1996"
+                                                onclick="addFires(this.value)">1996</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1997"
+                                                onclick="addFires(this.value)">1997</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1998"
+                                                onclick="addFires(this.value)">1998</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="1999"
+                                                onclick="addFires(this.value)">1999</button></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2000"
+                                                onclick="addFires(this.value)">2000</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2001"
+                                                onclick="addFires(this.value)">2001</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2002"
+                                                onclick="addFires(this.value)">2002</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2003"
+                                                onclick="addFires(this.value)">2003</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2004"
+                                                onclick="addFires(this.value)">2004</button></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2005"
+                                                onclick="addFires(this.value)">2005</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2006"
+                                                onclick="addFires(this.value)">2006</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2007"
+                                                onclick="addFires(this.value)">2007</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2008"
+                                                onclick="addFires(this.value)">2008</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2009"
+                                                onclick="addFires(this.value)">2009</button></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2010"
+                                                onclick="addFires(this.value)">2010</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2011"
+                                                onclick="addFires(this.value)">2011</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2012"
+                                                onclick="addFires(this.value)">2012</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2013"
+                                                onclick="addFires(this.value)">2013</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2014"
+                                                onclick="addFires(this.value)">2014</button></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2015"
+                                                onclick="addFires(this.value)">2015</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2016"
+                                                onclick="addFires(this.value)">2016</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2017"
+                                                onclick="addFires(this.value)">2017</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2018"
+                                                onclick="addFires(this.value)">2018</button></p>
+                                    </td>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2019"
+                                                onclick="addFires(this.value)">2019</button></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><button class="w3-button w3-border w3-hover-deep-orange" value="2020"
+                                                onclick="addFires(this.value)">2020</button></p>
+                                    </td>
+                                </tr>
+                            </table>
+
                         </div>
                     </div>
                 </div>
             </div>
             <div class="footer">
                 <div class="row align-items-center">
-                    <div class="col-sm-2">
-                        <p id="value-time"></p>
-                    </div>
-                    <div>
-                        <div id="slider-time"></div>
-                    </div>
+                    <p>#TODO add info, references</p>
                 </div>
             </div>
         </section>
     </div>
+    <script src="JS/map_maker.js"></script>
+    <script src="JS/functions.js" charset="utf-8"></script>
 </body>
-<script src="JS/map_maker.js"></script>
-<script src="JS/functions.js" charset="utf-8"></script>
+
 
 
 </html>
