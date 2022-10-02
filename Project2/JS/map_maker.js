@@ -16,6 +16,12 @@ function create_svg_border(svg, h, w) {
         .attr("opacity", "0.5");
 }
 
+function zoomed(event) {
+    g
+        .selectAll('path') // To prevent stroke width from scaling
+        .attr('transform', event.transform);
+}
+
 createMap = async function () {
 
 
@@ -42,6 +48,17 @@ createMap = async function () {
     let path = d3.geoPath()
         .projection(projection);
 
+    // create zoom
+    const zoom = d3.zoom()
+        .scaleExtent([1, 8])
+        .translateExtent([[0, 0], [width, height]])
+        .on('zoom', event => {
+            d3.select("#viz").selectAll('path') // To prevent stroke width from scaling
+                .attr('transform', event.transform);
+            d3.select("#viz").selectAll('circle')
+                .attr('transform', event.transform);
+        });
+
     // Load in states GeoJSON data    
     //let us_json = await d3.json("Data/us-states.json");
     let west_us_json = await d3.json("Data/western_us.geojson");
@@ -56,14 +73,9 @@ createMap = async function () {
         .classed("state", true)
         .attr("opacity", "1");
 
-    var tooltip = d3.select("body")
-        .append("div")
-        .classed(".tooltip", true)
-        .style("position", "absolute")
-        .style("z-index", "10")
-        .style("visibility", "hidden")
-        .style("background", "#ffffff")
-        .text("a simple tooltip");
+
+    svg.call(zoom);
+
 
 
 
@@ -103,6 +115,15 @@ addFires = async function (f_year) {
 
     hover_info = d3.select(".tooltip");
 
+    var tooltip = d3.select("body")
+        .append("div")
+        .classed(".tooltip", true)
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("background", "#ffffff")
+        .text("a simple tooltip");
+
     fires
         .join("circle")
         .filter(d => d.properties.year == parseInt(f_year))
@@ -112,14 +133,14 @@ addFires = async function (f_year) {
         .attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0003))
         .attr("fill", d => fire_colors(d.properties.BurnBndAc))
         .on("mouseover", event => {
-            hover_info.style("visibility", "visible");
+            tooltip.style("visibility", "visible");
         })
         .on("mousemove", (event, d) => {
-            hover_info.text("Burned Area: " + d.properties.BurnBndAc + " Acres");
-            hover_info.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+            tooltip.text("Burned Area: " + Number(d.properties.BurnBndAc).toLocaleString() + " acres");
+            tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
         })
         .on("mouseleave", event => {
-            hover_info.style("visibility", "hidden");
+            tooltip.style("visibility", "hidden");
         });
 
     chloroplethView(f_year);
@@ -229,14 +250,23 @@ chloroplethView = async function (m_year) {
     //     .style("alignment-baseline", "middle")
 }
 
+createTimeSeries = async function () {
+    d3.select(".footer").append("svg").attr("id", "timeSeries").attr("width", 1000).attr("height", 200);
+
+    let svg = d3.select("#timeSeries");
+    let width = parseInt(svg.attr("width"));
+    let height = parseInt(svg.attr("height"));
+
+
+}
 
 changeSize = async function () {
 
-    if (d3.selectAll(".fire_point").attr("r") == 5) {
+    if (d3.selectAll(".fire_point").attr("r") == 3) {
         d3.selectAll(".fire_point").attr("r", d => Math.sqrt(parseInt(d.properties.BurnBndAc) * .0003))
     }
     else {
-        d3.selectAll(".fire_point").attr("r", 5);
+        d3.selectAll(".fire_point").attr("r", 3);
     }
 
 }
@@ -311,7 +341,8 @@ createLegend = async function (m_year) {
 
 async function main() {
     await createMap();
-    await addFires(1985)
+
+    await addFires(1985);
 
     img = d3.select("#viz").append("image")
 
@@ -319,6 +350,9 @@ async function main() {
         .attr("x", 648)
         .attr("y", 1)
         .attr("width", 150)
+
+
+
 
 }
 
