@@ -403,7 +403,7 @@ createLegend = async function (m_year) {
     });
 
     d3.select("#info_container").append("h3").text("Acres Burned (state) " + m_year).classed("map_titles h3", true);
-    d3.select("#info_container").append("p").text("Total Fires: " + fires_per_year.length).classed("map_titles p", true);
+    d3.select("#info_container").append("p").text("Total Class G Fires: " + fires_per_year.length).classed("map_titles p", true);
     d3.select("#info_container").append("p").text("Total Acres burned: " + d3.sum(burned_area, d => parseInt(d.Acres))).classed("map_titles p", true)
     tabulate(burned_area, cols);
 
