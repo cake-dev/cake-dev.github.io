@@ -50,6 +50,39 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         }
 
+        .map_titles {
+            font-family: 'Courier New', Courier, monospace;
+            text-align: left;
+            font-weight: bold;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            background-color: #f16609ad;
+            opacity: 1;
+            border: #222;
+            border-radius: 5px;
+        }
+
+        .map_titles h3 {
+            font-family: 'Courier New', Courier, monospace;
+            text-align: left;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            background-color: #f16609ad;
+            opacity: 1;
+            border: #222;
+            border-radius: 5px;
+        }
+
+        .map_titles p {
+            font-size: xx-large;
+        }
+
         .map_table thead tr {
             background-color: #f16609;
             color: #ffffff;
@@ -110,7 +143,8 @@
     </style>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
-    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <script src='https://unpkg.com/simple-statistics@7.7.5/dist/simple-statistics.min.js'>
+    </script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/w3css.css" />
@@ -123,6 +157,7 @@
         <section class="layout" style="margin-left: 5%;">
             <div class="header">
                 <div class="message">Have Wildfires in the West been Growing Larger?</div>
+                <hr>
             </div>
             <div class="leftSide">
                 <div id="info_container">
@@ -135,7 +170,7 @@
             <div class="rightSide">
                 <div id="legend_container">
                     <div class="w3-dropdown-hover">
-                        <button class="w3-button w3-black" onclick="dropFunction()">Select Year</button>
+                        <button class="btn btn-secondary" onclick="dropFunction()">Select Year</button>
                         <div class="w3-dropdown-content w3-bar-block w3-card w3-light-grey" id="myDIV">
                             <table>
                                 <tr>
@@ -302,12 +337,66 @@
 
                         </div>
                     </div>
+                    <button class="btn btn-secondary" style="margin-top: 30%;" onclick="changeSize()">
+                        Change Size
+                    </button>
+                    <div class="modal_info" style="margin-top: 50%;">
+                        <button onclick="document.getElementById('id01').style.display='block'"
+                            class="w3-button w3-black">Show Info</button>
+
+                        <div id="id01" class="w3-modal">
+                            <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+                                <header class="w3-container w3-orange">
+                                    <span onclick=" document.getElementById('id01').style.display='none'"
+                                        class=" w3-button w3-clear w3-xlarge w3-display-topright">&times;</span>
+                                    <h2>Fire Size Visualization</h2>
+                                </header>
+
+                                <div class="w3-bar w3-border-bottom">
+                                    <button class="tablink w3-bar-item w3-button"
+                                        onclick="openCity(event, 'London')">Hypothesis</button>
+                                    <button class="tablink w3-bar-item w3-button"
+                                        onclick="openCity(event, 'Paris')">Data</button>
+                                    <button class="tablink w3-bar-item w3-button"
+                                        onclick="openCity(event, 'Tokyo')">Methods</button>
+                                </div>
+
+                                <div id="London" class="w3-container city">
+                                    <h1>Are Wildfires Getting Larger in the West?</h1>
+                                    <p>The world has been experiencing unprecedented climate change.</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                    </p>
+                                </div>
+
+                                <div id="Paris" class="w3-container city">
+                                    <h1>Data</h1>
+                                    <p>Primary data sourced from Monitoring Trends in Burn Severity</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                </div>
+
+                                <div id="Tokyo" class="w3-container city">
+                                    <h1>Methods</h1>
+                                    <p>Visualization created with D3 and vanilla JS</p><br>
+                                    <p>Data prep done in python (Jupyter Notebook)</p><br>
+                                </div>
+
+                                <div class="w3-container w3-light-grey w3-padding">
+                                    <button class="w3-button w3-right w3-white w3-border"
+                                        onclick="document.getElementById('id01').style.display='none'">Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-            <div class="footer">
-                <p>#TODO add info, references</p>
-            </div>
-        </section>
+    </div>
+    <div class="footer">
+        <h3 style="margin-top: 10%;">Acres Burned Per Year by Class G Fires</h3>
+    </div>
+    </section>
     </div>
     <script src="JS/map_maker.js"></script>
     <script src="JS/functions.js" charset="utf-8"></script>

@@ -212,52 +212,121 @@ chloroplethView = async function (m_year) {
         })
         .attr("opacity", "0.6");
 
-
-    // NOTE: code below is for creating a key of sorts
-    // // select the svg area
-    // var SVG = d3.select("#my_legend")
-
-    // // create a list of keys
-    // var keys = ["Mister A", "Brigitte", "Eleonore", "Another friend", "Batman"]
-
-    // // Usually you have a color scale in your chart already
-    // var color2 = d3.scaleOrdinal()
-    //     .domain(keys)
-    //     .range(d3.schemeSet1);
-
-    // // Add one dot in the legend for each name.
-    // var size = 20
-    // SVG.selectAll("mydots")
-    //     .data(keys)
-    //     .enter()
-    //     .append("rect")
-    //     .attr("x", 100)
-    //     .attr("y", function (d, i) { return 100 + i * (size + 5) }) // 100 is where the first dot appears. 25 is the distance between dots
-    //     .attr("width", size)
-    //     .attr("height", size)
-    //     .style("fill", function (d) { return color2(d) })
-
-    // // Add one dot in the legend for each name.
-    // SVG.selectAll("mylabels")
-    //     .data(keys)
-    //     .enter()
-    //     .append("text")
-    //     .attr("x", 100 + size * 1.2)
-    //     .attr("y", function (d, i) { return 100 + i * (size + 5) + (size / 2) }) // 100 is where the first dot appears. 25 is the distance between dots
-    //     .style("fill", function (d) { return color2(d) })
-    //     .text(function (d) { return d })
-    //     .attr("text-anchor", "left")
-    //     .style("alignment-baseline", "middle")
 }
 
 createTimeSeries = async function () {
-    d3.select(".footer").append("svg").attr("id", "timeSeries").attr("width", 1000).attr("height", 200);
+    d3.select(".footer").append("div").attr("id", "timeSeries");
 
-    let svg = d3.select("#timeSeries");
-    let width = parseInt(svg.attr("width"));
-    let height = parseInt(svg.attr("height"));
+    let burn_data = await d3.csv("Data/burned_area_per_year.csv");
 
 
+    const margin = { top: 20, right: 30, bottom: 30, left: 60 },
+        width = 1000 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+    // append the svg object to the body of the page
+    const svg = d3.select("#timeSeries")
+        .append("svg")
+        .attr('id', 'graph')
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+
+    //Read the data
+    d3.csv('Data/burned_area_per_year.csv').then(
+
+        // Now I can use this dataset:
+        function (data) {
+
+            // Add X axis --> it is a date format
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, function (d) { return d.Year; }))
+                .range([0, width]);
+            svg.append("g")
+                .attr("transform", `translate(0, ${height})`)
+                .call(d3.axisBottom(x).tickFormat(d3.format("d"))); //this formats the number to not have a comma
+
+
+            // Add Y axis
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, function (d) { return +d.Acres; })])
+                .range([height, 0]);
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+
+            // Create grids.
+            const xAxisGrid = d3.axisBottom(x).tickSize(-height).tickFormat('').ticks(10);
+            const yAxisGrid = d3.axisLeft(y).tickSize(-width).tickFormat('').ticks(10);
+            svg.append('g')
+                .attr('class', 'x axis-grid')
+                .attr('transform', 'translate(0,' + height + ')')
+                .attr('opacity', 0.3)
+                .call(xAxisGrid);
+            svg.append('g')
+                .attr('class', 'y axis-grid')
+                .attr('opacity', 0.3)
+                .call(yAxisGrid);
+
+            // add dots at data points
+            svg.append("g")
+                .selectAll("dot")
+                .data(data)
+                .join("circle")
+                .attr("cx", function (d) { return x(d.Year) })
+                .attr("cy", function (d) { return y(d.Acres) })
+                .attr("r", 3.0)
+                .style("fill", "#69b3a2")
+
+            // Add the line
+            svg.append("path")
+                .datum(data)
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function (d) { return x(d.Year) })
+                    .y(function (d) { return y(d.Acres) })
+                )
+
+            var regLine = d3.line()
+                .x(function (d) {
+                    return x(d.Year);
+                })
+                .y(function (d) {
+                    return y(d.Acres);
+                });
+
+            // Derive a linear regression
+            var regression = ss.linearRegression(data.map(function (d) {
+                return [+d.indexOf("Year"), d.indexOf("Acres")];
+            }));
+
+            var lin = ss.linearRegressionLine(regression);
+
+            // Create a line based on the beginning and endpoints of the range
+            var lindata = x.domain().map(function (x) {
+                return {
+                    Year: x,
+                    Acres: lin(+x)
+                };
+            });
+
+            svg.append("path")
+                .datum(lindata)
+                .attr("class", "reg")
+                .style("stroke-dasharray", ("3, 3"))
+                .attr("stroke", "#319455")
+                .attr("stroke-width", 1)
+                .attr("d", regLine);
+
+        }
+
+
+
+
+    )
 }
 
 changeSize = async function () {
@@ -310,6 +379,7 @@ var tabulate = function (data, columns) {
 createLegend = async function (m_year) {
 
     d3.selectAll(".map_table").remove();
+    d3.selectAll(".map_titles").remove();
 
     let svg = d3.select("#viz");
     let width = parseInt(svg.attr("width"));
@@ -332,9 +402,9 @@ createLegend = async function (m_year) {
         return parseInt(d.properties.year) == parseInt(m_year);
     });
 
-    d3.select("#info_container").append("p").text("Acres Burned by State in " + m_year).classed("map_table", true);
-    d3.select("#info_container").append("p").text("Total Fires: " + fires_per_year.length).classed("map_table", true);
-    d3.select("#info_container").append("p").text("Total Acres burned: " + d3.sum(burned_area, d => parseInt(d.Acres))).classed("map_table", true)
+    d3.select("#info_container").append("h3").text("Acres Burned (state) " + m_year).classed("map_titles h3", true);
+    d3.select("#info_container").append("p").text("Total Fires: " + fires_per_year.length).classed("map_titles p", true);
+    d3.select("#info_container").append("p").text("Total Acres burned: " + d3.sum(burned_area, d => parseInt(d.Acres))).classed("map_titles p", true)
     tabulate(burned_area, cols);
 
 }
@@ -343,6 +413,8 @@ async function main() {
     await createMap();
 
     await addFires(1985);
+
+    await createTimeSeries();
 
     img = d3.select("#viz").append("image")
 
