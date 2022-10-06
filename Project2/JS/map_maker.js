@@ -290,36 +290,6 @@ createTimeSeries = async function () {
                     .y(function (d) { return y(d.Acres) })
                 )
 
-            var regLine = d3.line()
-                .x(function (d) {
-                    return x(d.Year);
-                })
-                .y(function (d) {
-                    return y(d.Acres);
-                });
-
-            // Derive a linear regression
-            var regression = ss.linearRegression(data.map(function (d) {
-                return [+d.indexOf("Year"), d.indexOf("Acres")];
-            }));
-
-            var lin = ss.linearRegressionLine(regression);
-
-            // Create a line based on the beginning and endpoints of the range
-            var lindata = x.domain().map(function (x) {
-                return {
-                    Year: x,
-                    Acres: lin(+x)
-                };
-            });
-
-            svg.append("path")
-                .datum(lindata)
-                .attr("class", "reg")
-                .style("stroke-dasharray", ("3, 3"))
-                .attr("stroke", "#319455")
-                .attr("stroke-width", 1)
-                .attr("d", regLine);
 
         }
 
