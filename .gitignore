@@ -15,102 +15,19 @@ Project2/Data/fires_1985.csv
 Project2/Data/fires_2015.csv
 Project2/Data/us-ag-productivity-2004.csv
 Project2/scratchpad.html
-Project2/Location_History/Records.json
-Project2/Location_History/Settings.json
-Project2/Location_History/Semantic Location History/2012/2012_DECEMBER.json
-Project2/Location_History/Semantic Location History/2013/2013_DECEMBER.json
-Project2/Location_History/Semantic Location History/2013/2013_JANUARY.json
-Project2/Location_History/Semantic Location History/2014/2014_APRIL.json
-Project2/Location_History/Semantic Location History/2014/2014_AUGUST.json
-Project2/Location_History/Semantic Location History/2014/2014_DECEMBER.json
-Project2/Location_History/Semantic Location History/2014/2014_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2014/2014_JANUARY.json
-Project2/Location_History/Semantic Location History/2014/2014_JULY.json
-Project2/Location_History/Semantic Location History/2014/2014_JUNE.json
-Project2/Location_History/Semantic Location History/2014/2014_MARCH.json
-Project2/Location_History/Semantic Location History/2014/2014_MAY.json
-Project2/Location_History/Semantic Location History/2014/2014_NOVEMBER.json
-Project2/Location_History/Semantic Location History/2014/2014_OCTOBER.json
-Project2/Location_History/Semantic Location History/2014/2014_SEPTEMBER.json
-Project2/Location_History/Semantic Location History/2015/2015_JANUARY.json
-Project2/Location_History/Semantic Location History/2016/2016_APRIL.json
-Project2/Location_History/Semantic Location History/2016/2016_AUGUST.json
-Project2/Location_History/Semantic Location History/2016/2016_DECEMBER.json
-Project2/Location_History/Semantic Location History/2016/2016_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2016/2016_JANUARY.json
-Project2/Location_History/Semantic Location History/2016/2016_JULY.json
-Project2/Location_History/Semantic Location History/2016/2016_JUNE.json
-Project2/Location_History/Semantic Location History/2016/2016_MARCH.json
-Project2/Location_History/Semantic Location History/2016/2016_MAY.json
-Project2/Location_History/Semantic Location History/2016/2016_NOVEMBER.json
-Project2/Location_History/Semantic Location History/2016/2016_OCTOBER.json
-Project2/Location_History/Semantic Location History/2016/2016_SEPTEMBER.json
-Project2/Location_History/Semantic Location History/2017/2017_APRIL.json
-Project2/Location_History/Semantic Location History/2017/2017_AUGUST.json
-Project2/Location_History/Semantic Location History/2017/2017_DECEMBER.json
-Project2/Location_History/Semantic Location History/2017/2017_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2017/2017_JANUARY.json
-Project2/Location_History/Semantic Location History/2017/2017_JULY.json
-Project2/Location_History/Semantic Location History/2017/2017_JUNE.json
-Project2/Location_History/Semantic Location History/2017/2017_MARCH.json
-Project2/Location_History/Semantic Location History/2017/2017_MAY.json
-Project2/Location_History/Semantic Location History/2017/2017_NOVEMBER.json
-Project2/Location_History/Semantic Location History/2017/2017_OCTOBER.json
-Project2/Location_History/Semantic Location History/2017/2017_SEPTEMBER.json
-Project2/Location_History/Semantic Location History/2018/2018_APRIL.json
-Project2/Location_History/Semantic Location History/2018/2018_AUGUST.json
-Project2/Location_History/Semantic Location History/2018/2018_DECEMBER.json
-Project2/Location_History/Semantic Location History/2018/2018_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2018/2018_JANUARY.json
-Project2/Location_History/Semantic Location History/2018/2018_JULY.json
-Project2/Location_History/Semantic Location History/2018/2018_JUNE.json
-Project2/Location_History/Semantic Location History/2018/2018_MARCH.json
-Project2/Location_History/Semantic Location History/2018/2018_MAY.json
-Project2/Location_History/Semantic Location History/2018/2018_NOVEMBER.json
-Project2/Location_History/Semantic Location History/2018/2018_OCTOBER.json
-Project2/Location_History/Semantic Location History/2018/2018_SEPTEMBER.json
-Project2/Location_History/Semantic Location History/2019/2019_APRIL.json
-Project2/Location_History/Semantic Location History/2019/2019_AUGUST.json
-Project2/Location_History/Semantic Location History/2019/2019_DECEMBER.json
-Project2/Location_History/Semantic Location History/2019/2019_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2019/2019_JANUARY.json
-Project2/Location_History/Semantic Location History/2019/2019_JULY.json
-Project2/Location_History/Semantic Location History/2019/2019_JUNE.json
-Project2/Location_History/Semantic Location History/2019/2019_MARCH.json
-Project2/Location_History/Semantic Location History/2019/2019_MAY.json
-Project2/Location_History/Semantic Location History/2019/2019_NOVEMBER.json
-Project2/Location_History/Semantic Location History/2019/2019_OCTOBER.json
-Project2/Location_History/Semantic Location History/2019/2019_SEPTEMBER.json
-Project2/Location_History/Semantic Location History/2020/2020_APRIL.json
-Project2/Location_History/Semantic Location History/2020/2020_AUGUST.json
-Project2/Location_History/Semantic Location History/2020/2020_DECEMBER.json
-Project2/Location_History/Semantic Location History/2020/2020_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2020/2020_JANUARY.json
-Project2/Location_History/Semantic Location History/2020/2020_JULY.json
-Project2/Location_History/Semantic Location History/2020/2020_JUNE.json
-Project2/Location_History/Semantic Location History/2020/2020_MARCH.json
-Project2/Location_History/Semantic Location History/2020/2020_MAY.json
-Project2/Location_History/Semantic Location History/2020/2020_NOVEMBER.json
-Project2/Location_History/Semantic Location History/2020/2020_OCTOBER.json
-Project2/Location_History/Semantic Location History/2020/2020_SEPTEMBER.json
-Project2/Location_History/Semantic Location History/2021/2021_APRIL.json
-Project2/Location_History/Semantic Location History/2021/2021_AUGUST.json
-Project2/Location_History/Semantic Location History/2021/2021_DECEMBER.json
-Project2/Location_History/Semantic Location History/2021/2021_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2021/2021_JANUARY.json
-Project2/Location_History/Semantic Location History/2021/2021_JULY.json
-Project2/Location_History/Semantic Location History/2021/2021_JUNE.json
-Project2/Location_History/Semantic Location History/2021/2021_MARCH.json
-Project2/Location_History/Semantic Location History/2021/2021_MAY.json
-Project2/Location_History/Semantic Location History/2021/2021_NOVEMBER.json
-Project2/Location_History/Semantic Location History/2021/2021_OCTOBER.json
-Project2/Location_History/Semantic Location History/2021/2021_SEPTEMBER.json
-Project2/Location_History/Semantic Location History/2022/2022_APRIL.json
-Project2/Location_History/Semantic Location History/2022/2022_AUGUST.json
-Project2/Location_History/Semantic Location History/2022/2022_FEBRUARY.json
-Project2/Location_History/Semantic Location History/2022/2022_JANUARY.json
-Project2/Location_History/Semantic Location History/2022/2022_JULY.json
-Project2/Location_History/Semantic Location History/2022/2022_JUNE.json
-Project2/Location_History/Semantic Location History/2022/2022_MARCH.json
-Project2/Location_History/Semantic Location History/2022/2022_MAY.json
-Project2/Location_History/Semantic Location History/2022/2022_SEPTEMBER.json
+Project2/Location_History/*
+Project3/data/cities.csv
+Project3/data/colormap.txt
+Project3/data/countries.geojson
+Project3/data/countries2.geojson
+Project3/data/countries3.geojson
+Project3/data/elevations.tif
+Project3/data/europe.png
+Project3/data/europe.png.aux.xml
+Project3/data/geo_earth.json
+Project3/data/hillshade-color.tif
+Project3/data/hillshade-cutout.tif
+Project3/data/hillshade-projected.tif
+Project3/data/hillshade-projected.tif.aux.xml
+Project3/data/north_america.geojson
+Project3/data/world_countries.geojson

@@ -77,8 +77,6 @@ createMap = async function () {
     svg.call(zoom);
 
 
-
-
 }
 
 addFires = async function (f_year) {

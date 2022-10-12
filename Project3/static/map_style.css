@@ -1,0 +1,19 @@
+.svg-content {
+    background-color: #ecf3f4;
+}
+
+.continent {
+    fill: none;
+    stroke: #434141;
+    stroke-width: 0.2;
+}
+
+.circles {
+    fill: #111104;
+}
+
+.labels {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    fill: #111104;
+}
