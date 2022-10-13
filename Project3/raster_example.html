@@ -6,8 +6,8 @@
 
 <body>
 
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="js/geotiff.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="js/geotiff.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script>
@@ -16,12 +16,8 @@
             barbSize = 40;
 
         var projection = d3.geoMercator()
-            .scale(110)
-            .translate([width / 2, height / 2]);
-
-        // var projection = d3.geoAzimuthalEqualArea()
-        //     .rotate([100, -45])
-        //     .scale(300);
+            .rotate([-55.5, -24])
+            .scale(1100);
 
         var intervalsTemp = [14, 17, 20, 23, 26, 29, 35, 38];
 
@@ -30,7 +26,7 @@
             .attr("height", height);
 
         var context = canvas.node().getContext("2d");
-        d3.request("data/ndvi_07_01_2020.tiff")
+        d3.request("data/tz850.tiff")
             .responseType('arraybuffer')
             .get(function (error, tiffData) {
                 d3.json("data/world-110m.json", function (error, topojsonData) {
@@ -52,11 +48,12 @@
                     var pixelScale = image.getFileDirectory().ModelPixelScale;
                     var geoTransform = [tiepoint.x, pixelScale[0], 0, tiepoint.y, 0, -1 * pixelScale[1]];
                     var invGeoTransform = [-geoTransform[0] / geoTransform[1], 1 / geoTransform[1], 0, -geoTransform[3] / geoTransform[5], 0, 1 / geoTransform[5]];
-                    var tempData = new Array(image.getHeight()).fill(0);
+
+                    var tempData = new Array(image.getHeight());
                     for (var j = 0; j < image.getHeight(); j++) {
-                        tempData[j] = new Array(image.getWidth()).fill(0);
+                        tempData[j] = new Array(image.getWidth());
                         for (var i = 0; i < image.getWidth(); i++) {
-                            tempData[j][i] = rasters[0][i + j * image.getWidth()];
+                            tempData[j][i] = rasters[1][i + j * image.getWidth()];
                         }
                     }
 

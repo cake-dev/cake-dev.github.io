@@ -8,30 +8,28 @@ createMap = async function () {
     let h = height;
 
     svg.append("g").attr("id", "mapLayer");
-    svg.append("g").attr("id", "pointLayer");
 
-    let projection = d3.geoAlbers()
+    let projection = d3.geoMercator()
         .translate([width / 2, height / 2]) // this centers the map in our SVG element
-        .scale([500]);                     // this specifies how much to zoom
+        .scale(100);                     // this specifies how much to zoom
 
     // This converts the projected lat/lon coordinates into an SVG path string
     let path = d3.geoPath()
         .projection(projection);
 
-    let north_america = await d3.json("data/north_america.geojson");
+    let world_countries = await d3.json("data/worldcountries.geojson");
 
 
     // Bind data and create one path per GeoJSON feature
     var us_paths = d3.select("#mapLayer").selectAll("path")
-        .data(north_america.features)
+        .data(world_countries.features)
         .join("path")
         // use d attribute to define the path
         .attr("d", path)
-        .classed("state", true)
+        .classed("country", true)
         .attr("opacity", "1");
 
-    const b = path.bounds(north_america);
-    console.log(b);
+    const b = path.bounds(world_countries);
 
     // scale
     const s = 0.99 / Math.max((b[1][0] - b[0][0]) / w, (b[1][1] - b[0][1]) / h);
@@ -44,6 +42,7 @@ createMap = async function () {
         .scale(s)
         .translate(t);
 
+
     // scale and position
     const raster_width = (b[1][0] - b[0][0]) * s;
     const raster_height = (b[1][1] - b[0][1]) * s;
@@ -51,36 +50,39 @@ createMap = async function () {
     const rtranslate_x = (w - raster_width) / 2;
     const rtranslate_y = (h - raster_height) / 2;
 
-    svg.append("image")
-        .attr('id', 'population')
-        .attr("xlink:href", "data/worldpop.png")
-        .attr("width", raster_width)
-        .attr("height", raster_height)
-        .attr("transform", "translate(" + rtranslate_x + ", " + rtranslate_y + ")");
+    // svg.append("image")
+    //     .attr('id', 'population')
+    //     .attr("xlink:href", "data/worldpop.png")
+    //     .attr("width", raster_width)
+    //     .attr("height", raster_height)
+    //     .attr("transform", "translate(" + rtranslate_x + ", " + rtranslate_y + ")");
 
-    // let tiff = await d3.buffer('data/population_world.geotiff')
-    //     .then(buffer => GeoTIFF.fromArrayBuffer(buffer));
-    // let image = await tiff.getImage();
-    // let rasters = await image.readRasters();
-    // let values = rasters[0];
-    // let w = image.getWidth(), h = image.getHeight();
+    let tiff = await d3.buffer('data/population_world.geotiff')
+        .then(buffer => GeoTIFF.fromArrayBuffer(buffer));
+    let image = await tiff.getImage();
+    let rasters = await image.readRasters();
 
-    // let scaling = Math.min(window.innerWidth * .9 / w, window.innerHeight * .9 / h);
+    let values = rasters[0];
+    let wi = image.getWidth(), hi = image.getHeight();
 
-    // let contours = d3.contours().size([w, h]);
-    // let contourData = contours(values);
+    let scaling = Math.min(window.innerWidth * .9 / wi, window.innerHeight * .9 / hi);
 
-    // let colorScale = d3.scaleSequential(d3.extent(values), d3.interpolateViridis);
+    let contours = d3.contours().size([wi, hi]);
+    let contourData = contours(values);
 
-    // let elevations = svg.selectAll('.elevations').data(contourData);
-    // elevations.enter().append('path')
-    //     .attr('class', 'elevations')
-    //     .attr('fill', d => colorScale(d.value))
-    //     .attr('stroke', 'black')
-    //     .attr('stroke-width', 0.1)
-    //     .style('opacity', 1)
-    //     .attr('d', d => path(d))
-    //     .attr('transform', `scale(${scaling})`);
+    console.log(contourData)
+
+    let colorScale = d3.scaleSequential(d3.extent(values), d3.interpolateViridis);
+
+    let populations = svg.selectAll('.populations').data(contourData);
+    populations.enter().append('path')
+        .attr('class', 'populations')
+        .attr('fill', d => colorScale(d.value))
+        .attr('stroke', 'black')
+        .attr('stroke-width', 0.1)
+        .style('opacity', 1)
+        .attr('d', d => path(d.coordinates))
+        .attr('transform', `scale(${scaling})`);
 
 }
 createMap();
