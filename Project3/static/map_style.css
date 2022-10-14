@@ -3,9 +3,11 @@
 }
 
 .continent {
-    fill: none;
+    fill: #fafafa;
     stroke: #434141;
     stroke-width: 0.2;
+    opacity: 0.6;
+    stroke-opacity: 0.3;
 }
 
 .circles {
@@ -13,7 +15,15 @@
 }
 
 .labels {
-    font-family: Georgia, serif;
-    font-size: 14px;
-    fill: #111104;
+    font-family: Georgia;
+    font-size: 15%;
+    fill: #555555;
+}
+
+#ES {
+    fill: #fafafa;
+    opacity: 0.8;
+    stroke: #434141;
+    stroke-width: 0.2;
+    stroke-opacity: 0.3;
 }
