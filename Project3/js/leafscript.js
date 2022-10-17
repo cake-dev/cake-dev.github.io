@@ -17,7 +17,7 @@ function fetchJSON(url) {
 async function createMap() {
     var map = L.map('map', { zoomControl: false });
 
-    var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
+    var Esri_WorldImagery = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
     }).addTo(map);
 
@@ -34,17 +34,17 @@ async function createMap() {
                 console.log(georaster)
 
                 // available color scales can be found by running console.log(chroma.brewer);
-                // console.log(chroma.brewer);
-                var scale = chroma.scale("BuPu");
+                console.log(chroma.brewer);
+                var scale = chroma.scale("viridis");
 
-                var layer = new GeoRasterLayer({
+                var ice_2018 = new GeoRasterLayer({
                     georaster: georaster,
                     opacity: 0.5,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[0]; // there's just one band in this raster
 
                         // if there's zero value, don't return a color
-                        if (pixelValue === 0) return null;
+                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
 
                         // scale to 0 - 1 used by chroma
                         var scaledPixelValue = (pixelValue - min) / range;
@@ -55,14 +55,14 @@ async function createMap() {
                     },
                     resolution: 256
                 });
-                var layer2 = new GeoRasterLayer({
+                var ice_2022 = new GeoRasterLayer({
                     georaster: georaster,
                     opacity: 0.5,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[1]; // there's just one band in this raster
 
                         // if there's zero value, don't return a color
-                        if (pixelValue === 0) return null;
+                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
 
                         // scale to 0 - 1 used by chroma
                         var scaledPixelValue = (pixelValue - min) / range;
@@ -74,19 +74,90 @@ async function createMap() {
                     resolution: 256
                 });
 
+
                 var ice_layers = {
-                    "2018": layer,
-                    "2022": layer2
+                    "2018": ice_2018,
+                    "2022": ice_2022
                 }
 
                 var layerControl = L.control.layers(ice_layers).addTo(map);
 
                 // console.log("layer:", layer);
-                layer.addTo(map);
+                ice_2018.addTo(map);
 
 
-                map.fitBounds(layer.getBounds());
-                map.setView([65.440002, -152.358398], 4);
+                map.fitBounds(ice_2018.getBounds());
+                map.setView([63.440002, -152.358398], 3.5);
+            });
+        });
+
+    var chl_url = "data/chlorophyll_sea_2018_2022.TIFF"
+
+    fetch(chl_url)
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+            parseGeoraster(arrayBuffer).then(georaster => {
+                const min = georaster.mins[0];
+                const max = georaster.maxs[0];
+                const range = georaster.ranges[0];
+
+                console.log(georaster)
+
+                // available color scales can be found by running console.log(chroma.brewer);
+                console.log(chroma.brewer);
+                var scale = chroma.scale("viridis");
+
+                var chl_2018 = new GeoRasterLayer({
+                    georaster: georaster,
+                    opacity: 0.5,
+                    pixelValuesToColorFn: function (pixelValues) {
+                        var pixelValue = pixelValues[0]; // there's just one band in this raster
+
+                        // if there's zero value, don't return a color
+                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
+
+                        // scale to 0 - 1 used by chroma
+                        var scaledPixelValue = (pixelValue - min) / range;
+
+                        var color = scale(scaledPixelValue).hex();
+
+                        return color;
+                    },
+                    resolution: 256
+                });
+                var chl_2022 = new GeoRasterLayer({
+                    georaster: georaster,
+                    opacity: 0.5,
+                    pixelValuesToColorFn: function (pixelValues) {
+                        var pixelValue = pixelValues[1]; // there's just one band in this raster
+
+                        // if there's zero value, don't return a color
+                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
+
+                        // scale to 0 - 1 used by chroma
+                        var scaledPixelValue = (pixelValue - min) / range;
+
+                        var color = scale(scaledPixelValue).hex();
+
+                        return color;
+                    },
+                    resolution: 256
+                });
+
+
+                var chl_layers = {
+                    "2018": chl_2018,
+                    "2022": chl_2022
+                }
+
+                var layerControl = L.control.layers(chl_layers).addTo(map);
+
+                // console.log("layer:", layer);
+                chl_2018.addTo(map);
+
+
+                map.fitBounds(chl_2018.getBounds());
+                map.setView([63.440002, -152.358398], 3.5);
             });
         });
 
