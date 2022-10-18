@@ -1,4 +1,16 @@
 
+const rev_spectral_scale = ['#5e4fa2',
+    '#3288bd',
+    '#66c2a5',
+    '#abdda4',
+    '#e6f598',
+    '#ffffbf',
+    '#fee08b',
+    '#fdae61',
+    '#f46d43',
+    '#d53e4f',
+    '#9e0142']
+
 function fetchRaster(url) {
     return fetch(url)
         .then(response => response.arrayBuffer())
@@ -17,13 +29,25 @@ function fetchJSON(url) {
 async function createMap() {
     var map = L.map('map', { zoomControl: false });
 
-    var Esri_WorldImagery = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    //disable pan and zoom
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
+    if (map.tap) map.tap.disable();
+    document.getElementById('map').style.cursor = 'default';
+
+    var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'ESRI 2022'
     }).addTo(map);
 
-    var url_to_geotiff_file = "data/alaska_ice_2018_2022.TIFF";
+    var ice_url = "data/sea_ice_apr_2021_2022.TIFF";
 
-    fetch(url_to_geotiff_file)
+    var layers = {};
+
+    fetch(ice_url)
         .then(response => response.arrayBuffer())
         .then(arrayBuffer => {
             parseGeoraster(arrayBuffer).then(georaster => {
@@ -31,20 +55,18 @@ async function createMap() {
                 const max = georaster.maxs[0];
                 const range = georaster.ranges[0];
 
-                console.log(georaster)
-
                 // available color scales can be found by running console.log(chroma.brewer);
                 console.log(chroma.brewer);
-                var scale = chroma.scale("viridis");
+                var scale = chroma.scale("greys");
 
-                var ice_2018 = new GeoRasterLayer({
+                var ice_2021 = new GeoRasterLayer({
                     georaster: georaster,
                     opacity: 0.5,
                     pixelValuesToColorFn: function (pixelValues) {
-                        var pixelValue = pixelValues[0]; // there's just one band in this raster
+                        var pixelValue = pixelValues[0]; // there's just 2 band in this raster
 
-                        // if there's zero value, don't return a color
-                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
+                        // if there's a certain value, don't return a color
+                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253 || pixelValue === 150) return null;
 
                         // scale to 0 - 1 used by chroma
                         var scaledPixelValue = (pixelValue - min) / range;
@@ -59,10 +81,10 @@ async function createMap() {
                     georaster: georaster,
                     opacity: 0.5,
                     pixelValuesToColorFn: function (pixelValues) {
-                        var pixelValue = pixelValues[1]; // there's just one band in this raster
+                        var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
                         // if there's zero value, don't return a color
-                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
+                        if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253 || pixelValue === 150) return null;
 
                         // scale to 0 - 1 used by chroma
                         var scaledPixelValue = (pixelValue - min) / range;
@@ -76,22 +98,84 @@ async function createMap() {
 
 
                 var ice_layers = {
-                    "2018": ice_2018,
-                    "2022": ice_2022
+                    "2021 Sea Ice": ice_2021,
+                    "2022 Sea Ice": ice_2022
                 }
 
-                var layerControl = L.control.layers(ice_layers).addTo(map);
+                var layerControl = L.control.layers(null, ice_layers).addTo(map);
 
                 // console.log("layer:", layer);
-                ice_2018.addTo(map);
+                ice_2021.addTo(map);
 
-
-                map.fitBounds(ice_2018.getBounds());
-                map.setView([63.440002, -152.358398], 3.5);
             });
         });
 
-    var chl_url = "data/chlorophyll_sea_2018_2022.TIFF"
+    var sst_url = "data/sst_2021_2022_clipped.tiff";
+
+    fetch(sst_url)
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+            parseGeoraster(arrayBuffer).then(georaster => {
+                const min = georaster.mins[0];
+                const max = georaster.maxs[0];
+                const range = georaster.ranges[0];
+
+                // available color scales can be found by running console.log(chroma.brewer);
+                console.log(chroma.brewer);
+                var scale = chroma.scale(rev_spectral_scale);
+
+                var sst_2021 = new GeoRasterLayer({
+                    georaster: georaster,
+                    opacity: 0.5,
+                    pixelValuesToColorFn: function (pixelValues) {
+                        var pixelValue = pixelValues[0]; // there's just 2 band in this raster
+
+                        // if there's zero value, don't return a color
+                        if (pixelValue === 0) return null;
+
+                        // scale to 0 - 1 used by chroma
+                        var scaledPixelValue = (pixelValue - min) / range;
+
+                        var color = scale(scaledPixelValue).hex();
+
+                        return color;
+                    },
+                    resolution: 256
+                });
+                var sst_2022 = new GeoRasterLayer({
+                    georaster: georaster,
+                    opacity: 0.5,
+                    pixelValuesToColorFn: function (pixelValues) {
+                        var pixelValue = pixelValues[1]; // there's just 2 band in this raster
+
+                        // if there's zero value, don't return a color
+                        if (pixelValue === 0) return null;
+
+                        // scale to 0 - 1 used by chroma
+                        var scaledPixelValue = (pixelValue - min) / range;
+
+                        var color = scale(scaledPixelValue).hex();
+
+                        return color;
+                    },
+                    resolution: 256
+                });
+
+
+                var sst_layers = {
+                    "2021 SST anom": sst_2021,
+                    "2022 SST anom": sst_2022,
+                }
+
+                var layerControl = L.control.layers(null, sst_layers).addTo(map);
+
+                // console.log("layer:", layer);
+                sst_2021.addTo(map);
+
+            });
+        });
+
+    var chl_url = "data/chloro_apr_2021_2022.TIFF"
 
     fetch(chl_url)
         .then(response => response.arrayBuffer())
@@ -101,17 +185,14 @@ async function createMap() {
                 const max = georaster.maxs[0];
                 const range = georaster.ranges[0];
 
-                console.log(georaster)
-
                 // available color scales can be found by running console.log(chroma.brewer);
-                console.log(chroma.brewer);
-                var scale = chroma.scale("viridis");
+                var scale = chroma.scale("greens");
 
-                var chl_2018 = new GeoRasterLayer({
+                var chl_2021 = new GeoRasterLayer({
                     georaster: georaster,
                     opacity: 0.5,
                     pixelValuesToColorFn: function (pixelValues) {
-                        var pixelValue = pixelValues[0]; // there's just one band in this raster
+                        var pixelValue = pixelValues[0]; // there's just 2 band in this raster
 
                         // if there's zero value, don't return a color
                         if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
@@ -129,7 +210,7 @@ async function createMap() {
                     georaster: georaster,
                     opacity: 0.5,
                     pixelValuesToColorFn: function (pixelValues) {
-                        var pixelValue = pixelValues[1]; // there's just one band in this raster
+                        var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
                         // if there's zero value, don't return a color
                         if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
@@ -145,74 +226,52 @@ async function createMap() {
                 });
 
 
+
                 var chl_layers = {
-                    "2018": chl_2018,
-                    "2022": chl_2022
+                    "2021 Chlorophyll": chl_2021,
+                    "2022 Chlorophyll": chl_2022
                 }
 
-                var layerControl = L.control.layers(chl_layers).addTo(map);
+                var layerControl = L.control.layers(null, chl_layers).addTo(map);
 
                 // console.log("layer:", layer);
-                chl_2018.addTo(map);
+                chl_2021.addTo(map);
+
+                console.log(map._layers)
 
 
-                map.fitBounds(chl_2018.getBounds());
-                map.setView([63.440002, -152.358398], 3.5);
+                map.fitBounds(chl_2021.getBounds());
+                map.setView([63.440002, -154.358398], 3.5);
             });
         });
+    var data = fetchJSON('data/snowcrabrange.geojson')
+        .then(function (data) { return data })
+        .then(function (data) {
+            var geojsonLayer = L.geoJson(data, {
+                style: function (feature) {
+                    return {
+                        color: 'orange',
+                        weight: 1,
+                        opacity: 0.5,
+                        fillOpacity: 0
+                    };
+                }
+            }).addTo(map);
+        });
 
-    console.log(map._layers)
+    img = d3.select("#my_legend").append("image")
 
-    // var data = fetchJSON('data/mtbs_perims_us_2020_large.geojson')
-    //     .then(function (data) { return data })
-    //     .then(function (data) {
-    //         var geojsonLayer = L.geoJson(data, {
-    //             style: function (feature) {
-    //                 return {
-    //                     color: 'red',
-    //                     weight: 1,
-    //                     opacity: 0.5,
-    //                     fillOpacity: 0.1
-    //                 };
-    //             }
-    //         }).addTo(map);
-    //     });
+    img.attr("xlink:href", "static/ColorScales.png")
+        .attr("x", 1)
+        .attr("y", 1)
+        .attr("width", 500)
+
+
 }
 createMap();
 
 
 
 
-// map.dragging.disable();
-// map.touchZoom.disable();
-// map.doubleClickZoom.disable();
-// map.scrollWheelZoom.disable();
-// map.boxZoom.disable();
-// map.keyboard.disable();
-// if (map.tap) map.tap.disable();
-// document.getElementById('map').style.cursor = 'default';
+
 document.getElementsByClassName('leaflet-control-attribution')[0].style.display = 'none';
-// var imageUrl = 'https://maps.lib.utexas.edu/maps/historical/newark_nj_1922.jpg';
-// var errorOverlayUrl = 'https://cdn-icons-png.flaticon.com/512/110/110686.png';
-// var altText = 'Image of Newark, N.J. in 1922. Source: The University of Texas at Austin, UT Libraries Map Collection.';
-// var latLngBounds = L.latLngBounds([[40.799311, -74.118464], [40.68202047785919, -74.33]]);
-
-// var imageOverlay = L.imageOverlay(imageUrl, latLngBounds, {
-//     opacity: 0.8,
-//     errorOverlayUrl: errorOverlayUrl,
-//     alt: altText,
-//     interactive: true
-// }).addTo(map);
-
-// L.rectangle(latLngBounds).addTo(map);
-// map.fitBounds(latLngBounds);
-// var popup = L.popup();
-
-// function onMapClick(e) {
-//     popup
-//         .setLatLng(e.latlng)
-//         .setContent("You clicked the map at " + e.latlng.toString())
-//         .openOn(map);
-// }
-
-// map.on('click', onMapClick);

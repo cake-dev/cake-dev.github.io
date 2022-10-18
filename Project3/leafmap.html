@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Raster Mapping Project</title>
+    <style>
+        #map {
+            height: 500px;
+            width: 600px;
+        }
+
+        text {
+            font-family: Verdana, Geneva, Tahoma, sans-serif
+        }
+
+        .message {
+            font-size: 2em;
+            text-align: center;
+        }
+
+        path {
+            fill: none;
+            stroke-width: 1px;
+            stroke: #222;
+        }
+
+        .grat {
+            stroke: #222;
+            stroke-dasharray: 4px;
+            stroke-width: 1px;
+            opacity: .5
+        }
+
+        #map_container {
+            text-align: center;
+        }
+
+        #master {
+            text-align: center;
+        }
+
+        #legendTable {
+            text-align: center;
+        }
+
+        #legend_container {
+            text-align: center;
+        }
+
+        .map_table {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: large;
+            text-align: left;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 1.2em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .map_titles {
+            font-family: 'Courier New', Courier, monospace;
+            text-align: left;
+            font-weight: bold;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            background-color: #f16609ad;
+            opacity: 1;
+            border: #222;
+            border-radius: 5px;
+        }
+
+        .map_titles h3 {
+            font-family: 'Courier New', Courier, monospace;
+            text-align: left;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            background-color: #f16609ad;
+            opacity: 1;
+            border: #222;
+            border-radius: 5px;
+        }
+
+        .map_titles p {
+            font-size: xx-large;
+        }
+
+        .map_table thead tr {
+            background-color: #f16609;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .map_table th,
+        .map_table th,
+        td {
+            padding: 12px 15px;
+        }
+
+        .map_table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .map_table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .map_table tbody tr:nth-of-type(odd) {
+            background-color: #ececec;
+        }
+
+        .map_table tbody tr:last-of-type {
+            border-bottom: 2px solid #f16609;
+        }
+
+        .layout {
+            /* width: 1366px;
+            height: 768px; */
+
+            display: grid;
+            grid:
+                "header header header" auto "leftSide body rightSide" 1fr "footer footer footer" auto / auto 1fr auto;
+            gap: 8px;
+        }
+
+        .header {
+            grid-area: header;
+        }
+
+        .leftSide {
+            grid-area: leftSide;
+        }
+
+        .body {
+            grid-area: body;
+        }
+
+        .rightSide {
+            grid-area: rightSide;
+        }
+
+        .footer {
+            grid-area: footer;
+        }
+
+        #map {
+            z-index: 1;
+        }
+
+        #id01 {
+            z-index: 2;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+        integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+        integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
+    <link rel="stylesheet" href="static/w3css.css">
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/georaster"></script>
+    <script src="https://unpkg.com/chroma-js"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+
+    <div id="master">
+        <section class="layout" style="margin-left: 5%;">
+            <div class="header">
+                <div class="message">Are Ocean Conditions Effecting the Snow Crab Population?</div>
+                <hr>
+            </div>
+            <div class="leftSide">
+                <div id="info_container">
+                    <svg id="my_legend" height=400 width=500></svg>
+                    <div class="modal_info">
+                        <button onclick="document.getElementById('id01').style.display='block'"
+                            class="w3-button w3-black">Show Info</button>
+
+                        <div id="id01" class="w3-modal">
+                            <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+                                <header class="w3-container w3-blue">
+                                    <span onclick=" document.getElementById('id01').style.display='none'"
+                                        class=" w3-button w3-clear w3-xlarge w3-display-topright">&times;</span>
+                                    <h2>Snow Crab Oceanography</h2>
+                                </header>
+
+                                <div class="w3-bar w3-border-bottom">
+                                    <button class="tablink w3-bar-item w3-button"
+                                        onclick="openCity(event, 'London')">Hypothesis</button>
+                                    <button class="tablink w3-bar-item w3-button"
+                                        onclick="openCity(event, 'Paris')">Data</button>
+                                    <button class="tablink w3-bar-item w3-button"
+                                        onclick="openCity(event, 'Tokyo')">Methods</button>
+                                </div>
+
+                                <div id="London" class="w3-container city">
+                                    <h1>Are Changing Sea Conditions Effecting Snow Crabs?</h1>
+                                    <p>The world has been experiencing unprecedented climate change. Representations of
+                                        the effects of this change can be found all around us. Ocean conditions are one
+                                        of the
+                                        key indicators of global temperature changes. </p>
+                                    <p>I have chosen to visualize this change in an interactive map. The map shows the
+                                        coast of Alaska. The most common snow crab harvest area is highlighted with a
+                                        polygon.
+                                        The available data layers include Sea Ice Concentration, Chlorophyll
+                                        Concentration, and Sea Surface
+                                        Temperature Anomaly. The data of each set is from April 2021 and April 2022.</p>
+                                    <p>SST Anomaly is compared against the average form 1985-1993</p>
+                                    <p>The layers can be toggled on/off independent of each other.</p>
+                                    <hr>
+                                    <p>Inspired by the <a
+                                            href="https://www.cnn.com/2022/10/16/us/alaska-snow-crab-harvest-canceled-climate/index.html"
+                                            target="_blank">recent
+                                            news story</a> of over 1 billion crabs missing from population counts /
+                                        estimates </p>
+                                    </p>
+                                </div>
+
+                                <div id="Paris" class="w3-container city">
+                                    <h1>Data</h1>
+                                    <p>Primary data sourced from <a href="https://neo.gsfc.nasa.gov/">NASA Earth
+                                            Observations</a></p>
+                                    <p>Secondary data sourced from <a
+                                            href="https://www.climate.gov/maps-data/data-snapshots/data-source/sst-global-monthly-difference-average">NOAA
+                                            Climate Map Snapshots</a></p>
+                                    <p>Snow Crab Range/Info <a
+                                            href="https://www.adfg.alaska.gov/index.cfm?adfg=tannercrab.rangemap">Alaska
+                                            Department of Fish and Game</a></p>
+                                </div>
+
+                                <div id="Tokyo" class="w3-container city">
+                                    <h1>Methods</h1>
+                                    <p>Visualization created with Leaflet.js and vanilla JS</p><br>
+                                    <p>Data prep done in python (Jupyter Notebook) and GDAL CLI</p><br>
+                                </div>
+
+                                <div class="w3-container w3-light-grey w3-padding">
+                                    <button class="w3-button w3-right w3-white w3-border"
+                                        onclick="document.getElementById('id01').style.display='none'">Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="body">
+                <div id="map_container">
+                    <div id="map"></div>
+                </div>
+            </div>
+            <div class="rightSide">
+                <div id="legend_container">
+
+                </div>
+            </div>
+    </div>
+    </section>
+    </div>
+    <script src="js/leafscript.js"></script>
+    <script src="js/functions.js" charset="utf-8"></script>
+</body>
+
+
+
+</html>
