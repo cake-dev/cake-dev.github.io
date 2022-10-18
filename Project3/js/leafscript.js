@@ -170,7 +170,6 @@ async function createMap() {
                 var layerControl = L.control.layers(null, sst_layers).addTo(map);
 
                 // console.log("layer:", layer);
-                sst_2021.addTo(map);
 
             });
         });
@@ -261,9 +260,9 @@ async function createMap() {
 
     img = d3.select("#my_legend").append("image")
 
-    img.attr("xlink:href", "static/ColorScales.png")
-        .attr("x", 1)
-        .attr("y", 1)
+    img.attr("xlink:href", "static/ColorScales_alaska.png")
+        .attr("x", 2)
+        .attr("y", 2)
         .attr("width", 500)
 
 
