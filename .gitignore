@@ -32,3 +32,6 @@ Project3/data/hillshade-projected.tif.aux.xml
 Project3/data/north_america.geojson
 Project3/data/world_countries.geojson
 Project3/colormaps.txt
+Project3/data/sst_anom_04_2021.tif
+Project3/data/sst_anom_04_2022.tif
+Project3/data/sst_anom_2021_2022_new.TIFF
