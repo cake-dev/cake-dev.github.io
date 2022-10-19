@@ -326,6 +326,8 @@ async function createMap() {
         return table;
     }
 
+    let table_data = d3.csv("data/");
+
 
 
 

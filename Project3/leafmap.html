@@ -194,11 +194,7 @@
             <hr>
         </div>
         <div class="leftSide">
-            <div class="w3-button w3-light-grey w3-ripple" style="margin:0;padding:0; margin-left: 20%;"
-                onclick="document.getElementById('id01').style.display='block'">
-                <img src="static/AK_mom2.png" style="width:100px;">
-                <p>Show Additional Information</p>
-            </div>
+
 
             <div id="id01" class="w3-modal">
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom">
@@ -268,7 +264,13 @@
         <div class="body">
 
             <div id="map"></div>
-            <svg id="my_legend" height=400 width=500 style="margin-left: 45%;"></svg>
+            <div class="w3-button w3-light-grey w3-ripple"
+                style="margin:0;padding:0; margin-left: 33%;border-radius: 25px;display: inline-block;margin-bottom: 10%;"
+                onclick="document.getElementById('id01').style.display='block'">
+                <img src="static/AK_mom2.png" style="width:100px;">
+                <p>Show Additional Information</p>
+            </div>
+            <svg id="my_legend" height=400 width=500 style="margin-left: 0%;"></svg>
         </div>
         <div class="rightSide">
             <div class="iframely-embed">
