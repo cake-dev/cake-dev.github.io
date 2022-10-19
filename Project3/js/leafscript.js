@@ -61,7 +61,7 @@ async function createMap() {
 
                 var ice_2021 = new GeoRasterLayer({
                     georaster: georaster,
-                    opacity: 0.5,
+                    opacity: 0.75,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[0]; // there's just 2 band in this raster
 
@@ -79,7 +79,7 @@ async function createMap() {
                 });
                 var ice_2022 = new GeoRasterLayer({
                     georaster: georaster,
-                    opacity: 0.5,
+                    opacity: 0.75,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
@@ -126,7 +126,7 @@ async function createMap() {
 
                 var sst_2021 = new GeoRasterLayer({
                     georaster: georaster,
-                    opacity: 0.5,
+                    opacity: 0.75,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[0]; // there's just 2 band in this raster
 
@@ -144,7 +144,7 @@ async function createMap() {
                 });
                 var sst_2022 = new GeoRasterLayer({
                     georaster: georaster,
-                    opacity: 0.5,
+                    opacity: 0.75,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
@@ -189,7 +189,7 @@ async function createMap() {
 
                 var chl_2021 = new GeoRasterLayer({
                     georaster: georaster,
-                    opacity: 0.5,
+                    opacity: 0.75,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[0]; // there's just 2 band in this raster
 
@@ -207,7 +207,7 @@ async function createMap() {
                 });
                 var chl_2022 = new GeoRasterLayer({
                     georaster: georaster,
-                    opacity: 0.5,
+                    opacity: 0.75,
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
