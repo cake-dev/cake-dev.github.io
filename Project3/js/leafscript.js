@@ -258,6 +258,22 @@ async function createMap() {
             }).addTo(map);
         });
 
+    L.Control.textbox = L.Control.extend({
+        onAdd: function (map) {
+
+            var text = L.DomUtil.create('div');
+            text.id = "info_text";
+            text.innerHTML = "<strong>Alaskan Coastal Sea Metrics - Spring 2021 and 2022</strong>"
+            return text;
+        },
+
+        onRemove: function (map) {
+            // Nothing to do here
+        }
+    });
+    L.control.textbox = function (opts) { return new L.Control.textbox(opts); }
+    L.control.textbox({ position: 'bottomleft' }).addTo(map);
+
     img = d3.select("#my_legend").append("image")
 
     img.attr("xlink:href", "static/ColorScales_alaska.png")

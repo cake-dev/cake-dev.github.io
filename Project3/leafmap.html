@@ -7,6 +7,8 @@
         #map {
             height: 600px;
             width: 600px;
+            border-style: solid;
+            margin-left: 20%;
         }
 
         text {
@@ -190,7 +192,7 @@
             </div>
             <div class="leftSide">
                 <div id="info_container">
-                    <svg id="my_legend" height=400 width=500></svg>
+
                     <div class="modal_info">
                         <button onclick="document.getElementById('id01').style.display='block'"
                             class="w3-button w3-black">Show Info</button>
@@ -264,10 +266,9 @@
                 </div>
             </div>
             <div class="body">
-                <h3>Alaskan Coastal Sea Metrics - Spring 2021 and 2022</h3>
-                <div id="map_container">
-                    <div id="map"></div>
-                </div>
+
+                <div id="map"></div>
+                <svg id="my_legend" height=400 width=500></svg>
             </div>
             <div class="rightSide">
                 <div class="iframely-embed">
@@ -277,6 +278,9 @@
                             scrolling="no"></iframe></div>
                 </div>
                 <script async="" src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
+            </div>
+            <div class="footer">
+
             </div>
         </section>
     </div>
