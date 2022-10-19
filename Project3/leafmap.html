@@ -8,7 +8,8 @@
             height: 600px;
             width: 600px;
             border-style: solid;
-            margin-left: 20%;
+            border-color: blanchedalmond;
+            margin-left: 40%;
         }
 
         text {
@@ -130,10 +131,12 @@
             grid:
                 "header header header" auto "leftSide body rightSide" 1fr "footer footer footer" auto / auto 1fr auto;
             gap: 8px;
+            background-color: #222;
         }
 
         .header {
             grid-area: header;
+            background-color: #f3f3f3;
         }
 
         .leftSide {
@@ -184,106 +187,102 @@
 
 <body>
 
-    <div id="master">
-        <section class="layout" style="margin-left: 5%;">
-            <div class="header">
-                <div class="message">Are Ocean Conditions Affecting the Snow Crab Population?</div>
-                <hr>
+
+    <section class="layout">
+        <div class="header">
+            <div class="message">Are Ocean Conditions Affecting the Snow Crab Population?</div>
+            <hr>
+        </div>
+        <div class="leftSide">
+            <div class="w3-button w3-light-grey w3-ripple" style="margin:0;padding:0; margin-left: 20%;"
+                onclick="document.getElementById('id01').style.display='block'">
+                <img src="static/AK_mom2.png" style="width:100px;">
+                <p>Show Additional Information</p>
             </div>
-            <div class="leftSide">
-                <div id="info_container">
 
-                    <div class="modal_info">
-                        <button onclick="document.getElementById('id01').style.display='block'"
-                            class="w3-button w3-black">Show Info</button>
+            <div id="id01" class="w3-modal">
+                <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+                    <header class="w3-container w3-blue">
+                        <span onclick=" document.getElementById('id01').style.display='none'"
+                            class=" w3-button w3-clear w3-xlarge w3-display-topright">&times;</span>
+                        <h2>Snow Crab Fishing Region Oceanography</h2>
+                    </header>
 
-                        <div id="id01" class="w3-modal">
-                            <div class="w3-modal-content w3-card-4 w3-animate-zoom">
-                                <header class="w3-container w3-blue">
-                                    <span onclick=" document.getElementById('id01').style.display='none'"
-                                        class=" w3-button w3-clear w3-xlarge w3-display-topright">&times;</span>
-                                    <h2>Snow Crab Oceanography</h2>
-                                </header>
+                    <div class="w3-bar w3-border-bottom">
+                        <button class="tablink w3-bar-item w3-button"
+                            onclick="openCity(event, 'London')">Hypothesis</button>
+                        <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Data</button>
+                        <button class="tablink w3-bar-item w3-button"
+                            onclick="openCity(event, 'Tokyo')">Methods</button>
+                    </div>
 
-                                <div class="w3-bar w3-border-bottom">
-                                    <button class="tablink w3-bar-item w3-button"
-                                        onclick="openCity(event, 'London')">Hypothesis</button>
-                                    <button class="tablink w3-bar-item w3-button"
-                                        onclick="openCity(event, 'Paris')">Data</button>
-                                    <button class="tablink w3-bar-item w3-button"
-                                        onclick="openCity(event, 'Tokyo')">Methods</button>
-                                </div>
+                    <div id="London" class="w3-container city">
+                        <h1>Are Changing Sea Conditions Effecting Snow Crabs?</h1>
+                        <p>The world has been experiencing unprecedented climate change. Representations of
+                            the effects of this change can be found all around us. Ocean conditions are one
+                            of the
+                            key indicators of global temperature changes. </p>
+                        <p>I have chosen to visualize this change in an interactive map. The map shows the waters
+                            surrounding Alaska. The most common snow crab harvest area is highlighted with a
+                            polygon. The goal of this visualiation is to analyze and compare the differences between
+                            The available data layers include Sea Ice Concentration, Chlorophyll
+                            Concentration, and Sea Surface
+                            Temperature Anomaly. The data of each set is from April 2021 and April 2022.</p>
+                        <p>SST Anomaly is compared against the average from 1985-1993</p>
+                        <p>The layers can be toggled on/off independent of each other.</p>
+                        <hr>
+                        <p>Inspired by the <a
+                                href="https://www.cnn.com/2022/10/16/us/alaska-snow-crab-harvest-canceled-climate/index.html"
+                                target="_blank">recent
+                                news story</a> of over 1 billion crabs missing from population counts /
+                            estimates </p>
+                        </p>
+                    </div>
 
-                                <div id="London" class="w3-container city">
-                                    <h1>Are Changing Sea Conditions Effecting Snow Crabs?</h1>
-                                    <p>The world has been experiencing unprecedented climate change. Representations of
-                                        the effects of this change can be found all around us. Ocean conditions are one
-                                        of the
-                                        key indicators of global temperature changes. </p>
-                                    <p>I have chosen to visualize this change in an interactive map. The map shows the
-                                        coast of Alaska. The most common snow crab harvest area is highlighted with a
-                                        polygon.
-                                        The available data layers include Sea Ice Concentration, Chlorophyll
-                                        Concentration, and Sea Surface
-                                        Temperature Anomaly. The data of each set is from April 2021 and April 2022.</p>
-                                    <p>SST Anomaly is compared against the average from 1985-1993</p>
-                                    <p>The layers can be toggled on/off independent of each other.</p>
-                                    <hr>
-                                    <p>Inspired by the <a
-                                            href="https://www.cnn.com/2022/10/16/us/alaska-snow-crab-harvest-canceled-climate/index.html"
-                                            target="_blank">recent
-                                            news story</a> of over 1 billion crabs missing from population counts /
-                                        estimates </p>
-                                    </p>
-                                </div>
+                    <div id="Paris" class="w3-container city">
+                        <h1>Data</h1>
+                        <p>Primary data sourced from <a href="https://neo.gsfc.nasa.gov/">NASA Earth
+                                Observations</a></p>
+                        <p>Secondary data sourced from <a
+                                href="https://www.climate.gov/maps-data/data-snapshots/data-source/sst-global-monthly-difference-average">NOAA
+                                Climate Map Snapshots</a></p>
+                        <p>Snow Crab Range/Info <a
+                                href="https://www.adfg.alaska.gov/index.cfm?adfg=tannercrab.rangemap">Alaska
+                                Department of Fish and Game</a></p>
+                    </div>
 
-                                <div id="Paris" class="w3-container city">
-                                    <h1>Data</h1>
-                                    <p>Primary data sourced from <a href="https://neo.gsfc.nasa.gov/">NASA Earth
-                                            Observations</a></p>
-                                    <p>Secondary data sourced from <a
-                                            href="https://www.climate.gov/maps-data/data-snapshots/data-source/sst-global-monthly-difference-average">NOAA
-                                            Climate Map Snapshots</a></p>
-                                    <p>Snow Crab Range/Info <a
-                                            href="https://www.adfg.alaska.gov/index.cfm?adfg=tannercrab.rangemap">Alaska
-                                            Department of Fish and Game</a></p>
-                                </div>
+                    <div id="Tokyo" class="w3-container city">
+                        <h1>Methods</h1>
+                        <p>Visualization created with Leaflet.js, D3.js, and vanilla JS</p><br>
+                        <p>Data prep done in python (Jupyter Notebook) and GDAL CLI</p><br>
+                    </div>
 
-                                <div id="Tokyo" class="w3-container city">
-                                    <h1>Methods</h1>
-                                    <p>Visualization created with Leaflet.js and vanilla JS</p><br>
-                                    <p>Data prep done in python (Jupyter Notebook) and GDAL CLI</p><br>
-                                </div>
-
-                                <div class="w3-container w3-light-grey w3-padding">
-                                    <button class="w3-button w3-right w3-white w3-border"
-                                        onclick="document.getElementById('id01').style.display='none'">Close</button>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div class="w3-container w3-light-grey w3-padding">
+                        <button class="w3-button w3-right w3-white w3-border"
+                            onclick="document.getElementById('id01').style.display='none'">Close</button>
                     </div>
                 </div>
             </div>
-            <div class="body">
+            <div id="info_container"></div>
+        </div>
+        <div class="body">
 
-                <div id="map"></div>
-                <svg id="my_legend" height=400 width=500></svg>
-            </div>
-            <div class="rightSide">
-                <div class="iframely-embed">
-                    <div class="iframely-responsive" style="padding-bottom: 0px; height: 538px; width: 600px;"><iframe
-                            src="//iframe.ly/api/iframe?url=https%3A%2F%2Fwww.cnn.com%2F2022%2F10%2F16%2Fus%2Falaska-snow-crab-harvest-canceled-climate&amp;key=dc3a5576d7b2b2c3da6a181a8d5e0ae1&amp;app=1&amp;demo=1"
-                            allowfullscreen="" style="box-shadow: rgba(0, 0, 0, 0.06) 0px 1px 3px;"
-                            scrolling="no"></iframe></div>
+            <div id="map"></div>
+            <svg id="my_legend" height=400 width=500 style="margin-left: 45%;"></svg>
+        </div>
+        <div class="rightSide">
+            <div class="iframely-embed">
+                <div class="iframely-responsive" style="padding-bottom: 0px; height: 538px; width: 500px;"><iframe
+                        src="//iframe.ly/api/iframe?url=https%3A%2F%2Fwww.cnn.com%2F2022%2F10%2F16%2Fus%2Falaska-snow-crab-harvest-canceled-climate&amp;key=dc3a5576d7b2b2c3da6a181a8d5e0ae1&amp;app=1&amp;demo=1"
+                        allowfullscreen="" style="box-shadow: rgba(0, 0, 0, 0.06) 0px 1px 3px;" scrolling="no"></iframe>
                 </div>
-                <script async="" src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
             </div>
-            <div class="footer">
+            <script async="" src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
+        </div>
+        <div class="footer">
 
-            </div>
-        </section>
-    </div>
+        </div>
+    </section>
     <script src="js/leafscript.js"></script>
     <script src="js/functions.js" charset="utf-8"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

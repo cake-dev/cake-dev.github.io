@@ -83,7 +83,7 @@ async function createMap() {
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
-                        // if there's zero value, don't return a color
+                        // if there's certain value, don't return a color
                         if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253 || pixelValue === 150) return null;
 
                         // scale to 0 - 1 used by chroma
@@ -101,6 +101,9 @@ async function createMap() {
                     "2021 Sea Ice": ice_2021,
                     "2022 Sea Ice": ice_2022
                 }
+
+                layers["2021 Sea Ice"] = ice_2021;
+                layers["2022 Sea Ice"] = ice_2022;
 
                 var layerControl = L.control.layers(null, ice_layers).addTo(map);
 
@@ -130,7 +133,7 @@ async function createMap() {
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[0]; // there's just 2 band in this raster
 
-                        // if there's zero value, don't return a color
+                        // if there's certain value, don't return a color
                         if (pixelValue === 0) return null;
 
                         // scale to 0 - 1 used by chroma
@@ -148,7 +151,7 @@ async function createMap() {
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
-                        // if there's zero value, don't return a color
+                        // if there's certain value, don't return a color
                         if (pixelValue === 0) return null;
 
                         // scale to 0 - 1 used by chroma
@@ -166,6 +169,9 @@ async function createMap() {
                     "2021 SST anom": sst_2021,
                     "2022 SST anom": sst_2022,
                 }
+
+                layers["2021 SST anom"] = sst_2021;
+                layers["2022 SST anom"] = sst_2022;
 
                 var layerControl = L.control.layers(null, sst_layers).addTo(map);
 
@@ -193,7 +199,7 @@ async function createMap() {
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[0]; // there's just 2 band in this raster
 
-                        // if there's zero value, don't return a color
+                        // if there's certain value, don't return a color
                         if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
 
                         // scale to 0 - 1 used by chroma
@@ -211,7 +217,7 @@ async function createMap() {
                     pixelValuesToColorFn: function (pixelValues) {
                         var pixelValue = pixelValues[1]; // there's just 2 band in this raster
 
-                        // if there's zero value, don't return a color
+                        // if there's certain value, don't return a color
                         if (pixelValue === 0 || pixelValue === 255 || pixelValue === 253) return null;
 
                         // scale to 0 - 1 used by chroma
@@ -230,6 +236,9 @@ async function createMap() {
                     "2021 Chlorophyll": chl_2021,
                     "2022 Chlorophyll": chl_2022
                 }
+
+                layers["2021 Chlorophyll"] = chl_2021;
+                layers["2022 Chlorophyll"] = chl_2022;
 
                 var layerControl = L.control.layers(null, chl_layers).addTo(map);
 
@@ -280,6 +289,44 @@ async function createMap() {
         .attr("x", 2)
         .attr("y", 2)
         .attr("width", 500)
+
+    var tabulate = function (data, columns) {
+        var table = d3.select('#info_container').append('table').classed("map_table", true)
+        var thead = table.append('thead')
+        var tbody = table.append('tbody')
+
+        thead.append('tr')
+            .selectAll('th')
+            .data(columns)
+            .enter()
+            .append('th')
+            .text(function (d) { return d })
+
+        var rows = tbody.selectAll('tr')
+            .data(data)
+            .enter()
+            .append('tr')
+
+        var cells = rows.selectAll('td')
+            .data(function (row) {
+                return columns.map(function (column) {
+                    return { column: column, value: row[column] }
+                })
+            })
+            .enter()
+            .append('td')
+            .text(function (d) {
+                if (d.column == "Acres") {
+                    return Number(d.value).toLocaleString()
+                } else {
+                    return d.value;
+                }
+            })
+
+        return table;
+    }
+
+
 
 
 }
