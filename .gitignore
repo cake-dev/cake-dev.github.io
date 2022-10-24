@@ -36,3 +36,6 @@ Project3/static/R-4.2.1-win.exe
 Project3/data/sst_anom_04_2021.tif
 Project3/data/sst_anom_04_2022.tif
 Project3/data/sst_anom_2021_2022_new.TIFF
+D3_Practice/networks/data/power_grid_westernus.json
+D3_Practice/networks/data/power.gml
+D3_Practice/networks/data/as-22july06.gml
