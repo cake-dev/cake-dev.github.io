@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Leaflet Example</title>
+    <!-- import Leaflet and Leaflet css from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+        integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+        integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+
+    <style>
+        /* make sure the map div has a defined height of some kind */
+        #map {
+            height: 500px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- add a div with the id 'map' (does not have to be 'map', the id is selected by Leaflet in the script) -->
+    <div id="map"></div>
+    <!-- import the script at the end of the body tag -->
+    <script src="leaf_example_js.js"></script>
+</body>
+
+</html>

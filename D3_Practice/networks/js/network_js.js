@@ -8,7 +8,7 @@ var link, node;
 var graph;
 
 // load the data
-d3.json("data/miserables.json", function (error, _graph) {
+d3.json("data/us_stateborder_network.json", function (error, _graph) {
     if (error) throw error;
     graph = _graph;
     initializeDisplay();
