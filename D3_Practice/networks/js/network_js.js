@@ -128,6 +128,7 @@ function initializeDisplay() {
         .selectAll("circle")
         .data(graph.nodes)
         .enter().append("circle")
+        .on("click", function (d) { console.log(d.id); })
         .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
@@ -137,6 +138,7 @@ function initializeDisplay() {
     node.append("title")
         .text(function (d) { return d.id; });
     // visualize the graph
+
     updateDisplay();
 }
 

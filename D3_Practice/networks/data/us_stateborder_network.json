@@ -29,7 +29,7 @@
             "group": 3
         },
         {
-            "id": "Deleware",
+            "id": "Delaware",
             "group": 3
         },
         {
@@ -1173,22 +1173,22 @@
             "value": 1
         },
         {
-            "source": "Wiscosin",
+            "source": "Wisconsin",
             "target": "Minnesota",
             "value": 1
         },
         {
-            "source": "Wiscosin",
+            "source": "Wisconsin",
             "target": "Iowa",
             "value": 1
         },
         {
-            "source": "Wiscosin",
+            "source": "Wisconsin",
             "target": "Illinois",
             "value": 1
         },
         {
-            "source": "Wiscosin",
+            "source": "Wisconsin",
             "target": "Michigan",
             "value": 1
         },
