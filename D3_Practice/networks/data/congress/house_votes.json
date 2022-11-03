@@ -1,0 +1,99 @@
+{
+    "nodes": [
+        {
+            "id": "Anderson",
+            "group": "D"
+        },
+        {
+            "id": "Beverly",
+            "group": "D"
+        },
+        {
+            "id": "Clerk",
+            "group": "D"
+        },
+        {
+            "id": "Diane",
+            "group": "D"
+        },
+        {
+            "id": "Ed",
+            "group": "D"
+        },
+        {
+            "id": "Fernando",
+            "group": "D"
+        },
+        {
+            "id": "Garth",
+            "group": "D"
+        },
+        {
+            "id": "Heather",
+            "group": "D"
+        },
+        {
+            "id": "Ike",
+            "group": "D"
+        },
+        {
+            "id": "Jane",
+            "group": "D"
+        },
+        {
+            "id": "Nick",
+            "group": "R"
+        },
+        {
+            "id": "Olivia",
+            "group": "R"
+        },
+        {
+            "id": "Paul",
+            "group": "R"
+        },
+        {
+            "id": "Quincy",
+            "group": "R"
+        },
+        {
+            "id": "Rose",
+            "group": "R"
+        },
+        {
+            "id": "Sam",
+            "group": "R"
+        },
+        {
+            "id": "Toby",
+            "group": "R"
+        },
+        {
+            "id": "Victor",
+            "group": "R"
+        },
+        {
+            "id": "Wendy",
+            "group": "R"
+        },
+        {
+            "id": "Xavier",
+            "group": "R"
+        }
+    ],
+    "links": [
+        {
+            "source": "Anderson",
+            "target": "Nick",
+            "value": 1
+        },
+        {
+            "source": "Beverly",
+            "target": "Olivia",
+            "value": 8
+        },
+        {
+            "source":
+        }
+    ]
+}
