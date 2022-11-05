@@ -1,99 +1,355 @@
 {
     "nodes": [
         {
-            "id": "Anderson",
+            "id": "d_rep_1",
             "group": "D"
         },
         {
-            "id": "Beverly",
+            "id": "d_rep_2",
             "group": "D"
         },
         {
-            "id": "Clerk",
+            "id": "d_rep_3",
             "group": "D"
         },
         {
-            "id": "Diane",
+            "id": "d_rep_4",
             "group": "D"
         },
         {
-            "id": "Ed",
+            "id": "d_rep_5",
             "group": "D"
         },
         {
-            "id": "Fernando",
+            "id": "d_rep_6",
             "group": "D"
         },
         {
-            "id": "Garth",
+            "id": "d_rep_7",
             "group": "D"
         },
         {
-            "id": "Heather",
+            "id": "d_rep_8",
             "group": "D"
         },
         {
-            "id": "Ike",
-            "group": "D"
-        },
-        {
-            "id": "Jane",
-            "group": "D"
-        },
-        {
-            "id": "Nick",
+            "id": "r_rep_1",
             "group": "R"
         },
         {
-            "id": "Olivia",
+            "id": "r_rep_2",
             "group": "R"
         },
         {
-            "id": "Paul",
+            "id": "r_rep_3",
             "group": "R"
         },
         {
-            "id": "Quincy",
+            "id": "r_rep_4",
             "group": "R"
         },
         {
-            "id": "Rose",
+            "id": "r_rep_5",
             "group": "R"
         },
         {
-            "id": "Sam",
+            "id": "r_rep_6",
             "group": "R"
         },
         {
-            "id": "Toby",
+            "id": "r_rep_7",
             "group": "R"
         },
         {
-            "id": "Victor",
-            "group": "R"
-        },
-        {
-            "id": "Wendy",
-            "group": "R"
-        },
-        {
-            "id": "Xavier",
+            "id": "r_rep_8",
             "group": "R"
         }
     ],
     "links": [
         {
-            "source": "Anderson",
-            "target": "Nick",
-            "value": 1
+            "source": "d_rep_1",
+            "target": "d_rep_2",
+            "value": 10
         },
         {
-            "source": "Beverly",
-            "target": "Olivia",
-            "value": 8
+            "source": "d_rep_1",
+            "target": "d_rep_3",
+            "value": 10
         },
         {
-            "source":
+            "source": "d_rep_1",
+            "target": "d_rep_4",
+            "value": 10
+        },
+        {
+            "source": "d_rep_1",
+            "target": "d_rep_5",
+            "value": 10
+        },
+        {
+            "source": "d_rep_1",
+            "target": "d_rep_6",
+            "value": 10
+        },
+        {
+            "source": "d_rep_1",
+            "target": "d_rep_7",
+            "value": 10
+        },
+        {
+            "source": "d_rep_1",
+            "target": "d_rep_8",
+            "value": 10
+        },
+        {
+            "source": "d_rep_2",
+            "target": "d_rep_3",
+            "value": 10
+        },
+        {
+            "source": "d_rep_2",
+            "target": "d_rep_4",
+            "value": 10
+        },
+        {
+            "source": "d_rep_2",
+            "target": "d_rep_5",
+            "value": 10
+        },
+        {
+            "source": "d_rep_2",
+            "target": "d_rep_6",
+            "value": 10
+        },
+        {
+            "source": "d_rep_2",
+            "target": "d_rep_7",
+            "value": 10
+        },
+        {
+            "source": "d_rep_2",
+            "target": "d_rep_8",
+            "value": 10
+        },
+        {
+            "source": "d_rep_3",
+            "target": "d_rep_4",
+            "value": 10
+        },
+        {
+            "source": "d_rep_3",
+            "target": "d_rep_5",
+            "value": 10
+        },
+        {
+            "source": "d_rep_3",
+            "target": "d_rep_6",
+            "value": 10
+        },
+        {
+            "source": "d_rep_3",
+            "target": "d_rep_7",
+            "value": 10
+        },
+        {
+            "source": "d_rep_3",
+            "target": "d_rep_8",
+            "value": 10
+        },
+        {
+            "source": "d_rep_4",
+            "target": "d_rep_5",
+            "value": 10
+        },
+        {
+            "source": "d_rep_4",
+            "target": "d_rep_6",
+            "value": 10
+        },
+        {
+            "source": "d_rep_4",
+            "target": "d_rep_7",
+            "value": 10
+        },
+        {
+            "source": "d_rep_4",
+            "target": "d_rep_8",
+            "value": 10
+        },
+        {
+            "source": "d_rep_5",
+            "target": "d_rep_6",
+            "value": 10
+        },
+        {
+            "source": "d_rep_5",
+            "target": "d_rep_7",
+            "value": 10
+        },
+        {
+            "source": "d_rep_5",
+            "target": "d_rep_8",
+            "value": 10
+        },
+        {
+            "source": "d_rep_6",
+            "target": "d_rep_7",
+            "value": 10
+        },
+        {
+            "source": "d_rep_6",
+            "target": "d_rep_8",
+            "value": 10
+        },
+        {
+            "source": "d_rep_7",
+            "target": "d_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_1",
+            "target": "r_rep_2",
+            "value": 10
+        },
+        {
+            "source": "r_rep_1",
+            "target": "r_rep_3",
+            "value": 10
+        },
+        {
+            "source": "r_rep_1",
+            "target": "r_rep_4",
+            "value": 10
+        },
+        {
+            "source": "r_rep_1",
+            "target": "r_rep_5",
+            "value": 10
+        },
+        {
+            "source": "r_rep_1",
+            "target": "r_rep_6",
+            "value": 10
+        },
+        {
+            "source": "r_rep_1",
+            "target": "r_rep_7",
+            "value": 10
+        },
+        {
+            "source": "r_rep_1",
+            "target": "r_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_2",
+            "target": "r_rep_3",
+            "value": 10
+        },
+        {
+            "source": "r_rep_2",
+            "target": "r_rep_4",
+            "value": 10
+        },
+        {
+            "source": "r_rep_2",
+            "target": "r_rep_5",
+            "value": 10
+        },
+        {
+            "source": "r_rep_2",
+            "target": "r_rep_6",
+            "value": 10
+        },
+        {
+            "source": "r_rep_2",
+            "target": "r_rep_7",
+            "value": 10
+        },
+        {
+            "source": "r_rep_2",
+            "target": "r_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_3",
+            "target": "r_rep_4",
+            "value": 10
+        },
+        {
+            "source": "r_rep_3",
+            "target": "r_rep_5",
+            "value": 10
+        },
+        {
+            "source": "r_rep_3",
+            "target": "r_rep_6",
+            "value": 10
+        },
+        {
+            "source": "r_rep_3",
+            "target": "r_rep_7",
+            "value": 10
+        },
+        {
+            "source": "r_rep_3",
+            "target": "r_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_4",
+            "target": "r_rep_5",
+            "value": 10
+        },
+        {
+            "source": "r_rep_4",
+            "target": "r_rep_6",
+            "value": 10
+        },
+        {
+            "source": "r_rep_4",
+            "target": "r_rep_7",
+            "value": 10
+        },
+        {
+            "source": "r_rep_4",
+            "target": "r_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_5",
+            "target": "r_rep_6",
+            "value": 10
+        },
+        {
+            "source": "r_rep_5",
+            "target": "r_rep_7",
+            "value": 10
+        },
+        {
+            "source": "r_rep_5",
+            "target": "r_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_6",
+            "target": "r_rep_7",
+            "value": 10
+        },
+        {
+            "source": "r_rep_6",
+            "target": "r_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_7",
+            "target": "r_rep_8",
+            "value": 10
+        },
+        {
+            "source": "r_rep_7",
+            "target": "d_rep_8",
+            "value": 10
         }
     ]
 }

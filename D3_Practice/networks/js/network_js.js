@@ -8,7 +8,7 @@ var link, node;
 var graph;
 
 // load the data
-d3.json("data/us_stateborder_network.json", function (error, _graph) {
+d3.json("data/stack_network.json", function (error, _graph) {
     if (error) throw error;
     graph = _graph;
     initializeDisplay();
@@ -123,12 +123,19 @@ function initializeDisplay() {
         .enter().append("line");
 
     // set the data and properties of node circles
-    node = svg.append("g")
+
+    var node = svg.append("g")
+        .attr("class", "nodes")
+        .selectAll("g")
+        .data(graph.nodes)
+        .enter().append("g")
+
+    circles = node.append("g")
         .attr("class", "nodes")
         .selectAll("circle")
         .data(graph.nodes)
         .enter().append("circle")
-        .on("click", function (d) { console.log(d.id); })
+        .on("click", function (d) { console.log(d.id); console.log(d.y) })
         .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
@@ -139,13 +146,16 @@ function initializeDisplay() {
         .text(function (d) { return d.id; });
     // visualize the graph
 
+
+
     updateDisplay();
 }
 
 // update the display based on the forces (but not positions)
 function updateDisplay() {
-    node
+    circles
         .attr("r", forceProperties.collide.radius)
+        // .attr("r", function (d) { return d.group; })
         .attr("stroke", forceProperties.charge.strength > 0 ? "blue" : "red")
         .attr("stroke-width", forceProperties.charge.enabled == false ? 0 : Math.abs(forceProperties.charge.strength) / 15);
 
@@ -162,7 +172,7 @@ function ticked() {
         .attr("x2", function (d) { return d.target.x; })
         .attr("y2", function (d) { return d.target.y; });
 
-    node
+    circles
         .attr("cx", function (d) { return d.x; })
         .attr("cy", function (d) { return d.y; });
     d3.select('#alpha_value').style('flex-basis', (simulation.alpha() * 100) + '%');
