@@ -16,7 +16,7 @@ color(12);
 color(13);
 color(14);
 
-// blend two hex colors together by an amount
+// blend two hex colors together by an amount (% ratio between colorA:colorB)
 function blendColors(colorA, colorB, amount) {
     const [rA, gA, bA] = colorA.match(/\w\w/g).map((c) => parseInt(c, 16));
     const [rB, gB, bB] = colorB.match(/\w\w/g).map((c) => parseInt(c, 16));
@@ -64,11 +64,14 @@ function createNetworkGraph() {
             .force('link', d3.forceLink().id(d => d.id))
             .force('charge', d3.forceManyBody().strength(-10))
             .force('center', d3.forceCenter(width / 2, height / 2))
-            .force("collide", d3.forceCollide(5))
+            .force("collide", d3.forceCollide(15))
             .on('tick', ticked);
 
         simulation.force('link')
             .links(graph.links);
+
+
+
 
 
         //add encompassing group for the zoom 
@@ -104,6 +107,7 @@ function createNetworkGraph() {
                     .style("top", (d3.event.pageY + 10) + "px");
             })
             .attr("stroke-width", function (d) { return Math.sqrt(d.value) - 3; });
+
 
 
         // create the node svg elements
@@ -264,7 +268,7 @@ function createAdjMatrix() {
 
 
 
-    d3.json("data/edited_s_net.json", function (miserables) {
+    d3.json("data/edited_s_net.json", function (stacknet) {
 
         var tooltip2 = d3.select("body")
             .append("div")
@@ -272,7 +276,7 @@ function createAdjMatrix() {
             .style("opacity", 0);
 
         var matrix = [],
-            nodes = miserables.nodes,
+            nodes = stacknet.nodes,
             n = nodes.length;
 
         // Compute index per node.
@@ -283,19 +287,19 @@ function createAdjMatrix() {
         });
 
         // translates the source/target strings to indices
-        for (var i = 0, leni = miserables.links.length; i < leni; i++) {
+        for (var i = 0, leni = stacknet.links.length; i < leni; i++) {
             for (var j = 0, lenj = nodes.length; j < lenj; j++) {
-                if (miserables.links[i].source == nodes[j].id) {
-                    miserables.links[i].source = j;
+                if (stacknet.links[i].source == nodes[j].id) {
+                    stacknet.links[i].source = j;
                 }
-                if (miserables.links[i].target == nodes[j].id) {
-                    miserables.links[i].target = j;
+                if (stacknet.links[i].target == nodes[j].id) {
+                    stacknet.links[i].target = j;
                 }
             }
         }
 
         // Convert links to matrix; count connection occurrences.
-        miserables.links.forEach(function (link) {
+        stacknet.links.forEach(function (link) {
             matrix[link.source][link.target].z += link.value;
             matrix[link.target][link.source].z += link.value;
             matrix[link.source][link.source].z += link.value;
@@ -312,7 +316,7 @@ function createAdjMatrix() {
         };
 
         // The default sort order.
-        x.domain(orders.id);
+        x.domain(orders.count);
 
         svg2.append("rect")
             .attr("class", "background")
