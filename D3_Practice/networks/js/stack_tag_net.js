@@ -2,7 +2,9 @@ var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
-var color = d3.scaleOrdinal(d3.schemeCategory20);
+sequentialScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+var color = d3.scaleOrdinal((d3.schemeCategory20));
 
 // values for all forces
 forceProperties = {
@@ -45,7 +47,7 @@ var simulation = d3.forceSimulation()
     .force("center", d3.forceCenter(width / 2, height / 2))
     .force("collide", d3.forceCollide(5));
 
-d3.json("data/stack_network.json", function (error, graph) {
+d3.json("data/stack_overflow/stack_network.json", function (error, graph) {
     if (error) throw error;
 
     var link = svg.append("g")
