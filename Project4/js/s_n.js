@@ -136,7 +136,7 @@ function createNetworkGraph() {
                 tooltip.transition()
                     .duration(300)
                     .style("opacity", .8);
-                tooltip.html("Name:" + d.id + "<p/>group:" + d.group)
+                tooltip.html("<p>Name:" + d.id + "<hr>Group:" + d.group + "<hr>Size:" + d.nodesize + "</p>")
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY + 10) + "px");
             })
@@ -154,13 +154,14 @@ function createNetworkGraph() {
             .on('dblclick', releasenode)
 
 
-        // add node images
+        // add node images, image centers on node, use nodesize to scale x and y of image 
         node.append("svg:image")
-            .attr("xlink:href", function (d) { return "static/img/" + d.id + ".jpg"; })
-            .attr("x", "-12px")
-            .attr("y", "-12px")
-            .attr("width", "24px")
-            .attr("height", "24px");
+            .attr("xlink:href", function (d) { return d.image; })
+            // .attr("xlink:href", function (d) { return "static/img/" + d.id + ".jpg"; })
+            .attr("x", d => ((Math.sqrt(d.nodesize) - 2) / Math.sqrt(d.nodesize)) - Math.sqrt(d.nodesize) / 2)
+            .attr("y", d => ((Math.sqrt(d.nodesize) - 2) / Math.sqrt(d.nodesize)) - Math.sqrt(d.nodesize) / 2)
+            .attr("width", function (d) { return (Math.sqrt(d.nodesize) - 2) * 1.10; })
+            .attr("height", function (d) { return (Math.sqrt(d.nodesize) - 2) * 1.10; })
 
 
 

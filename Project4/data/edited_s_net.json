@@ -74,7 +74,7 @@
             "id": "javascript",
             "group": 6,
             "nodesize": 649.16,
-            "image": "../static/img/js_logo.jpg"
+            "image": "static/img/javascript.jpg"
         },
         {
             "id": "jquery",
@@ -214,7 +214,8 @@
         {
             "id": "java",
             "group": 8,
-            "nodesize": 610.65
+            "nodesize": 610.65,
+            "image": "static/img/java.jpg"
         },
         {
             "id": "scala",
@@ -224,7 +225,8 @@
         {
             "id": "ajax",
             "group": 6,
-            "nodesize": 35.41
+            "nodesize": 35.41,
+            "image": "static/img/ajax.jpg"
         },
         {
             "id": "django",
@@ -399,7 +401,8 @@
         {
             "id": "amazon-web-services",
             "group": 9,
-            "nodesize": 30.05
+            "nodesize": 30.05,
+            "image": "static/img/amazon-web-services.png"
         },
         {
             "id": "angular",
