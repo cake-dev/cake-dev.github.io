@@ -155,13 +155,14 @@ function createNetworkGraph() {
 
 
         // add node images, image centers on node, use nodesize to scale x and y of image 
-        node.append("svg:image")
+        node.append("svg:image").classed("n_image", true)
             .attr("xlink:href", function (d) { return d.image; })
             // .attr("xlink:href", function (d) { return "static/img/" + d.id + ".jpg"; })
-            .attr("x", d => ((Math.sqrt(d.nodesize) - 2) / Math.sqrt(d.nodesize)) - Math.sqrt(d.nodesize) / 2)
-            .attr("y", d => ((Math.sqrt(d.nodesize) - 2) / Math.sqrt(d.nodesize)) - Math.sqrt(d.nodesize) / 2)
-            .attr("width", function (d) { return (Math.sqrt(d.nodesize) - 2) * 1.10; })
-            .attr("height", function (d) { return (Math.sqrt(d.nodesize) - 2) * 1.10; })
+            .attr("x", d => -Math.sqrt(d.nodesize) / 2)
+            .attr("y", d => -Math.sqrt(d.nodesize) / 2)
+            .attr("width", function (d) { return (Math.sqrt(d.nodesize)); })
+            .attr("height", function (d) { return (Math.sqrt(d.nodesize)); })
+            .on('mouseover.fade', fade(0.1))
 
 
 

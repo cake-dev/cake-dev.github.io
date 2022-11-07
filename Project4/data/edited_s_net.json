@@ -3,12 +3,14 @@
         {
             "id": "html",
             "group": 6,
-            "nodesize": 272.45
+            "nodesize": 272.45,
+            "image": "static/img/html.png"
         },
         {
             "id": "css",
             "group": 6,
-            "nodesize": 341.17
+            "nodesize": 341.17,
+            "image": "static/img/css.png"
         },
         {
             "id": "hibernate",
@@ -23,7 +25,8 @@
         {
             "id": "ruby",
             "group": 3,
-            "nodesize": 70.14
+            "nodesize": 70.14,
+            "image": "static/img/ruby.png"
         },
         {
             "id": "ruby-on-rails",
@@ -33,42 +36,50 @@
         {
             "id": "ios",
             "group": 4,
-            "nodesize": 87.46
+            "nodesize": 87.46,
+            "image": "static/img/ios.png"
         },
         {
             "id": "swift",
             "group": 4,
-            "nodesize": 63.62
+            "nodesize": 63.62,
+            "image": "static/img/swift.png"
         },
         {
             "id": "html5",
             "group": 6,
-            "nodesize": 140.18
+            "nodesize": 140.18,
+            "image": "static/img/html5.png"
         },
         {
             "id": "c",
             "group": 1,
-            "nodesize": 189.83
+            "nodesize": 189.83,
+            "image": "static/img/c.png"
         },
         {
             "id": "c++",
             "group": 1,
-            "nodesize": 268.11
+            "nodesize": 268.11,
+            "image": "static/img/c++.png"
         },
         {
             "id": "asp.net",
             "group": 2,
-            "nodesize": 129.55
+            "nodesize": 129.55,
+            "image": "static/img/asp.net.png"
         },
         {
             "id": "c#",
             "group": 2,
-            "nodesize": 321.13
+            "nodesize": 321.13,
+            "image": "static/img/csharp.png"
         },
         {
             "id": "objective-c",
             "group": 4,
-            "nodesize": 47.01
+            "nodesize": 47.01,
+            "image": "static/img/objective-c.png"
         },
         {
             "id": "javascript",
@@ -79,7 +90,8 @@
         {
             "id": "jquery",
             "group": 6,
-            "nodesize": 208.29
+            "nodesize": 208.29,
+            "image": "static/img/jquery.png"
         },
         {
             "id": "redux",
@@ -89,17 +101,20 @@
         {
             "id": "reactjs",
             "group": 3,
-            "nodesize": 59.03
+            "nodesize": 59.03,
+            "image": "static/img/reactjs.png"
         },
         {
             "id": "php",
             "group": 6,
-            "nodesize": 361.22
+            "nodesize": 361.22,
+            "image": "static/img/php.png"
         },
         {
             "id": "mysql",
             "group": 6,
-            "nodesize": 165.43
+            "nodesize": 165.43,
+            "image": "static/img/mysql.png"
         },
         {
             "id": "spring-mvc",
@@ -109,7 +124,8 @@
         {
             "id": ".net",
             "group": 2,
-            "nodesize": 75.08
+            "nodesize": 75.08,
+            "image": "static/img/net.png"
         },
         {
             "id": "react-native",
@@ -154,7 +170,8 @@
         {
             "id": "node.js",
             "group": 3,
-            "nodesize": 117.36
+            "nodesize": 117.36,
+            "image": "static/img/node.js.png"
         },
         {
             "id": "mongodb",
@@ -174,7 +191,8 @@
         {
             "id": "git",
             "group": 5,
-            "nodesize": 54.48
+            "nodesize": 54.48,
+            "image": "static/img/git.png"
         },
         {
             "id": "excel",
@@ -209,13 +227,14 @@
         {
             "id": "android",
             "group": 4,
-            "nodesize": 229.86
+            "nodesize": 229.86,
+            "image": "static/img/android.png"
         },
         {
             "id": "java",
             "group": 8,
             "nodesize": 610.65,
-            "image": "static/img/java.jpg"
+            "image": "static/img/java.png"
         },
         {
             "id": "scala",
@@ -231,12 +250,14 @@
         {
             "id": "django",
             "group": 1,
-            "nodesize": 40.91
+            "nodesize": 40.91,
+            "image": "static/img/django.png"
         },
         {
             "id": "python",
             "group": 1,
-            "nodesize": 438.67
+            "nodesize": 438.67,
+            "image": "static/img/python.png"
         },
         {
             "id": "vba",
@@ -261,7 +282,8 @@
         {
             "id": "angularjs",
             "group": 6,
-            "nodesize": 126.59
+            "nodesize": 126.59,
+            "image": "static/img/angularjs.png"
         },
         {
             "id": "asp.net-web-api",
@@ -326,7 +348,8 @@
         {
             "id": "linux",
             "group": 5,
-            "nodesize": 108.54
+            "nodesize": 108.54,
+            "image": "static/img/linux.png"
         },
         {
             "id": "angular2",
@@ -381,7 +404,8 @@
         {
             "id": "android-studio",
             "group": 4,
-            "nodesize": 14.79
+            "nodesize": 14.79,
+            "image": "static/img/android-studio.png"
         },
         {
             "id": "redis",
@@ -452,7 +476,8 @@
         {
             "id": "r",
             "group": 1,
-            "nodesize": 52.7
+            "nodesize": 52.7,
+            "image": "static/img/r.png"
         },
         {
             "id": "embedded",
@@ -477,7 +502,8 @@
         {
             "id": "sql",
             "group": 2,
-            "nodesize": 154.23
+            "nodesize": 154.23,
+            "image": "static/img/sql.png"
         },
         {
             "id": "unix",
@@ -527,7 +553,8 @@
         {
             "id": "azure",
             "group": 2,
-            "nodesize": 13.68
+            "nodesize": 13.68,
+            "image": "static/img/azure.png"
         },
         {
             "id": "mvc",
@@ -542,7 +569,8 @@
         {
             "id": "api",
             "group": 8,
-            "nodesize": 8.61
+            "nodesize": 8.61,
+            "image": "static/img/api.png"
         },
         {
             "id": "twitter-bootstrap-3",
