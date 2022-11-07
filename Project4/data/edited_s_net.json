@@ -73,7 +73,8 @@
         {
             "id": "javascript",
             "group": 6,
-            "nodesize": 649.16
+            "nodesize": 649.16,
+            "image": "../static/img/js_logo.jpg"
         },
         {
             "id": "jquery",

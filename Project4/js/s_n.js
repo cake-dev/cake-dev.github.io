@@ -52,11 +52,16 @@ function createNetworkGraph() {
     // load data and create the graph
     d3.json("data/edited_s_net.json", function (error, graph) {
         if (error) throw error;
-        const svg = d3.select('svg'),
+
+        d3.select('#network_graph').append('svg').classed('graph_svg', true)
+        const svg = d3.select('.graph_svg').attr('width', 800).attr('height', 800),
             width = +svg.attr('width'),
             height = +svg.attr('height');
 
         create_svg_border(svg, height, width);
+
+        var defs = svg.append('svg:defs');
+
 
         // create the simulation and configure the forces
         const simulation = d3.forceSimulation()
@@ -64,14 +69,13 @@ function createNetworkGraph() {
             .force('link', d3.forceLink().id(d => d.id))
             .force('charge', d3.forceManyBody().strength(-10))
             .force('center', d3.forceCenter(width / 2, height / 2))
-            .force("collide", d3.forceCollide(15))
+            .force("collide", d3.forceCollide(30))
+            .force("x", d3.forceX().strength(-0.01))
+            .force("y", d3.forceY().strength(-0.01))
             .on('tick', ticked);
 
         simulation.force('link')
             .links(graph.links);
-
-
-
 
 
         //add encompassing group for the zoom 
@@ -149,6 +153,18 @@ function createNetworkGraph() {
             })
             .on('dblclick', releasenode)
 
+
+        // add node images
+        node.append("svg:image")
+            .attr("xlink:href", function (d) { return "static/img/" + d.id + ".jpg"; })
+            .attr("x", "-12px")
+            .attr("y", "-12px")
+            .attr("width", "24px")
+            .attr("height", "24px");
+
+
+
+
         // create the node labels
         var lables = node.append("text")
             .text(function (d) {
@@ -156,11 +172,6 @@ function createNetworkGraph() {
             })
             .attr('x', 6)
             .attr('y', 3);
-
-        // node.append('text')
-        //     .attr('x', 0)
-        //     .attr('dy', '.35em')
-        //     .text(d => d.name);
 
         function ticked() {
             link
@@ -175,6 +186,8 @@ function createNetworkGraph() {
 
         //add zoom capabilities 
         var zoom_handler = d3.zoom()
+            .scaleExtent([0.5, 8])
+            .translateExtent([[-width, -height], [width * 2, height * 2]])
             .on("zoom", zoom_actions);
 
         zoom_handler(svg);
@@ -245,6 +258,9 @@ function createNetworkGraph() {
 
         svg.select(".legendSequential")
             .call(legendSequential);
+
+        vis.attr("transform", "translate(" + width / 4 + "," + height / 4 + ")scale(" + 0.5 + ")");
+
 
 
     })
@@ -424,10 +440,19 @@ function createAdjMatrix() {
 
         var timeout = setTimeout(function () {
             order("group");
-            d3.select("#order").property("selectedIndex", 2).node().focus();
+            d3.select("#order").property("selectedIndex", 2).node();
         }, 1000);
     });
 }
 
+function resetNetworkGraph() {
+    d3.select(".graph_svg").remove();
+    createNetworkGraph()
+}
+
 createNetworkGraph();
 createAdjMatrix();
+
+d3.select("#reset").on("click", function () {
+    resetNetworkGraph();
+})
