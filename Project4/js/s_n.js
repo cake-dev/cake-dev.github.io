@@ -66,16 +66,22 @@ function createNetworkGraph() {
         // create the simulation and configure the forces
         const simulation = d3.forceSimulation()
             .nodes(graph.nodes)
-            .force('link', d3.forceLink().id(d => d.id))
-            .force('charge', d3.forceManyBody().strength(-10))
+            .velocityDecay(0.1)
+            .force("x", d3.forceX(width).strength(.05))
+            .force("y", d3.forceY(height).strength(.05))
+            .force("charge", d3.forceManyBody().strength(-240))
+            .force("link", d3.forceLink().id(d => d.id).distance(100).strength(1.5))
+            // .force('link', d3.forceLink().id(d => d.id))
+            // .force('charge', d3.forceManyBody().strength(-10))
             .force('center', d3.forceCenter(width / 2, height / 2))
-            .force("collide", d3.forceCollide(30))
-            .force("x", d3.forceX().strength(-0.01))
-            .force("y", d3.forceY().strength(-0.01))
+            .force("collide", d3.forceCollide(20))
+            // .force("x", d3.forceX(width / 4).strength(-0.01))
+            // .force("y", d3.forceY(height / 4).strength(-0.01))
             .on('tick', ticked);
 
         simulation.force('link')
             .links(graph.links);
+
 
 
         //add encompassing group for the zoom 
@@ -121,12 +127,23 @@ function createNetworkGraph() {
             .data(graph.nodes)
             .enter().append("g")
 
+
         // Create a drag handler and append it to the node object instead
         var drag_handler = d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended);
         drag_handler(node);
+
+
+        // // add node images, image centers on node, use nodesize to scale x and y of image 
+        // node.append("svg:image").classed("n_image", true)
+        //     .attr("xlink:href", function (d) { return d.image; })
+        //     // .attr("xlink:href", function (d) { return "static/img/" + d.id + ".jpg"; })
+        //     .attr("x", d => -Math.sqrt(d.nodesize) / 2)
+        //     .attr("y", d => -Math.sqrt(d.nodesize) / 2)
+        //     .attr("width", function (d) { return (Math.sqrt(d.nodesize)); })
+        //     .attr("height", function (d) { return (Math.sqrt(d.nodesize)); })
 
         // create the node circles
         node.append('circle')
@@ -154,18 +171,6 @@ function createNetworkGraph() {
             .on('dblclick', releasenode)
 
 
-        // add node images, image centers on node, use nodesize to scale x and y of image 
-        node.append("svg:image").classed("n_image", true)
-            .attr("xlink:href", function (d) { return d.image; })
-            // .attr("xlink:href", function (d) { return "static/img/" + d.id + ".jpg"; })
-            .attr("x", d => -Math.sqrt(d.nodesize) / 2)
-            .attr("y", d => -Math.sqrt(d.nodesize) / 2)
-            .attr("width", function (d) { return (Math.sqrt(d.nodesize)); })
-            .attr("height", function (d) { return (Math.sqrt(d.nodesize)); })
-            .on('mouseover.fade', fade(0.1))
-
-
-
 
         // create the node labels
         var lables = node.append("text")
@@ -185,6 +190,8 @@ function createNetworkGraph() {
 
             node
                 .attr('transform', d => `translate(${d.x},${d.y})`);
+            // node.attr("cx", function (d) { return d.x = Math.max(Math.sqrt(d.nodesize), Math.min(width - Math.sqrt(d.nodesize), d.x)); })
+            //     .attr("cy", function (d) { return d.y = Math.max(Math.sqrt(d.nodesize), Math.min(height - Math.sqrt(d.nodesize), d.y)); });
         }
 
         //add zoom capabilities 
@@ -214,8 +221,8 @@ function createNetworkGraph() {
 
         function dragended(d) {
             if (!d3.event.active) simulation.alphaTarget(0);
-            //d.fx = null;
-            //d.fy = null;
+            d.fx = null;
+            d.fy = null;
         }
         function releasenode(d) {
             d.fx = null;
@@ -268,10 +275,12 @@ function createNetworkGraph() {
     })
 }
 
+// ADJAENCY MATRIX 
+
 function createAdjMatrix() {
     var margin = { top: 80, right: 0, bottom: 10, left: 80 },
-        width = 800,
-        height = 800;
+        width = 600,
+        height = 600;
 
     var x = d3.scaleBand().domain(d3.range(14)).range([0, width]),
         z = d3.scaleLinear().domain([10, 80]).clamp(true),
@@ -442,7 +451,7 @@ function createAdjMatrix() {
 
         var timeout = setTimeout(function () {
             order("group");
-            d3.select("#order").property("selectedIndex", 2).node();
+            d3.select("#order").property("selectedIndex", 3).node();
         }, 1000);
     });
 }

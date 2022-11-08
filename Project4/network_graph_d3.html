@@ -33,7 +33,7 @@
     }
 
     #network_graph text {
-      font-family: sans-serif;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
       font-size: 10px;
     }
 
@@ -65,9 +65,11 @@
     }
 
     #adj_matrix {
-      margin-left: 0%;
+      margin-left: 5%;
       margin-right: 0%;
       background: #eee;
+      width: fit-content;
+      height: fit-content;
     }
 
     .n_image {
@@ -84,23 +86,24 @@
 </head>
 
 <body>
-</body>
-<div class="row" style="text-align: center; margin-top: 2%;">
-  <div class="col">
-    <div id="network_graph"></div>
-    <button id="reset" class="btn btn-primary" style="margin-top: 2%;">Reset</button>
-  </div>
-  <div class="col">
-    <div id="adj_matrix"></div>
-    <div class="row"><select id="order" class="form-select" style="max-width: 10%;">
-        <option selected>Select Ordering</option>
-        <option value="id">by Name</option>
-        <option value="count">by Frequency</option>
-        <option value="group">by Group</option>sel
-      </select>
+  <div class="container">
+    <div class="row" style="margin-top: 2%;">
+      <div class="col">
+        <div id="network_graph"></div>
+        <button id="reset" class="btn btn-primary" style="margin-top: 2%;">Reset</button>
+      </div>
+      <div class="col">
+        <div id="adj_matrix"></div>
+        <div class="row"><select id="order" class="form-select" style="max-width: 20%;">
+            <option selected>Select Ordering</option>
+            <option value="id">by Name</option>
+            <option value="count">by Frequency</option>
+            <option value="group">by Group</option>
+          </select>
+        </div>
+
+      </div>
     </div>
-
   </div>
-</div>
-
-<script src="js/s_n.js"></script>
+  <script src="js/s_n.js"></script>
+</body>
