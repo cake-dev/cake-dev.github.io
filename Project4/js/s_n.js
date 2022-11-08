@@ -1,4 +1,4 @@
-c_scale = ['#41bbc5', '#2d747a', '#96e79a', '#096013', '#b1e632', '#2d5da8', '#8b9bdc', '#941f73', '#f75ef0', '#7e5fe7', '#f6adff', '#6524ff', '#39f27a', '#829951']
+c_scale = ['#ffe119', '#469990', '#aaffc3', '#3cb44b', '#f58231', '#4363d8', '#8b9bdc', '#800000', '#fabed4', '#9A6324', '#fffac8', '#6524ff', '#829951', '#f032e6']
 
 var color = d3.scaleOrdinal(c_scale);
 color(1);
