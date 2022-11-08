@@ -50,7 +50,7 @@ function createNetworkGraph() {
         .style("opacity", 0);
 
     // load data and create the graph
-    d3.json("data/edited_s_net.json", function (error, graph) {
+    d3.json("data/edited_s_net2.json", function (error, graph) {
         if (error) throw error;
 
         d3.select('#network_graph').append('svg').classed('graph_svg', true)
@@ -122,10 +122,10 @@ function createNetworkGraph() {
 
         // create the node svg elements
         var node = vis.append("g")
-            .attr("class", "nodes")
             .selectAll("g")
             .data(graph.nodes)
             .enter().append("g")
+            .classed("node", true)
 
 
         // Create a drag handler and append it to the node object instead
@@ -136,24 +136,36 @@ function createNetworkGraph() {
         drag_handler(node);
 
 
-        // // add node images, image centers on node, use nodesize to scale x and y of image 
+        // // add node images, image centers on node, use size to scale x and y of image 
         // node.append("svg:image").classed("n_image", true)
         //     .attr("xlink:href", function (d) { return d.image; })
         //     // .attr("xlink:href", function (d) { return "static/img/" + d.id + ".jpg"; })
-        //     .attr("x", d => -Math.sqrt(d.nodesize) / 2)
-        //     .attr("y", d => -Math.sqrt(d.nodesize) / 2)
-        //     .attr("width", function (d) { return (Math.sqrt(d.nodesize)); })
-        //     .attr("height", function (d) { return (Math.sqrt(d.nodesize)); })
+        //     .attr("x", d => -Math.sqrt(d.size) / 2)
+        //     .attr("y", d => -Math.sqrt(d.size) / 2)
+        //     .attr("width", function (d) { return (Math.sqrt(d.size)); })
+        //     .attr("height", function (d) { return (Math.sqrt(d.size)); })
+
+        function tooltip_table(d) {
+            var table = "<table><tr><th>Attribute</th><th>Value</th></tr>";
+            var keyset = new Set(["id", "name", "size", "group", "degree", "weighted_degree", "closenesscentrality", "eigencentrality", "pagerank"]);
+            for (var key in d) {
+                if (keyset.has(key)) {
+                    table += "<tr><td>" + key + "</td><td>" + d[key] + "</td></tr>";
+                }
+            }
+            table += "</table>";
+            return table;
+        }
 
         // create the node circles
         node.append('circle')
-            .attr('r', d => Math.sqrt(d.nodesize))
+            .attr('r', d => Math.sqrt(d.size))
             .attr("fill", function (d) { return color(d.group); })
             .on('mouseover.tooltip', function (d) {
                 tooltip.transition()
                     .duration(300)
                     .style("opacity", .8);
-                tooltip.html("<p>Name:" + d.id + "<hr>Group:" + d.group + "<hr>Size:" + d.nodesize + "</p>")
+                tooltip.html(tooltip_table(d))
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY + 10) + "px");
             })
@@ -177,7 +189,7 @@ function createNetworkGraph() {
             .text(function (d) {
                 return d.id;
             })
-            .attr('x', 6)
+            .attr('x', 10)
             .attr('y', 3);
 
 
@@ -190,8 +202,8 @@ function createNetworkGraph() {
 
             node
                 .attr('transform', d => `translate(${d.x},${d.y})`);
-            // node.attr("cx", function (d) { return d.x = Math.max(Math.sqrt(d.nodesize), Math.min(width - Math.sqrt(d.nodesize), d.x)); })
-            //     .attr("cy", function (d) { return d.y = Math.max(Math.sqrt(d.nodesize), Math.min(height - Math.sqrt(d.nodesize), d.y)); });
+            // node.attr("cx", function (d) { return d.x = Math.max(Math.sqrt(d.size), Math.min(width - Math.sqrt(d.size), d.x)); })
+            //     .attr("cy", function (d) { return d.y = Math.max(Math.sqrt(d.size), Math.min(height - Math.sqrt(d.size), d.y)); });
         }
 
         //add zoom capabilities 
@@ -207,6 +219,8 @@ function createNetworkGraph() {
             svg.on("dblclick.zoom", null);
             vis.attr("transform", d3.event.transform)
         }
+
+        vis.attr("transform", "translate(" + width / 4 + "," + height / 4 + ")scale(" + 0.5 + ")");
 
         function dragstarted(d) {
             if (!d3.event.active) simulation.alphaTarget(0.3).restart();
@@ -269,8 +283,56 @@ function createNetworkGraph() {
         svg.select(".legendSequential")
             .call(legendSequential);
 
-        vis.attr("transform", "translate(" + width / 4 + "," + height / 4 + ")scale(" + 0.5 + ")");
+        // For node scaling options
 
+        d3.select("#scaling").on("change", function () {
+            clearTimeout(timeout);
+            scaling(this.value);
+        });
+
+        function scaling(value) {
+
+            var t = vis.transition().duration(1000);
+
+            switch (value) {
+                case "size":
+                    node.selectAll("circle")
+                        .transition(t)
+                        .attr("r", function (d) { return Math.sqrt(d.size); })
+                    break;
+                case "degree":
+                    node.selectAll("circle")
+                        .transition(t)
+                        .attr("r", function (d) { return d.degree * 2; })
+                    break;
+                case "weighted_degree":
+                    node.selectAll("circle")
+                        .transition(t)
+                        .attr("r", function (d) { return Math.sqrt(d.weighted_degree); })
+                    break;
+                case "eigencentrality":
+                    node.selectAll("circle")
+                        .transition(t)
+                        .attr("r", function (d) { return d.eigencentrality * 30; })
+                    break;
+                case "closenesscentrality":
+                    node.selectAll("circle")
+                        .transition(t)
+                        .attr("r", function (d) { return d.closenesscentrality * 30; })
+                    break;
+                case "pagerank":
+                    node.selectAll("circle")
+                        .transition(t)
+                        .attr("r", function (d) { return d.pagerank * 1000; })
+                    break;
+            }
+
+        }
+
+        var timeout = setTimeout(function () {
+            scaling("size");
+            d3.select("#scaling").property("selectedIndex", 1).node();
+        }, 200);
 
     })
 }
@@ -279,12 +341,14 @@ function createNetworkGraph() {
 
 function createAdjMatrix() {
     var margin = { top: 80, right: 0, bottom: 10, left: 80 },
-        width = 600,
-        height = 600;
+        width = 700,
+        height = 700;
 
     var x = d3.scaleBand().domain(d3.range(14)).range([0, width]),
         z = d3.scaleLinear().domain([10, 80]).clamp(true),
         c = color
+
+
 
     var svg2 = d3.select("#adj_matrix").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -292,6 +356,10 @@ function createAdjMatrix() {
         .style("margin-left", -margin.left + "px")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    //add encompassing group for the zoom 
+    var vis2 = svg2.append("g")
+        .attr("class", "everything");
 
 
 
@@ -345,12 +413,12 @@ function createAdjMatrix() {
         // The default sort order.
         x.domain(orders.count);
 
-        svg2.append("rect")
+        vis2.append("rect")
             .attr("class", "background")
             .attr("width", width)
             .attr("height", height);
 
-        var row = svg2.selectAll(".rows")
+        var row = vis2.selectAll(".rows")
             .data(matrix)
             .enter().append("g")
             .attr("class", "rows")
@@ -368,7 +436,7 @@ function createAdjMatrix() {
             .attr("text-anchor", "end")
             .text(function (d, i) { return nodes[i].id; });
 
-        var column = svg2.selectAll(".columns")
+        var column = vis2.selectAll(".columns")
             .data(matrix)
             .enter().append("g")
             .attr("class", "columns")
@@ -435,7 +503,7 @@ function createAdjMatrix() {
         function order(value) {
             x.domain(orders[value]);
 
-            var t = svg2.transition().duration(1500);
+            var t = vis2.transition().duration(1500);
 
             t.selectAll(".rows")
                 .delay(function (d, i) { return x(i) * 4; })
@@ -453,6 +521,7 @@ function createAdjMatrix() {
             order("group");
             d3.select("#order").property("selectedIndex", 3).node();
         }, 1000);
+
     });
 }
 

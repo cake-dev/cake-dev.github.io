@@ -32,6 +32,11 @@
       pointer-events: none;
     }
 
+    #network_graph {
+      width: fit-content;
+      height: fit-content;
+    }
+
     #network_graph text {
       font-family: Verdana, Geneva, Tahoma, sans-serif;
       font-size: 10px;
@@ -75,35 +80,219 @@
     .n_image {
       border-radius: 50%;
     }
+
+    #chart_title {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      text-align: center;
+      color: #c1c1c1;
+    }
   </style>
   <!-- CSS only -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <link rel="stylesheet" href="static/css/w3css.css">
   <!-- JavaScript Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <!-- <link href="static/css/sidebarstyle.css" rel="stylesheet"> -->
 </head>
 
 <body>
-  <div class="container">
-    <div class="row" style="margin-top: 2%;">
-      <div class="col">
-        <div id="network_graph"></div>
-        <button id="reset" class="btn btn-primary" style="margin-top: 2%;">Reset</button>
-      </div>
-      <div class="col">
-        <div id="adj_matrix"></div>
-        <div class="row"><select id="order" class="form-select" style="max-width: 20%;">
-            <option selected>Select Ordering</option>
-            <option value="id">by Name</option>
-            <option value="count">by Frequency</option>
-            <option value="group">by Group</option>
-          </select>
-        </div>
+  <div id="wrapper">
 
+    <div class="container-fluid" style="margin-left: 2%;margin-top: 5%;">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+          <!-- Navbar brand -->
+          <a class="navbar-brand">
+            <img src="https://w7.pngwing.com/pngs/69/539/png-transparent-stack-overflow-stack-exchange-programmer-logo-others.png" height="30" alt="" loading="lazy" />
+          </a>
+
+          <!-- Collapsible wrapper -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <h1 id="chart_title">Stack Overflow Developer Profile Tag Network</h1>
+              </li>
+              <li class="nav-item">
+                <div class="w3-button w3-blue w3-ripple" style="margin-left: 3%;margin-top: 2%;height: 50px;border-radius: 25px;" onclick="document.getElementById('id01').style.display='block'">
+                  <h5>Show Additional Information</h5>
+                </div>
+              </li>
+            </ul>
+            <!-- Left links -->
+
+          </div>
+          <!-- Collapsible wrapper -->
+        </div>
+        <!-- Container wrapper -->
+      </nav>
+      <!-- Navbar End -->
+      <!-- Modal -->
+      <div id="id01" class="w3-modal">
+        <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+          <header class="w3-container w3-blue">
+            <span onclick=" document.getElementById('id01').style.display='none'" class=" w3-button w3-clear w3-xlarge w3-display-topright">&times;</span>
+            <h2>Stack Overflow Developer Tag Network Analysis</h2>
+          </header>
+
+          <div class="w3-bar w3-border-bottom">
+            <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'London')">Hypothesis</button>
+            <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Chicago')">Insights</button>
+            <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Data</button>
+            <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Tokyo')">Methods</button>
+          </div>
+
+          <div id="London" class="w3-container city">
+            <h1>An Interactive Visualization of Developer Skillsets</h1>
+            <p>Stack Overflow is a question and answer website for professional and enthusiast programmers. A now scrapped feature called Developer Stories allowed developers to
+              create a profile and attach tags to it that reflected their skillset. This visualization is an attempt to show the relationships between these tags.
+            </p>
+            <hr>
+            <p>The first visualiation is a force directed graph (note: the graph links are undirected). Each node represents a tag that denotes a specific software tool or concept.
+              The default node size is proportional to the number of developers that have that tag on their "story". Link width is proportional to the link strength, which is proportional to how correlated those two tags are (correlation coefficient * 100).
+            </p>
+            <p>Hover over a node or link to see information about it. Pan and zoom are also available.</p>
+            <p>There are also several options for node size that can be applied. They are: Size, Degree, Weighted Degree, Eigenvector Centrality, Closeness Centrality, and Pagerank</p>
+            <hr>
+            <p>The second visualiation is an adjacency matrix showing the links between tag nodes. Each square represents a link between 2 nodes. The color of the square indicates the group of the node.
+              An opacity filter is applied based on the strength of the link. For links between nodes of different groups, a mean of the group colors is used.
+            </p>
+            <p>Hover over a link in the matrix to see information about it.</p>
+          </div>
+
+          <div id="Chicago" class="w3-container city">
+            <h1>Insights</h1>
+            <p>There are several interesting insights that can be drawn from observing the graph.</p>
+            <ul>
+              <li>When scaling nodes by size, it is clear to see that JavaScript and Java are the most popular tags across all profiles.</li>
+              <li>When observing the grouping of nodes, the relatedness of tech skills can be seen (i.e. Web Development skills like JS, html, css are all grouped together because they are used together often, and thus mentioned on the profiles of devs who do frontend web dev.)</li>
+              <li>When scaling nodes by weighted degree, the sizes reflect the sum of link strengths on that node. This shows the frequency of tags being mentioned together.</li>
+              <li>Scaling nodes by Eigenvector Centrality reveals the most influential tags. This turns out to be web development based skills, both frontend and backend.</li>
+              <li>Scaling nodes by Closeness Centrality shows that the skills on the perimeter are mostly only ever mentioned in reference to each other, separate from the main network. These include mostly software testing and project management tags.</li>
+              <li>Scaling nodes by PageRank ranks the tags by how often a user following links will non-randomly reach the node "page". It is interesting to see that Linux has the highest PageRank value. This shows that Linux often arises in most development environments.</li>
+            </ul>
+          </div>
+
+          <div id="Paris" class="w3-container city">
+            <h1>Data</h1>
+            <p>Primary data sourced from <a href="https://www.kaggle.com/datasets/stackoverflow/stack-overflow-tag-network" target="_blank">Kaggle Stack Overflow Tag Network</a></p>
+            <p style="font-weight: bold;">Notes on dataset:</p>
+            <p>This data was gathered in 2016/2017, so the sizes of nodes may not be accurate to modern development practices.<br>This dataset includes only a subset of tags used on Developer Stories. Tags that were used by at least 0.5% of users and were correlated with another tag with a correlation coefficient above 0.1 are included. This means that very sparsely used tags and tags that are not used with other tags were filtered out.</p>
+          </div>
+
+          <div id="Tokyo" class="w3-container city">
+            <h1>Methods</h1>
+            <p>Visualization created with D3.js, Jquery, and Bootstrap<br>
+            <p>Data prep done in python (Jupyter Notebook) and Gephi</p><br>
+            </p>
+            <p><a href="https://bl.ocks.org/mbostock/4062045" target="_blank">This Block by Mike Bostock</a> was used as a template when starting the graph visualiation.</p>
+          </div>
+
+          <div class="w3-container w3-light-grey w3-padding">
+            <button class="w3-button w3-right w3-white w3-border" onclick="document.getElementById('id01').style.display='none'">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 4%;">
+
+        <div class="col" style="width: fit-content;">
+          <div id="network_graph"></div>
+          <div class="container">
+            <div class="row">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm" style="max-width: 20%;">
+                    <p>Node Scaling:</p>
+                  </div>
+                  <div class="col">
+                    <select id="scaling" class="form-select" style="max-width: 30%;">
+                      <option selected>Select Node Scaling</option>
+                      <option value="size">by Size</option>
+                      <option value="degree">by Degree</option>
+                      <option value="weighted_degree">by Weighted Degree</option>
+                      <option value="eigencentrality">by Eigenvector Centrality</option>
+                      <option value="closenesscentrality">by Closeness Centrality</option>
+                      <option value="pagerank">by Pagerank</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col" style="width: fit-content;">
+          <div id="adj_matrix"></div>
+          <div class="container">
+            <div class="col">
+              <div class="row">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-sm" style="max-width: 20%;">
+                      <p>Ordering:</p>
+                    </div>
+                    <div class="col">
+                      <select id="order" class="form-select" style="max-width: 20%;">
+                        <option selected>Select Ordering</option>
+                        <option value="id">by Name</option>
+                        <option value="count">by Frequency</option>
+                        <option value="group">by Group</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+  </div>
   <script src="js/s_n.js"></script>
+  <script>
+
+    // Dropdown
+    function dropFunction() {
+      var x = document.getElementById("myDIV");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+
+    function dropFunction2() {
+      var x = document.getElementById("info");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+
+    document.getElementsByClassName("tablink")[0].click();
+
+    function openCity(evt, cityName) {
+      var i, x, tablinks;
+      x = document.getElementsByClassName("city");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].classList.remove("w3-light-grey");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.classList.add("w3-light-grey");
+    }
+  </script>
+
 </body>
