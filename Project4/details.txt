@@ -1,0 +1,6 @@
+Thanks so much for your interest in this dataset! This dataset does include only a subset of tags used on Developer Stories, tags that were used by at least 0.5% of users and were correlated with another tag with a correlation coefficient above 0.1. This means that very sparsely used tags and tags that are not used with other tags were filtered out.
+
+The numerical values for nodesize and value have been scaled for the D3 visualization in the blog post (and the ggraph visualization here on Kaggle). The quantity nodesize is proportional to how many developers have that tag on their Developer Story, and the quantity value is proportional to how correlated those two tags are (correlation coefficient * 100).
+
+
+HYPOTHESES: THe size of the largest node correlates with the amount of subtopics linked to that node

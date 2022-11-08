@@ -175,6 +175,7 @@ function createNetworkGraph() {
             .attr('x', 6)
             .attr('y', 3);
 
+
         function ticked() {
             link
                 .attr('x1', d => d.source.x)
@@ -262,7 +263,6 @@ function createNetworkGraph() {
             .call(legendSequential);
 
         vis.attr("transform", "translate(" + width / 4 + "," + height / 4 + ")scale(" + 0.5 + ")");
-
 
 
     })
