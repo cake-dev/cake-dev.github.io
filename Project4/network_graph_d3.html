@@ -173,6 +173,7 @@
             <ul>
               <li>When scaling nodes by size, it is clear to see that JavaScript and Java are the most popular tags across all profiles.</li>
               <li>When observing the grouping of nodes, the relatedness of tech skills can be seen (i.e. Web Development skills like JS, html, css are all grouped together because they are used together often, and thus mentioned on the profiles of devs who do frontend web dev.)</li>
+              <li>It is worth noting that nodes of larger size do not necessarily have a heigher weighted degree. One could assume that the tags with the highest overall occurence would have the strongest connections as well, but this is not always the case. Observing the change in size of the neighbors relative to the Java node (group 8) when switching from Size to Weighted Degree scaling illustrates this concept.</li>
               <li>When scaling nodes by weighted degree, the sizes reflect the sum of link strengths on that node. This shows the frequency of tags being mentioned together.</li>
               <li>Scaling nodes by Eigenvector Centrality reveals the most influential tags. This turns out to be web development based skills, both frontend and backend.</li>
               <li>Scaling nodes by Closeness Centrality shows that the skills on the perimeter are mostly only ever mentioned in reference to each other, separate from the main network. These include mostly software testing and project management tags.</li>
