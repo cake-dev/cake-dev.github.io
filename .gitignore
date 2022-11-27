@@ -40,3 +40,5 @@ D3_Practice/networks/data/power_grid_westernus.json
 D3_Practice/networks/data/power.gml
 D3_Practice/networks/data/as-22july06.gml
 Project4/static/img/*
+node_modules
+*.pyc
