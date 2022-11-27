@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <script src="{% static 'js/w_map.js' %}" type="text/javascript"></script>
+    <div class="col" style="width: fit-content;">
+        {% comment %} block content {% endcomment %}
+        <div id="weather_map"></div>
+        <!-- replace below code with selection options for different weather views on map -->
+        <!-- <div class="container">
+        <div class="row">
+            <div class="col-sm" style="max-width: 20%;">
+                <p>Node Scaling:</p>
+            </div>
+            <div class="col">
+                <select id="scaling" class="form-select" style="max-width: 30%;">
+                    <option selected>Select Node Scaling</option>
+                    <option value="size">by Size</option>
+                    <option value="degree">by Degree</option>
+                    <option value="weighted_degree">by Weighted Degree</option>
+                    <option value="eigencentrality">by Eigenvector Centrality</option>
+                    <option value="closenesscentrality">by Closeness Centrality</option>
+                    <option value="pagerank">by Pagerank</option>
+                </select>
+            </div>
+        </div>
+    </div> -->
+    </div>
+    <!-- space below reserved for optional 2nd vis, maybe a table of weather data for the viewed region -->
+    <!-- <div class="col" style="width: fit-content;">
+    <div id="adj_matrix"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm" style="max-width: 20%;">
+                <p>Ordering:</p>
+            </div>
+            <div class="col">
+                <select id="order" class="form-select" style="max-width: 20%;">
+                    <option selected>Select Ordering</option>
+                    <option value="id">by Name</option>
+                    <option value="count">by Frequency</option>
+                    <option value="group">by Group</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div> -->
+{% endblock content %}
