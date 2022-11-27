@@ -340,7 +340,7 @@ function createNetworkGraph() {
 // ADJAENCY MATRIX 
 
 function createAdjMatrix() {
-    var margin = { top: 80, right: 0, bottom: 10, left: 80 },
+    var margin = { top: 80, right: 0, bottom: 10, left: 100 },
         width = 700,
         height = 700;
 
