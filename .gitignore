@@ -42,4 +42,4 @@ D3_Practice/networks/data/as-22july06.gml
 Project4/static/img/*
 node_modules
 *.pyc
-ProjectFinal/.venv/*
+ProjectFinal/weatherapp/.venv/*
