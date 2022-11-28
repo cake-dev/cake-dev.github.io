@@ -140,8 +140,10 @@ function fetchWeatherMapAndDisplay(city_name = "Missoula") {
     var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
     var layer = "precipitation_new";
     var ow_tiles = "http://tile.openweathermap.org/map/" + layer + "/{z}/{x}/{y}.png?appid=" + api_key;
+    var osm_mapnik_tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
     var map = L.map("weather_map")
     map.setView([46.87, -113.99], 5);
+    L.tileLayer(osm_mapnik_tiles, {}).addTo(map);
     L.tileLayer(ow_tiles, {}).addTo(map);
 }
 
