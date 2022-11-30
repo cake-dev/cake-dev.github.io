@@ -1,151 +1,299 @@
 console.log("w_map.js loaded");
 
-// Dropdown
-function dropFunction() {
-    var x = document.getElementById("myDIV");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else {
-        x.className = x.className.replace(" w3-show", "");
+// create map object
+var map = L.map("weather_map");
+
+var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
+
+// Dropdown and modal functions
+{
+
+    function dropFunction() {
+        var x = document.getElementById("myDIV");
+        if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+        } else {
+            x.className = x.className.replace(" w3-show", "");
+        }
+    }
+
+    function dropFunction2() {
+        var x = document.getElementById("info");
+        if (x.className.indexOf("w3-show") == -1) {
+            x.className += " w3-show";
+        } else {
+            x.className = x.className.replace(" w3-show", "");
+        }
+    }
+
+    function openCity(evt, cityName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName("city");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < x.length; i++) {
+            tablinks[i].classList.remove("w3-light-grey");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.classList.add("w3-light-grey");
+    }
+
+    function openModal() {
+        document.getElementById('id01').style.display = 'block'
+    }
+
+    function closeModal() {
+        document.getElementById('id01').style.display = 'none'
     }
 }
 
-function dropFunction2() {
-    var x = document.getElementById("info");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else {
-        x.className = x.className.replace(" w3-show", "");
+// data helper functions
+{
+    function kelvinToFahrenheit(kelvin) {
+        return (kelvin - 273.15) * 9 / 5 + 32;
+    }
+
+    function epochToDate(epoch) {
+        var date = new Date(epoch * 1000);
+        return date.toDateString();
+    }
+
+    function epochToTime(epoch) {
+        var date = new Date(epoch * 1000);
+        return date.toLocaleTimeString();
+    }
+
+    function geolocateCity(city) {
+        var coords = {};
+        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + api_key;
+        $.getJSON(url, function (data) {
+            var lat = data.coord.lat;
+            var lon = data.coord.lon;
+            coords.lat = lat;
+            coords.lon = lon;
+        });
+        return coords;
+    }
+
+    function getCityName(lat, lon) {
+        var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&appid=" + api_key;
+        $.getJSON(url, function (data) {
+            var city = data.name;
+            return city;
+        });
     }
 }
 
-function openCity(evt, cityName) {
-    var i, x, tablinks;
-    x = document.getElementsByClassName("city");
-    for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
+
+// WEATHER DATA TABLE functions
+{
+    function fetchWeatherDataAndMakeTable(city_name = "Missoula") {
+
+        // create table
+        var city = city_name;
+        var country = "US";
+        var url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // string version of a table using all the data and table tags, creating a vertical table
+                var table_string = "<table id='weather_table'><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + kelvinToFahrenheit(data.main.temp).toFixed(2) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
+                d3.select("#weather_data_table").html(table_string);
+            })
     }
-    tablinks = document.getElementsByClassName("tablink");
-    for (i = 0; i < x.length; i++) {
-        tablinks[i].classList.remove("w3-light-grey");
-    }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.classList.add("w3-light-grey");
-}
 
-function openModal() {
-    document.getElementById('id01').style.display = 'block'
-}
-
-function closeModal() {
-    document.getElementById('id01').style.display = 'none'
-}
-
-// WEATHER DATA TABLE
-function fetchWeatherDataAndMakeTable(city_name = "Missoula") {
-    var city = city_name;
-    var country = "US";
-    var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
-    var url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data);
-            var table = document.getElementById("weather_table");
-            // city
-            var city_row = table.insertRow(1);
-            var city_title = city_row.insertCell(0);
-            city_title.innerHTML = "City: ";
-            var city_cell = city_row.insertCell(1);
-            city_cell.innerHTML = data.name;
-            // country
-            var country_row = table.insertRow(2);
-            var country_title = country_row.insertCell(0);
-            country_title.innerHTML = "Country: ";
-            var country_cell = country_row.insertCell(1);
-            country_cell.innerHTML = data.sys.country;
-            // date
-            var date_row = table.insertRow(3);
-            var date_title = date_row.insertCell(0);
-            date_title.innerHTML = "Date: ";
-            var date_cell = date_row.insertCell(1);
-            date_cell.innerHTML = epochToDate(data.dt);
-            // temp
-            var temp_row = table.insertRow(4);
-            var temp_title = temp_row.insertCell(0);
-            temp_title.innerHTML = "Temperature: ";
-            var temp_cell = temp_row.insertCell(1);
-            temp_cell.innerHTML = kelvinToFahrenheit(data.main.temp).toFixed(2) + "°F";
-            // weather
-            var w_row = table.insertRow(5);
-            var w_title = w_row.insertCell(0);
-            w_title.innerHTML = "Weather: ";
-            var w_cell = w_row.insertCell(1);
-            w_cell.innerHTML = data.weather[0].main;
-            // humidity
-            var humid_row = table.insertRow(6);
-            var humid_title = humid_row.insertCell(0);
-            humid_title.innerHTML = "Humidity: ";
-            var humid_cell = humid_row.insertCell(1);
-            humid_cell.innerHTML = data.main.humidity + "%";
-            // wind 
-            var wind_row = table.insertRow(7);
-            var wind_title = wind_row.insertCell(0);
-            wind_title.innerHTML = "Wind Speed/Direction: ";
-            var wind_cell = wind_row.insertCell(1);
-            wind_cell.innerHTML = data.wind.speed + "mph/" + data.wind.deg + "°";
-            // clouds
-            var cloud_row = table.insertRow(8);
-            var cloud_title = cloud_row.insertCell(0);
-            cloud_title.innerHTML = "Cloud Coverage: ";
-            var cloud_cell = cloud_row.insertCell(1);
-            cloud_cell.innerHTML = data.clouds.all + "%";
-            // sunrise
-            var sunrise_row = table.insertRow(9);
-            var sunrise_title = sunrise_row.insertCell(0);
-            sunrise_title.innerHTML = "Sunrise: ";
-            var sunrise_cell = sunrise_row.insertCell(1);
-            sunrise_cell.innerHTML = epochToTime(data.sys.sunrise);
-            // sunset
-            var sunset_row = table.insertRow(10);
-            var sunset_title = sunset_row.insertCell(0);
-            sunset_title.innerHTML = "Sunset: ";
-            var sunset_cell = sunset_row.insertCell(1);
-            sunset_cell.innerHTML = epochToTime(data.sys.sunset);
-
-        })
-}
-
-function kelvinToFahrenheit(kelvin) {
-    return (kelvin - 273.15) * 9 / 5 + 32;
-}
-
-function epochToDate(epoch) {
-    var date = new Date(epoch * 1000);
-    return date.toDateString();
-}
-
-function epochToTime(epoch) {
-    var date = new Date(epoch * 1000);
-    return date.toLocaleTimeString();
 }
 
 fetchWeatherDataAndMakeTable();
 
-// WEATHER MAP
+// WEATHER MAP functions
 
 function fetchWeatherMapAndDisplay(city_name = "Missoula") {
     var city = city_name;
     var country = "US";
-    var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
-    var layer = "precipitation_new";
-    var ow_tiles = "http://tile.openweathermap.org/map/" + layer + "/{z}/{x}/{y}.png?appid=" + api_key;
-    var osm_mapnik_tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+    var city_coords = geolocateCity(city);
+
+    var clouds = L.OWM.clouds({ opacity: 0.8, appId: api_key });
+    var cloudscls = L.OWM.cloudsClassic({ opacity: 0.5, appId: api_key });
+    var precipitation = L.OWM.precipitation({ opacity: 0.5, appId: api_key });
+    var precipitationcls = L.OWM.precipitationClassic({ opacity: 0.5, appId: api_key });
+    var rain = L.OWM.rain({ opacity: 0.5, appId: api_key });
+    var raincls = L.OWM.rainClassic({ opacity: 0.5, appId: api_key });
+    var snow = L.OWM.snow({ opacity: 0.5, appId: api_key });
+    var pressure = L.OWM.pressure({ opacity: 0.4, appId: api_key });
+    var pressurecntr = L.OWM.pressureContour({ opacity: 0.5, appId: api_key });
+    var temp = L.OWM.temperature({ opacity: 0.5, appId: api_key });
+    var wind = L.OWM.wind({ opacity: 0.5, appId: api_key });
+
+    var current_city = L.OWM.current({
+        intervall: 15, minZoom: 5,
+        appId: api_key
+    });
+
+    console.log(city_coords);
+
+    var overlayMaps = {};
+    overlayMaps['clouds'] = clouds;
+    overlayMaps['cloudscls'] = cloudscls;
+    overlayMaps['precipitation'] = precipitation;
+    overlayMaps['precipitationcls'] = precipitationcls;
+    overlayMaps['rain'] = rain;
+    overlayMaps['raincls'] = raincls;
+    overlayMaps['snow'] = snow;
+    overlayMaps['temp'] = temp;
+    overlayMaps['windspeed'] = wind;
+    overlayMaps['pressure'] = pressure;
+    overlayMaps['presscont'] = pressurecntr;
+
+    // var ow_precip = "http://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=" + api_key;
+    // var ow_clouds = "http://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=" + api_key;
+    // var ow_pressure = "http://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=" + api_key;
+    // var ow_wind = "http://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=" + api_key;
+    // var ow_temp = "http://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" + api_key;
+    // var ow_tile_layers = {
+    //     "Precipitation": L.tileLayer(ow_precip),
+    //     "Clouds": L.tileLayer(ow_clouds),
+    //     "Temperature": L.tileLayer(ow_temp),
+    //     "Wind": L.tileLayer(ow_wind),
+    //     "Pressure": L.tileLayer(ow_pressure),
+    // }
+
+    // var ow_tiles = "http://tile.openweathermap.org/map/" + layer + "/{z}/{x}/{y}.png?appid=" + api_key;
+    // var osm_mapnik_tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
     var esri_tiles = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
-    var map = L.map("weather_map")
-    map.setView([46.87, -113.99], 5);
+    // wait 2 seconds
+    setTimeout(function () {
+        map.setView([city_coords.lat, city_coords.lon], 7);
+    }, 1000);
+
     L.tileLayer(esri_tiles, {}).addTo(map);
-    L.tileLayer(ow_tiles, {}).addTo(map);
+
+    // add layer controls
+    // var layerControl = L.control.layers(null, ow_tile_layers).addTo(map);
+    var layerControl = L.control.layers(null, overlayMaps, { collapsed: true }).addTo(map);
 }
 
 fetchWeatherMapAndDisplay();
+
+var popup = L.popup();
+
+//popup function
+function onMapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng.toString()) //esample from leaflet, will be immediately replaced by weatherpopup...
+        .openOn(map);
+
+
+    //getting json function
+    $(document).ready(function () {
+        $.ajax({
+            url: "https://api.openweathermap.org/data/2.5/weather?lat=" + e.latlng.lat + '&lon=' + e.latlng.lng + "&appid=" + api_key,
+            dataType: 'json',
+            success: function (data) {
+                // storing json data in variables
+                weatherlocation_lon = data.coord.lon; // lon WGS84
+                weatherlocation_lat = data.coord.lat; // lat WGS84
+                weatherstationname = data.name // Name of Weatherstation
+                weatherstationid = data.id // ID of Weatherstation
+                weathertime = data.dt // Time of weatherdata (UTC)
+                temperature = data.main.temp; // Kelvin
+                airpressure = data.main.pressure; // hPa
+                airhumidity = data.main.humidity; // %
+                temperature_min = data.main.temp_min; // Kelvin
+                temperature_max = data.main.temp_max; // Kelvin
+                windspeed = data.wind.speed; // Meter per second
+                winddirection = data.wind.deg; // Wind from direction x degree from north
+                cloudcoverage = data.clouds.all; // Cloudcoverage in %
+                weatherconditionid = data.weather[0].id // ID
+                weatherconditionstring = data.weather[0].main // Weatheartype
+                weatherconditiondescription = data.weather[0].description // Weatherdescription
+                weatherconditionicon = data.weather[0].icon // ID of weathericon
+
+                // Converting Unix UTC Time
+                var utctimecalc = new Date(weathertime * 1000);
+                var months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+                var year = utctimecalc.getFullYear();
+                var month = months[utctimecalc.getMonth()];
+                var date = utctimecalc.getDate();
+                var hour = utctimecalc.getHours();
+                var min = utctimecalc.getMinutes();
+                var sec = utctimecalc.getSeconds();
+                var time = date + '.' + month + '.' + year + ' ' + hour + ':' + min + ' Uhr';
+
+                // recalculating
+                var weathercondtioniconhtml = "http://openweathermap.org/img/w/" + weatherconditionicon + ".png";
+                var weathertimenormal = time; // reallocate time var....
+                var temperaturefahrenheit = kelvinToFahrenheit(temperature).toFixed(1)  // Converting Kelvin to Fahrenheit
+                var windspeedknots = Math.round((windspeed * 1.94) * 100) / 100; // Windspeed from m/s in Knots; Round to 2 decimals
+                var windspeedkmh = Math.round((windspeed * 3.6) * 100) / 100; // Windspeed from m/s in km/h; Round to 2 decimals
+                var winddirectionstring = "Im the wind from direction"; // Wind from direction x as text
+                if (winddirection > 348.75 && winddirection <= 11.25) {
+                    winddirectionstring = "North";
+                } else if (winddirection > 11.25 && winddirection <= 33.75) {
+                    winddirectionstring = "Northnortheast";
+                } else if (winddirection > 33.75 && winddirection <= 56.25) {
+                    winddirectionstring = "Northeast";
+                } else if (winddirection > 56.25 && winddirection <= 78.75) {
+                    winddirectionstring = "Eastnortheast";
+                } else if (winddirection > 78.75 && winddirection <= 101.25) {
+                    winddirectionstring = "East";
+                } else if (winddirection > 101.25 && winddirection <= 123.75) {
+                    winddirectionstring = "Eastsoutheast";
+                } else if (winddirection > 123.75 && winddirection <= 146.25) {
+                    winddirectionstring = "Southeast";
+                } else if (winddirection > 146.25 && winddirection <= 168.75) {
+                    winddirectionstring = "Southsoutheast";
+                } else if (winddirection > 168.75 && winddirection <= 191.25) {
+                    winddirectionstring = "South";
+                } else if (winddirection > 191.25 && winddirection <= 213.75) {
+                    winddirectionstring = "Southsouthwest";
+                } else if (winddirection > 213.75 && winddirection <= 236.25) {
+                    winddirectionstring = "Southwest";
+                } else if (winddirection > 236.25 && winddirection <= 258.75) {
+                    winddirectionstring = "Westsouthwest";
+                } else if (winddirection > 258.75 && winddirection <= 281.25) {
+                    winddirectionstring = "West";
+                } else if (winddirection > 281.25 && winddirection <= 303.75) {
+                    winddirectionstring = "Westnorthwest";
+                } else if (winddirection > 303.75 && winddirection <= 326.25) {
+                    winddirectionstring = "Northwest";
+                } else if (winddirection > 326.25 && winddirection <= 348.75) {
+                    winddirectionstring = "Northnorthwest";
+                } else {
+                    winddirectionstring = " - currently no winddata available - ";
+                };
+
+                //Popup with content
+                var fontsizesmall = 1;
+                popup.setContent("Weatherdata:<br>" + "<img src=" + weathercondtioniconhtml + "><br>" + weatherconditionstring + " (Weather-ID: " + weatherconditionid + "): " + weatherconditiondescription + "<br><br>Temperature: " + temperaturefahrenheit + "°F<br>Airpressure: " + airpressure + " hPa<br>Humidity: " + airhumidity + "%" + "<br>Cloudcoverage: " + cloudcoverage + "%<br><br>Windspeed: " + windspeedkmh + " km/h<br>Wind from direction: " + winddirectionstring + " (" + winddirection + "°)" + "<br><br><font size=" + fontsizesmall + ">Datasource:<br>openweathermap.org<br>Measure time: " + weathertimenormal + "<br>Weatherstation: " + weatherstationname + "<br>Weatherstation-ID: " + weatherstationid + "<br>Weatherstation Coordinates: " + weatherlocation_lon + ", " + weatherlocation_lat);
+                var closest_city = getCityName(e.latlng.lat, e.latlng.lng);
+                console.log(closest_city);
+
+            },
+            error: function () {
+                alert("error receiving wind data from openweathermap");
+            }
+        });
+    });
+    //getting json function ends here
+
+    //popupfunction ends here
+}
+
+//popup
+map.on('click', onMapClick);
+
+// location functions 
+// TODO allow for text entry and autocomplete city names
+{
+    function selectCity(value) {
+        console.log(value);
+        // fetch data for selected city
+        fetchWeatherDataAndMakeTable(value);
+    }
+}
+
+document.getElementsByClassName('leaflet-control-attribution')[0].style.display = 'none';

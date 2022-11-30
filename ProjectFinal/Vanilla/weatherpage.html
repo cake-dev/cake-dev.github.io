@@ -89,8 +89,8 @@
         }
 
         #weather_map {
-            width: 400px;
-            height: 400px;
+            width: 600px;
+            height: 600px;
             z-index: 1;
         }
 
@@ -109,17 +109,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
     <script src="https://unpkg.com/georaster"></script>
     <script src="https://unpkg.com/chroma-js"></script>
     <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/css/leaflet-owm-style.css" />
+    <script type="text/javascript" src="js/leaflet-owm.js"></script>
     <!-- <link href="static/css/sidebarstyle.css" rel="stylesheet"> -->
 </head>
 
 <body>
     <div id="wrapper">
-        <div class="container-fluid" style="margin-left: 2%;margin-top: 5%;">
+        <div class="container-fluid" style="margin-left: 2%;margin-top: 8%;">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
                 <!-- Container wrapper -->
@@ -198,42 +200,30 @@
             <div class="row" style="margin-top: 4%;">
                 <!-- weather data table -->
                 <div class="col" style="width: fit-content;">
-                    <table class="table" id="weather_table">
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    Weather Data
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            </tr>
-                    </table>
+                    <div class="row" id="weather_data_table"></div>
                     <!-- replace below code with selection options for different weather views on map -->
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm" style="max-width: 20%;">
-                                <p>
-                                    Location:
-                                </p>
-                            </div>
-                            <div class="col">
-                                <select id="scaling" class="form-select" style="max-width: 30%;">
-                                    <option selected>
-                                        Select Location
-                                    </option>
-                                    <option value="Missoula">
-                                        Missoula
-                                    </option>
-                                    <option value="London">
-                                        London
-                                    </option>
-                                    <option value="New_York_City">
-                                        New York City
-                                    </option>
-                                </select>
-                            </div>
+                    <div class="row">
+                        <div class="col-sm" style="max-width: 20%;">
+                            <p>
+                                Location:
+                            </p>
+                        </div>
+                        <div class="col">
+                            <!-- input field to get city weather data -->
+                            <select id="table_view_select" class="form-select" style="max-width: 30%;" onchange="selectCity(this.value)">
+                                <option selected>
+                                    Select Location
+                                </option>
+                                <option value="Missoula">
+                                    Missoula
+                                </option>
+                                <option value="Seattle">
+                                    Seattle
+                                </option>
+                                <option value="New_York_City">
+                                    New York City
+                                </option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -242,28 +232,8 @@
                     <div id="weather_map">
                     </div>
                     <div class="container">
-                        <div class="row">
-                            <div class="col-sm" style="max-width: 20%;">
-                                <p>
-                                    View:
-                                </p>
-                            </div>
-                            <div class="col">
-                                <select id="order" class="form-select" style="max-width: 20%;">
-                                    <option selected>
-                                        Select Map
-                                    </option>
-                                    <option value="Precipitation">
-                                        Precipitation
-                                    </option>
-                                    <option value="Clouds">
-                                        Clouds
-                                    </option>
-                                    <option value="Wind">
-                                        Wind
-                                    </option>
-                                </select>
-                            </div>
+                        <div class="row" id="map_subtext">
+                            filler text
                         </div>
                     </div>
                 </div>
