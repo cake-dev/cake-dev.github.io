@@ -109,70 +109,85 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
 fetchWeatherDataAndMakeTable();
 
 // WEATHER MAP functions
+{
+    function fetchWeatherMapAndDisplay(city_name = "Missoula") {
+        var city = city_name;
+        var country = "US";
+        var city_coords = geolocateCity(city);
 
-function fetchWeatherMapAndDisplay(city_name = "Missoula") {
-    var city = city_name;
-    var country = "US";
-    var city_coords = geolocateCity(city);
+        var clouds = L.OWM.clouds({ opacity: 0.8, appId: api_key });
+        var cloudscls = L.OWM.cloudsClassic({ opacity: 0.5, appId: api_key });
+        var precipitation = L.OWM.precipitation({ opacity: 0.5, appId: api_key });
+        var precipitationcls = L.OWM.precipitationClassic({ opacity: 0.5, appId: api_key });
+        var rain = L.OWM.rain({ opacity: 0.5, appId: api_key });
+        var raincls = L.OWM.rainClassic({ opacity: 0.5, appId: api_key });
+        var snow = L.OWM.snow({ opacity: 0.5, appId: api_key });
+        var pressure = L.OWM.pressure({ opacity: 0.4, appId: api_key });
+        var pressurecntr = L.OWM.pressureContour({ opacity: 0.5, appId: api_key });
+        var temp = L.OWM.temperature({ opacity: 0.5, appId: api_key });
+        var wind = L.OWM.wind({ opacity: 0.5, appId: api_key });
 
-    var clouds = L.OWM.clouds({ opacity: 0.8, appId: api_key });
-    var cloudscls = L.OWM.cloudsClassic({ opacity: 0.5, appId: api_key });
-    var precipitation = L.OWM.precipitation({ opacity: 0.5, appId: api_key });
-    var precipitationcls = L.OWM.precipitationClassic({ opacity: 0.5, appId: api_key });
-    var rain = L.OWM.rain({ opacity: 0.5, appId: api_key });
-    var raincls = L.OWM.rainClassic({ opacity: 0.5, appId: api_key });
-    var snow = L.OWM.snow({ opacity: 0.5, appId: api_key });
-    var pressure = L.OWM.pressure({ opacity: 0.4, appId: api_key });
-    var pressurecntr = L.OWM.pressureContour({ opacity: 0.5, appId: api_key });
-    var temp = L.OWM.temperature({ opacity: 0.5, appId: api_key });
-    var wind = L.OWM.wind({ opacity: 0.5, appId: api_key });
+        var current_city = L.OWM.current({
+            intervall: 15, minZoom: 5,
+            appId: api_key
+        });
 
-    var current_city = L.OWM.current({
-        intervall: 15, minZoom: 5,
-        appId: api_key
-    });
+        console.log(city_coords);
 
-    console.log(city_coords);
+        var overlayMaps = {};
+        overlayMaps['Clouds'] = clouds;
+        overlayMaps['Clouds (alt)'] = cloudscls;
+        overlayMaps['Precipitation'] = precipitation;
+        overlayMaps['Precipitation (alt)'] = precipitationcls;
+        overlayMaps['Rain'] = rain;
+        overlayMaps['Rain (alt)'] = raincls;
+        overlayMaps['Snow'] = snow;
+        overlayMaps['Temperature'] = temp;
+        overlayMaps['Wind Speed'] = wind;
+        overlayMaps['Air Pressure'] = pressure;
 
-    var overlayMaps = {};
-    overlayMaps['clouds'] = clouds;
-    overlayMaps['cloudscls'] = cloudscls;
-    overlayMaps['precipitation'] = precipitation;
-    overlayMaps['precipitationcls'] = precipitationcls;
-    overlayMaps['rain'] = rain;
-    overlayMaps['raincls'] = raincls;
-    overlayMaps['snow'] = snow;
-    overlayMaps['temp'] = temp;
-    overlayMaps['windspeed'] = wind;
-    overlayMaps['pressure'] = pressure;
-    overlayMaps['presscont'] = pressurecntr;
+        // var ow_precip = "http://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=" + api_key;
+        // var ow_clouds = "http://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=" + api_key;
+        // var ow_pressure = "http://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=" + api_key;
+        // var ow_wind = "http://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=" + api_key;
+        // var ow_temp = "http://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" + api_key;
+        // var ow_tile_layers = {
+        //     "Precipitation": L.tileLayer(ow_precip),
+        //     "Clouds": L.tileLayer(ow_clouds),
+        //     "Temperature": L.tileLayer(ow_temp),
+        //     "Wind": L.tileLayer(ow_wind),
+        //     "Pressure": L.tileLayer(ow_pressure),
+        // }
 
-    // var ow_precip = "http://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=" + api_key;
-    // var ow_clouds = "http://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=" + api_key;
-    // var ow_pressure = "http://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=" + api_key;
-    // var ow_wind = "http://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=" + api_key;
-    // var ow_temp = "http://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" + api_key;
-    // var ow_tile_layers = {
-    //     "Precipitation": L.tileLayer(ow_precip),
-    //     "Clouds": L.tileLayer(ow_clouds),
-    //     "Temperature": L.tileLayer(ow_temp),
-    //     "Wind": L.tileLayer(ow_wind),
-    //     "Pressure": L.tileLayer(ow_pressure),
-    // }
+        // var ow_tiles = "http://tile.openweathermap.org/map/" + layer + "/{z}/{x}/{y}.png?appid=" + api_key;
+        // var osm_mapnik_tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+        var basemap_tiles = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
+        // var basemap_tiles = ""
+        var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
+            subdomains: 'abcd',
+            minZoom: 0,
+            maxZoom: 20,
+            ext: 'png'
+        });
 
-    // var ow_tiles = "http://tile.openweathermap.org/map/" + layer + "/{z}/{x}/{y}.png?appid=" + api_key;
-    // var osm_mapnik_tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-    var esri_tiles = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
-    // wait 2 seconds
-    setTimeout(function () {
-        map.setView([city_coords.lat, city_coords.lon], 7);
-    }, 1000);
+        // wait 1/2 second
+        setTimeout(function () {
+            map.setView([city_coords.lat, city_coords.lon], 9);
+        }, 500);
 
-    L.tileLayer(esri_tiles, {}).addTo(map);
+        // L.tileLayer(basemap_tiles, {}).addTo(map);
+        Stamen_Toner.addTo(map);
 
-    // add layer controls
-    // var layerControl = L.control.layers(null, ow_tile_layers).addTo(map);
-    var layerControl = L.control.layers(null, overlayMaps, { collapsed: true }).addTo(map);
+        // add layer controls
+        // var layerControl = L.control.layers(null, ow_tile_layers).addTo(map);
+        var layerControl = L.control.layers(null, overlayMaps, { collapsed: true }).addTo(map);
+    }
+
+    function setMapView(coords) {
+        setTimeout(function () {
+            map.setView([coords.lat, coords.lon], 9);
+        }, 500);
+    }
 }
 
 fetchWeatherMapAndDisplay();
@@ -293,6 +308,9 @@ map.on('click', onMapClick);
         console.log(value);
         // fetch data for selected city
         fetchWeatherDataAndMakeTable(value);
+        var coords = geolocateCity(value);
+        // wait 1/2 second
+        setMapView(coords);
     }
 }
 
