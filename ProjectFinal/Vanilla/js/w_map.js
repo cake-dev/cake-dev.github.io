@@ -221,18 +221,16 @@ fetchWeatherMapAndDisplay();
                 table_string += "</table>";
                 forecast_data_table.html(table_string);
 
-                // create forecast graph using d3
-                var forecast_graph = d3.select("#weather_forecast_graph");
-                var forecast_graph_string = "<svg id='forecast_graph' width='100%' height='100%'></svg>";
-                forecast_graph.html(forecast_graph_string);
+                // TODO create a chart / widget to display the forecast data
+                // for the widget, reference the widgets from OWM
+
             })
     }
 }
 fetchWeatherForecastAndDisplay();
 
-var popup = L.popup();
-
 //popup function
+var popup = L.popup();
 function onMapClick(e) {
     popup
         .setLatLng(e.latlng)
@@ -335,7 +333,6 @@ function onMapClick(e) {
 
     //popupfunction ends here
 }
-
 //popup
 map.on('click', onMapClick);
 
