@@ -99,13 +99,12 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
             .then(response => response.json())
             .then(data => {
                 // string version of a table using all the data and table tags, creating a vertical table
-                var table_string = "<table id='weather_table'><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + kelvinToFahrenheit(data.main.temp).toFixed(2) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
+                var table_string = "<table id='weather_table'><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + kelvinToFahrenheit(data.main.temp).toFixed(1) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
                 d3.select("#weather_data_table").html(table_string);
             })
     }
 
 }
-
 fetchWeatherDataAndMakeTable();
 
 // WEATHER MAP functions
@@ -123,7 +122,6 @@ fetchWeatherDataAndMakeTable();
         var raincls = L.OWM.rainClassic({ opacity: 0.5, appId: api_key });
         var snow = L.OWM.snow({ opacity: 0.5, appId: api_key });
         var pressure = L.OWM.pressure({ opacity: 0.4, appId: api_key });
-        var pressurecntr = L.OWM.pressureContour({ opacity: 0.5, appId: api_key });
         var temp = L.OWM.temperature({ opacity: 0.5, appId: api_key });
         var wind = L.OWM.wind({ opacity: 0.5, appId: api_key });
 
@@ -146,22 +144,8 @@ fetchWeatherDataAndMakeTable();
         overlayMaps['Wind Speed'] = wind;
         overlayMaps['Air Pressure'] = pressure;
 
-        // var ow_precip = "http://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=" + api_key;
-        // var ow_clouds = "http://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=" + api_key;
-        // var ow_pressure = "http://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=" + api_key;
-        // var ow_wind = "http://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=" + api_key;
-        // var ow_temp = "http://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" + api_key;
-        // var ow_tile_layers = {
-        //     "Precipitation": L.tileLayer(ow_precip),
-        //     "Clouds": L.tileLayer(ow_clouds),
-        //     "Temperature": L.tileLayer(ow_temp),
-        //     "Wind": L.tileLayer(ow_wind),
-        //     "Pressure": L.tileLayer(ow_pressure),
-        // }
-
-        // var ow_tiles = "http://tile.openweathermap.org/map/" + layer + "/{z}/{x}/{y}.png?appid=" + api_key;
-        // var osm_mapnik_tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
         var basemap_tiles = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
+        var stamen_terrain_tiles = "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png";
         // var basemap_tiles = ""
         var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
             subdomains: 'abcd',
@@ -169,6 +153,12 @@ fetchWeatherDataAndMakeTable();
             maxZoom: 20,
             ext: 'png'
         });
+
+        var basemap_layers = {
+            "Stamen Toner": Stamen_Toner,
+            "Stamen Terrain": L.tileLayer(stamen_terrain_tiles),
+            "ESRI World Street Map": L.tileLayer(basemap_tiles),
+        }
 
         // wait 1/2 second
         setTimeout(function () {
@@ -179,8 +169,7 @@ fetchWeatherDataAndMakeTable();
         Stamen_Toner.addTo(map);
 
         // add layer controls
-        // var layerControl = L.control.layers(null, ow_tile_layers).addTo(map);
-        var layerControl = L.control.layers(null, overlayMaps, { collapsed: true }).addTo(map);
+
     }
 
     function setMapView(coords) {
@@ -189,8 +178,57 @@ fetchWeatherDataAndMakeTable();
         }, 500);
     }
 }
-
 fetchWeatherMapAndDisplay();
+
+// WEATHER FORECAST functions
+{
+    function fetchWeatherForecastAndDisplay(city_name = "Missoula") {
+        var city = city_name;
+        var country = "US";
+        var city_coords = geolocateCity(city);
+
+        var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
+        console.log(owm_url);
+
+        d3.json(owm_url)
+            .then(function (data) {
+                console.log(data);
+                var forecast_data = data.list;
+                var forecast_data_table = d3.select("#weather_forecast_table");
+                var table_string = "<table class='table table-bordered table-striped table-hover'>";
+                table_string += "<thead><tr><th>Time</th><th>Temp</th><th>Humidity</th><th>Pressure</th><th>Wind</th><th>Clouds</th><th>Weather</th></tr></thead>";
+                table_string += "<tbody>";
+                forecast_data.forEach(function (forecast) {
+                    var forecast_time = new Date(forecast.dt * 1000);
+                    var forecast_time_string = forecast_time.toLocaleString();
+                    var forecast_temp = forecast.main.temp.toFixed(1);
+                    var forecast_humidity = forecast.main.humidity;
+                    var forecast_pressure = forecast.main.pressure;
+                    var forecast_wind = forecast.wind.speed;
+                    var forecast_clouds = forecast.clouds.all;
+                    var forecast_weather = forecast.weather[0].main;
+                    table_string += "<tr>";
+                    table_string += "<td>" + forecast_time_string + "</td>";
+                    table_string += "<td>" + forecast_temp + "</td>";
+                    table_string += "<td>" + forecast_humidity + "</td>";
+                    table_string += "<td>" + forecast_pressure + "</td>";
+                    table_string += "<td>" + forecast_wind + "</td>";
+                    table_string += "<td>" + forecast_clouds + "</td>";
+                    table_string += "<td>" + forecast_weather + "</td>";
+                    table_string += "</tr>";
+                });
+                table_string += "</tbody>";
+                table_string += "</table>";
+                forecast_data_table.html(table_string);
+
+                // create forecast graph using d3
+                var forecast_graph = d3.select("#weather_forecast_graph");
+                var forecast_graph_string = "<svg id='forecast_graph' width='100%' height='100%'></svg>";
+                forecast_graph.html(forecast_graph_string);
+            })
+    }
+}
+fetchWeatherForecastAndDisplay();
 
 var popup = L.popup();
 
