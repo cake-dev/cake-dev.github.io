@@ -165,10 +165,13 @@ fetchWeatherDataAndMakeTable();
             map.setView([city_coords.lat, city_coords.lon], 9);
         }, 500);
 
-        // L.tileLayer(basemap_tiles, {}).addTo(map);
-        Stamen_Toner.addTo(map);
+        // create basemap layer group
+        var basemap_group = L.layerGroup([basemap_layers["Stamen Toner"]]);
+        // add to map
+        basemap_group.addTo(map);
 
         // add layer controls
+        L.control.layers(basemap_layers, overlayMaps).addTo(map);
 
     }
 
@@ -188,7 +191,7 @@ fetchWeatherMapAndDisplay();
         var city_coords = geolocateCity(city);
 
         var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
-        console.log(owm_url);
+        // console.log(owm_url);
 
         d3.json(owm_url)
             .then(function (data) {
