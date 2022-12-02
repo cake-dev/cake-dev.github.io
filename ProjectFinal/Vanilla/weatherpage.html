@@ -33,15 +33,18 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
-    <script src="https://unpkg.com/georaster"></script>
+    <!-- <script src="https://unpkg.com/georaster"></script>
     <script src="https://unpkg.com/chroma-js"></script>
-    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" type="text/css" href="static/css/leaflet-owm-style.css" />
     <link rel="stylesheet" type="text/css" href="static/css/colorlib-bs-table.css" />
     <script type="text/javascript" src="js/leaflet-owm.js"></script>
     <script type="text/javascript" src="js/colorlib-bstable.js"></script>
+    <script type="text/javascript" src="js/bootstrap-slider.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js" integrity="sha512-tCkLWlSXiiMsUaDl5+8bqwpGXXh0zZsgzX6pB9IQCZH+8iwXRYfcCpdxl/owoM6U4ap7QZDW4kw7djQUiQ4G2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
     <!-- <link href="static/css/sidebarstyle.css" rel="stylesheet"> -->
 </head>
 
@@ -153,6 +156,8 @@
                         </div>
                     </div>
                     <div class="row" id="weather_forecast_table"></div>
+                    <!-- TODO figure out why the slider is not showing but still functioning -->
+                    <div class="row" id="time_slider"><input id="timepicker" type="text" data-provide="slider" data-slider-ticks="[1, 2, 3]" data-slider-ticks-labels="['short', 'medium', 'long']" data-slider-min="1" data-slider-max="3" data-slider-step="1" data-slider-value="3" data-slider-tooltip="show" /></div>
                 </div>
                 <!-- weather data map -->
                 <div class="col" style="width: fit-content;">

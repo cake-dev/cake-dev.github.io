@@ -249,6 +249,8 @@ fetchWeatherMapAndDisplay();
                 var date_n6 = new Date(forecast_data[forecast_data.length - 1].dt * 1000);
                 var date_n6_string = date_n6.toLocaleDateString();
 
+                var date_strings = [date_n2_string, date_n3_string, date_n4_string, date_n5_string, date_n6_string];
+
                 var daily_data = {}
 
                 // loop through the data and create a dictionary of daily data, organized by date
@@ -277,59 +279,9 @@ fetchWeatherMapAndDisplay();
                     daily_data_date_avg["weather"] = d3.mean(daily_data_date, function (d) { return d.weather; });
                     daily_data_avg[date] = daily_data_date_avg;
                 });
-                console.log(daily_data_avg);
+                // console.log(daily_data_avg);
 
-                var forecast_data_table = d3.select("#weather_forecast_table");
-                var table_string = "<div class='table100 ver5 m-b-110'><table data-vertable='ver5'>";
-                table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>Weather</th><th class='column100 column2' data-column='column2'>" + date_n2_string + "</th><th class='column100 column3' data-column='column3'>" + date_n3_string + "</th><th class='column100 column4' data-column='column4'>" + date_n4_string + "</th><th class='column100 column5' data-column='column5'>" + date_n5_string + "</th><th class='column100 column6' data-column='column6'>" + date_n6_string + "</th></tr></thead>";
-                table_string += "<tbody>";
-                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Weather</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].weather + "</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].weather + "</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].weather + "</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].weather + "</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].weather + "</td>";
-                table_string += "</tr>";
-                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Temp</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].temp + "°F</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].temp + "°F</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].temp + "°F</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].temp + "°F</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].temp + "°F</td>";
-                table_string += "</tr>";
-                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Humidity</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].humidity + "%</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].humidity + "%</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].humidity + "%</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].humidity + "%</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].humidity + "%</td>";
-                table_string += "</tr>";
-                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Pressure</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].pressure + "hPa</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].pressure + "hPa</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].pressure + "hPa</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].pressure + "hPa</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].pressure + "hPa</td>";
-                table_string += "</tr>";
-                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Wind</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].wind + "mph</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].wind + "mph</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].wind + "mph</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].wind + "mph</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].wind + "mph</td>";
-                table_string += "</tr>";
-                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Cloudcover</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].clouds + "%</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].clouds + "%</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].clouds + "%</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].clouds + "%</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].clouds + "%</td>";
-                table_string += "</tr>";
-                table_string += "</tbody>";
-                table_string += "</table>";
-                table_string += "</div>";
-
-                forecast_data_table.html(table_string);
+                displayForecastTable(daily_data, date_strings);
 
                 // table hover functionality 
                 $('.column100').on('mouseover', function () {
@@ -357,8 +309,59 @@ fetchWeatherMapAndDisplay();
             })
     }
 
-    function displayForecastTable(data, city = "Missoula", time = 3) {
+    function displayForecastTable(f_data, f_dates, time = 3) {
+        var forecast_data_table = d3.select("#weather_forecast_table");
+        var table_string = "<div class='table100 ver5 m-b-110'><table data-vertable='ver5'>";
+        table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>Weather</th><th class='column100 column2' data-column='column2'>" + f_dates[0] + "</th><th class='column100 column3' data-column='column3'>" + f_dates[1] + "</th><th class='column100 column4' data-column='column4'>" + f_dates[2] + "</th><th class='column100 column5' data-column='column5'>" + f_dates[3] + "</th></tr></thead>";
+        table_string += "<tbody>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Weather</td>";
+        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].weather + "</td>";
+        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].weather + "</td>";
+        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].weather + "</td>";
+        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].weather + "</td>";
+        // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].weather + "</td>";
+        table_string += "</tr>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Temp</td>";
+        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].temp + "°F</td>";
+        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].temp + "°F</td>";
+        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].temp + "°F</td>";
+        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].temp + "°F</td>";
+        // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].temp + "°F</td>";
+        table_string += "</tr>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Humidity</td>";
+        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].humidity + "%</td>";
+        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].humidity + "%</td>";
+        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].humidity + "%</td>";
+        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].humidity + "%</td>";
+        // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].humidity + "%</td>";
+        table_string += "</tr>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Pressure</td>";
+        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].pressure + "hPa</td>";
+        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].pressure + "hPa</td>";
+        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].pressure + "hPa</td>";
+        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].pressure + "hPa</td>";
+        // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].pressure + "hPa</td>";
+        table_string += "</tr>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Wind</td>";
+        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].wind + "mph</td>";
+        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].wind + "mph</td>";
+        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].wind + "mph</td>";
+        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].wind + "mph</td>";
+        // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].wind + "mph</td>";
+        table_string += "</tr>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Cloudcover</td>";
+        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].clouds + "%</td>";
+        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].clouds + "%</td>";
+        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].clouds + "%</td>";
+        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].clouds + "%</td>";
+        // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].clouds + "%</td>";
+        table_string += "</tr>";
+        table_string += "</tbody>";
+        table_string += "</table>";
+        table_string += "</div>";
+        // table_string += "<span id='ex18-label-1' class='sr-only'>Change Time</span>"
 
+        forecast_data_table.html(table_string);
     }
 
     function formatForecast(forecast_d) {
