@@ -90,12 +90,12 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
         // create table
         var city = city_name;
         var country = "US";
-        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
+        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 // string version of a table using all the data and table tags, creating a vertical table
-                var table_string = "<table id='weather_table' class='table table-sm'><thead class='thead-dark'><tr><th scope='col'>Weather Data</th></tr></thead><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + kelvinToFahrenheit(data.main.temp).toFixed(1) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
+                var table_string = "<table id='weather_table' class='table table-sm'><thead class='thead-dark'><tr><th scope='col'>Weather Data</th></tr></thead><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + data.main.temp.toFixed(1) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
                 d3.select("#weather_data_table").html(table_string);
             })
     }
@@ -291,39 +291,39 @@ fetchWeatherMapAndDisplay();
                 table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].weather + "</td>";
                 table_string += "</tr>";
                 table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Temp</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].temp + "</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].temp + "</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].temp + "</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].temp + "</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].temp + "</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].temp + "°F</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].temp + "°F</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].temp + "°F</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].temp + "°F</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].temp + "°F</td>";
                 table_string += "</tr>";
                 table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Humidity</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].humidity + "</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].humidity + "</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].humidity + "</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].humidity + "</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].humidity + "</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].humidity + "%</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].humidity + "%</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].humidity + "%</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].humidity + "%</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].humidity + "%</td>";
                 table_string += "</tr>";
                 table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Pressure</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].pressure + "</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].pressure + "</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].pressure + "</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].pressure + "</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].pressure + "</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].pressure + "hPa</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].pressure + "hPa</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].pressure + "hPa</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].pressure + "hPa</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].pressure + "hPa</td>";
                 table_string += "</tr>";
                 table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Wind</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].wind + "</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].wind + "</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].wind + "</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].wind + "</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].wind + "</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].wind + "mph</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].wind + "mph</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].wind + "mph</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].wind + "mph</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].wind + "mph</td>";
                 table_string += "</tr>";
-                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Clouds</td>";
-                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].clouds + "</td>";
-                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].clouds + "</td>";
-                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].clouds + "</td>";
-                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].clouds + "</td>";
-                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].clouds + "</td>";
+                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Cloudcover</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].clouds + "%</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].clouds + "%</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].clouds + "%</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].clouds + "%</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].clouds + "%</td>";
                 table_string += "</tr>";
                 table_string += "</tbody>";
                 table_string += "</table>";
@@ -355,6 +355,10 @@ fetchWeatherMapAndDisplay();
                 // for the widget, reference the widgets from OWM
 
             })
+    }
+
+    function displayForecastTable(data, city = "Missoula", time = 3) {
+
     }
 
     function formatForecast(forecast_d) {
@@ -433,6 +437,7 @@ function onMapClick(e) {
                 var temperaturefahrenheit = kelvinToFahrenheit(temperature).toFixed(1)  // Converting Kelvin to Fahrenheit
                 var windspeedknots = Math.round((windspeed * 1.94) * 100) / 100; // Windspeed from m/s in Knots; Round to 2 decimals
                 var windspeedkmh = Math.round((windspeed * 3.6) * 100) / 100; // Windspeed from m/s in km/h; Round to 2 decimals
+                var windspeedmph = Math.round((windspeed * 2.237) * 100) / 100; // Windspeed from m/s in mph; Round to 2 decimals
                 var winddirectionstring = "Im the wind from direction"; // Wind from direction x as text
                 if (winddirection > 348.75 && winddirection <= 11.25) {
                     winddirectionstring = "North";
@@ -472,7 +477,7 @@ function onMapClick(e) {
 
                 //Popup with content
                 var fontsizesmall = 1;
-                popup.setContent("Weatherdata:<br>" + "<img src=" + weathercondtioniconhtml + "><br>" + weatherconditionstring + " (Weather-ID: " + weatherconditionid + "): " + weatherconditiondescription + "<br><br>Temperature: " + temperaturefahrenheit + "°F<br>Airpressure: " + airpressure + " hPa<br>Humidity: " + airhumidity + "%" + "<br>Cloudcoverage: " + cloudcoverage + "%<br><br>Windspeed: " + windspeedkmh + " km/h<br>Wind from direction: " + winddirectionstring + " (" + winddirection + "°)" + "<br><br><font size=" + fontsizesmall + ">Datasource:<br>openweathermap.org<br>Measure time: " + weathertimenormal + "<br>Weatherstation: " + weatherstationname + "<br>Weatherstation-ID: " + weatherstationid + "<br>Weatherstation Coordinates: " + weatherlocation_lon + ", " + weatherlocation_lat);
+                popup.setContent("Weatherdata:<br>" + "<img src=" + weathercondtioniconhtml + "><br>" + weatherconditionstring + " (Weather-ID: " + weatherconditionid + "): " + weatherconditiondescription + "<br><br>Temperature: " + temperaturefahrenheit + "°F<br>Airpressure: " + airpressure + " hPa<br>Humidity: " + airhumidity + "%" + "<br>Cloudcoverage: " + cloudcoverage + "%<br><br>Windspeed: " + windspeedmph + " mph<br>Wind from direction: " + winddirectionstring + " (" + winddirection + "°)" + "<br><br><font size=" + fontsizesmall + ">Source:<br>openweathermap.org<br>Measure time: " + weathertimenormal + "<br>Weatherstation: " + weatherstationname + "<br>Weatherstation-ID: " + weatherstationid + "<br>Weatherstation Coordinates: " + weatherlocation_lon + ", " + weatherlocation_lat);
                 var closest_city = getCityName(e.latlng.lat, e.latlng.lng);
                 console.log(closest_city);
 
