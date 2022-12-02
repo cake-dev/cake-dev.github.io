@@ -94,7 +94,7 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
         // create table
         var city = city_name;
         var country = "US";
-        var url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
+        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
         fetch(url)
             .then(response => response.json())
             .then(data => {
