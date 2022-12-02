@@ -1,5 +1,3 @@
-console.log("w_map.js loaded");
-
 // create map object
 var map = L.map("weather_map");
 
@@ -69,10 +67,8 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
         var coords = {};
         var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + api_key;
         $.getJSON(url, function (data) {
-            var lat = data.coord.lat;
-            var lon = data.coord.lon;
-            coords.lat = lat;
-            coords.lon = lon;
+            coords.lat = data.coord.lat;;
+            coords.lon = data.coord.lon;
         });
         return coords;
     }
@@ -87,7 +83,7 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
 }
 
 
-// WEATHER DATA TABLE functions
+// CURRENT WEATHER DATA TABLE functions
 {
     function fetchWeatherDataAndMakeTable(city_name = "Missoula") {
 
@@ -99,7 +95,7 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
             .then(response => response.json())
             .then(data => {
                 // string version of a table using all the data and table tags, creating a vertical table
-                var table_string = "<table id='weather_table'><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + kelvinToFahrenheit(data.main.temp).toFixed(1) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
+                var table_string = "<table id='weather_table' class='table table-sm'><thead class='thead-dark'><tr><th scope='col'>Weather Data</th></tr></thead><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + kelvinToFahrenheit(data.main.temp).toFixed(1) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
                 d3.select("#weather_data_table").html(table_string);
             })
     }
@@ -107,7 +103,7 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
 }
 fetchWeatherDataAndMakeTable();
 
-// WEATHER MAP functions
+// CURRENT WEATHER MAP functions
 {
     function fetchWeatherMapAndDisplay(city_name = "Missoula") {
         var city = city_name;
@@ -160,10 +156,7 @@ fetchWeatherDataAndMakeTable();
             "ESRI World Street Map": L.tileLayer(basemap_tiles),
         }
 
-        // wait 1/2 second
-        setTimeout(function () {
-            map.setView([city_coords.lat, city_coords.lon], 9);
-        }, 500);
+        setMapView(city_coords);
 
         // create basemap layer group
         var basemap_group = L.layerGroup([basemap_layers["Stamen Toner"]]);
@@ -176,6 +169,7 @@ fetchWeatherDataAndMakeTable();
     }
 
     function setMapView(coords) {
+        // wait until coords are defined and then set the map view
         setTimeout(function () {
             map.setView([coords.lat, coords.lon], 9);
         }, 500);
@@ -183,7 +177,7 @@ fetchWeatherDataAndMakeTable();
 }
 fetchWeatherMapAndDisplay();
 
-// WEATHER FORECAST functions
+// 5 day 3 hr WEATHER FORECAST functions
 {
     function fetchWeatherForecastAndDisplay(city_name = "Missoula") {
         var city = city_name;
@@ -229,10 +223,166 @@ fetchWeatherMapAndDisplay();
 
             })
     }
-}
-fetchWeatherForecastAndDisplay();
 
-//popup function
+    function fetchWeatherForecastAndDisplayTable(city_name = "Missoula") {
+        var city = city_name;
+        var country = "US";
+        var city_coords = geolocateCity(city);
+
+        var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
+        // console.log(owm_url);
+
+        d3.json(owm_url)
+            .then(function (data) {
+                // console.log(data);
+                var forecast_data = data.list;
+                var date_n1 = new Date(forecast_data[0].dt * 1000);
+                var date_n1_string = date_n1.toLocaleDateString();
+                var date_n2 = new Date(forecast_data[8].dt * 1000);
+                var date_n2_string = date_n2.toLocaleDateString();
+                var date_n3 = new Date(forecast_data[16].dt * 1000);
+                var date_n3_string = date_n3.toLocaleDateString();
+                var date_n4 = new Date(forecast_data[24].dt * 1000);
+                var date_n4_string = date_n4.toLocaleDateString();
+                var date_n5 = new Date(forecast_data[32].dt * 1000);
+                var date_n5_string = date_n5.toLocaleDateString();
+                var date_n6 = new Date(forecast_data[forecast_data.length - 1].dt * 1000);
+                var date_n6_string = date_n6.toLocaleDateString();
+
+                var daily_data = {}
+
+                // loop through the data and create a dictionary of daily data, organized by date
+                forecast_data.forEach(function (forecast) {
+                    var forecast_time = new Date(forecast.dt * 1000);
+                    var forecast_date = forecast_time.toLocaleDateString();
+                    if (daily_data[forecast_date] == undefined) {
+                        daily_data[forecast_date] = [];
+                    }
+                    var fixed_forecast = formatForecast(forecast);
+                    daily_data[forecast_date].push(fixed_forecast);
+                })
+
+                console.log(daily_data);
+
+                // extract average values over each day
+                var daily_data_avg = {};
+                Object.keys(daily_data).forEach(function (date) {
+                    var daily_data_date = daily_data[date];
+                    var daily_data_date_avg = {};
+                    daily_data_date_avg["temp"] = d3.mean(daily_data_date, function (d) { return d.temp; });
+                    daily_data_date_avg["humidity"] = d3.mean(daily_data_date, function (d) { return d.humidity; });
+                    daily_data_date_avg["pressure"] = d3.mean(daily_data_date, function (d) { return d.pressure; });
+                    daily_data_date_avg["wind"] = d3.mean(daily_data_date, function (d) { return d.wind; });
+                    daily_data_date_avg["clouds"] = d3.mean(daily_data_date, function (d) { return d.clouds; });
+                    daily_data_date_avg["weather"] = d3.mean(daily_data_date, function (d) { return d.weather; });
+                    daily_data_avg[date] = daily_data_date_avg;
+                });
+                console.log(daily_data_avg);
+
+                var forecast_data_table = d3.select("#weather_forecast_table");
+                var table_string = "<div class='table100 ver5 m-b-110'><table data-vertable='ver5'>";
+                table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>Weather</th><th class='column100 column2' data-column='column2'>" + date_n2_string + "</th><th class='column100 column3' data-column='column3'>" + date_n3_string + "</th><th class='column100 column4' data-column='column4'>" + date_n4_string + "</th><th class='column100 column5' data-column='column5'>" + date_n5_string + "</th><th class='column100 column6' data-column='column6'>" + date_n6_string + "</th></tr></thead>";
+                table_string += "<tbody>";
+                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Weather</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].weather + "</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].weather + "</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].weather + "</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].weather + "</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].weather + "</td>";
+                table_string += "</tr>";
+                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Temp</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].temp + "</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].temp + "</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].temp + "</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].temp + "</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].temp + "</td>";
+                table_string += "</tr>";
+                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Humidity</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].humidity + "</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].humidity + "</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].humidity + "</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].humidity + "</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].humidity + "</td>";
+                table_string += "</tr>";
+                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Pressure</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].pressure + "</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].pressure + "</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].pressure + "</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].pressure + "</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].pressure + "</td>";
+                table_string += "</tr>";
+                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Wind</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].wind + "</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].wind + "</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].wind + "</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].wind + "</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].wind + "</td>";
+                table_string += "</tr>";
+                table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Clouds</td>";
+                table_string += "<td class='column100 column2' data-column='column2'>" + daily_data[date_n2_string][3].clouds + "</td>";
+                table_string += "<td class='column100 column3' data-column='column3'>" + daily_data[date_n3_string][3].clouds + "</td>";
+                table_string += "<td class='column100 column4' data-column='column4'>" + daily_data[date_n4_string][3].clouds + "</td>";
+                table_string += "<td class='column100 column5' data-column='column5'>" + daily_data[date_n5_string][3].clouds + "</td>";
+                table_string += "<td class='column100 column6' data-column='column6'>" + daily_data[date_n6_string][3].clouds + "</td>";
+                table_string += "</tr>";
+                table_string += "</tbody>";
+                table_string += "</table>";
+                table_string += "</div>";
+
+                forecast_data_table.html(table_string);
+
+                // table hover functionality 
+                $('.column100').on('mouseover', function () {
+                    var table1 = $(this).parent().parent().parent();
+                    var table2 = $(this).parent().parent();
+                    var verTable = $(table1).data('vertable') + "";
+                    var column = $(this).data('column') + "";
+                    $(table2).find("." + column).addClass('hov-column-' + verTable);
+                    $(table1).find(".row100.head ." + column).addClass('hov-column-head-' + verTable);
+                });
+                $('.column100').on('mouseout', function () {
+                    var table1 = $(this).parent().parent().parent();
+                    var table2 = $(this).parent().parent();
+                    var verTable = $(table1).data('vertable') + "";
+                    var column = $(this).data('column') + "";
+                    $(table2).find("." + column).removeClass('hov-column-' + verTable);
+                    $(table1).find(".row100.head ." + column).removeClass('hov-column-head-' + verTable);
+                });
+
+                // TODO add another table with hourly data that includes a slider to change the date
+
+                // TODO create a chart / widget to display the forecast data
+                // for the widget, reference the widgets from OWM
+
+            })
+    }
+
+    function formatForecast(forecast_d) {
+        var forecast_time = new Date(forecast_d.dt * 1000);
+        var forecast_time_string = forecast_time.toLocaleString();
+        var forecast_temp = forecast_d.main.temp.toFixed(1);
+        var forecast_humidity = forecast_d.main.humidity;
+        var forecast_pressure = forecast_d.main.pressure;
+        var forecast_wind = forecast_d.wind.speed;
+        var forecast_clouds = forecast_d.clouds.all;
+        var forecast_weather = forecast_d.weather[0].main;
+        var forecast_date = forecast_time.toLocaleDateString();
+        return {
+            time: forecast_time_string,
+            temp: forecast_temp,
+            humidity: forecast_humidity,
+            pressure: forecast_pressure,
+            wind: forecast_wind,
+            clouds: forecast_clouds,
+            weather: forecast_weather,
+            date: forecast_date
+        }
+    }
+
+}
+fetchWeatherForecastAndDisplayTable();
+
+//WEATHER MAP POPUP function
 var popup = L.popup();
 function onMapClick(e) {
     popup
@@ -336,7 +486,7 @@ function onMapClick(e) {
 
     //popupfunction ends here
 }
-//popup
+// add popup
 map.on('click', onMapClick);
 
 // location functions 
@@ -347,9 +497,13 @@ map.on('click', onMapClick);
         // fetch data for selected city
         fetchWeatherDataAndMakeTable(value);
         var coords = geolocateCity(value);
-        // wait 1/2 second
+        // set map view to city coords
         setMapView(coords);
     }
 }
 
-document.getElementsByClassName('leaflet-control-attribution')[0].style.display = 'none';
+
+// cleanup functionality 
+{
+    document.getElementsByClassName('leaflet-control-attribution')[0].style.display = 'none';
+}

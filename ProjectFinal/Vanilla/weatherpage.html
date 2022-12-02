@@ -4,84 +4,6 @@
 
 <head>
     <style>
-        .link {
-            stroke: #c1c1c1;
-            pointer-events: all;
-        }
-
-        .link line {
-            stroke: #999;
-            stroke-opacity: 0.6;
-        }
-
-        .node circle {
-            pointer-events: all;
-            stroke: #777;
-            stroke-width: 2px;
-        }
-
-        div.tooltip {
-            position: absolute;
-            background-color: white;
-            max-width: 200px;
-            height: auto;
-            padding: 1px;
-            border-style: solid;
-            border-radius: 4px;
-            border-width: 1px;
-            box-shadow: 3px 3px 10px rgba(0, 0, 0, .5);
-            pointer-events: none;
-        }
-
-        #network_graph {
-            width: fit-content;
-            height: fit-content;
-        }
-
-        #network_graph text {
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-size: 10px;
-        }
-
-        #adj_matrix text {
-            font: 5px Arial;
-            fill: #000;
-        }
-
-        .tooltip2 {
-            position: absolute;
-            text-align: center;
-            padding: 5px;
-            font: 12px sans-serif;
-            background: lightsteelblue;
-            border-radius: 6px;
-        }
-
-        .background {
-            fill: #eee;
-        }
-
-        line {
-            stroke: #fff;
-        }
-
-        #adj_matrix text.active {
-            fill: blue;
-            font-size: 16px;
-        }
-
-        #adj_matrix {
-            margin-left: 5%;
-            margin-right: 0%;
-            background: #eee;
-            width: fit-content;
-            height: fit-content;
-        }
-
-        .n_image {
-            border-radius: 50%;
-        }
-
         #chart_title {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             text-align: center;
@@ -91,6 +13,7 @@
         #weather_map {
             width: 600px;
             height: 600px;
+            border: 1px solid black;
             z-index: 1;
         }
 
@@ -113,9 +36,12 @@
     <script src="https://unpkg.com/georaster"></script>
     <script src="https://unpkg.com/chroma-js"></script>
     <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" type="text/css" href="static/css/leaflet-owm-style.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/colorlib-bs-table.css" />
     <script type="text/javascript" src="js/leaflet-owm.js"></script>
+    <script type="text/javascript" src="js/colorlib-bstable.js"></script>
     <!-- <link href="static/css/sidebarstyle.css" rel="stylesheet"> -->
 </head>
 
@@ -234,7 +160,6 @@
                     </div>
                     <div class="container">
                         <div class="row" id="map_subtext">
-                            filler text
                         </div>
                     </div>
                 </div>
@@ -242,6 +167,9 @@
         </div>
     </div>
     <script src="js/w_map.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+    </script>
 </body>
 
 </html>
