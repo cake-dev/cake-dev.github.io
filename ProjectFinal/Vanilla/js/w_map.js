@@ -96,7 +96,7 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
             .then(response => response.json())
             .then(data => {
                 // string version of a table using all the data and table tags, creating a vertical table with minimal width
-                var table_string = "<table class='w3-table w3-striped w3-border w3-border-black w3-small w3-centered w3-hoverable' style='width: 100px;'>";
+                var table_string = "<table class='w3-table w3-striped w3-border w3-border-black w3-small w3-left w3-hoverable' style='width: 200px;'>";
                 table_string += "<tr><th>City</th><td>" + data.name + "</td></tr>";
                 table_string += "<tr><th>Date</th><td>" + epochToDate(data.dt) + "</td></tr>";
                 table_string += "<tr><th>Temperature</th><td>" + data.main.temp + " F</td></tr>";
@@ -295,7 +295,6 @@ fetchWeatherMapAndDisplay();
 
         d3.json(owm_url)
             .then(function (data) {
-                // console.log(data);
                 var forecast_data = data.list;
                 var date_n1 = new Date(forecast_data[0].dt * 1000);
                 var date_n1_string = date_n1.toLocaleDateString();
@@ -547,8 +546,6 @@ function onMapClick(e) {
                 //Popup with content
                 var fontsizesmall = 1;
                 popup.setContent("Weatherdata:<br>" + "<img src=" + weathercondtioniconhtml + "><br>" + weatherconditionstring + " (Weather-ID: " + weatherconditionid + "): " + weatherconditiondescription + "<br><br>Temperature: " + temperaturefahrenheit + "°F<br>Airpressure: " + airpressure + " hPa<br>Humidity: " + airhumidity + "%" + "<br>Cloudcoverage: " + cloudcoverage + "%<br><br>Windspeed: " + windspeedmph + " mph<br>Wind from direction: " + winddirectionstring + " (" + winddirection + "°)" + "<br><br><font size=" + fontsizesmall + ">Source:<br>openweathermap.org<br>Measure time: " + weathertimenormal + "<br>Weatherstation: " + weatherstationname + "<br>Weatherstation-ID: " + weatherstationid + "<br>Weatherstation Coordinates: " + weatherlocation_lon + ", " + weatherlocation_lat);
-                var closest_city = getCityName(e.latlng.lat, e.latlng.lng);
-                console.log(closest_city);
 
             },
             error: function () {

@@ -11,8 +11,8 @@
         }
 
         #weather_map {
-            width: 800px;
-            height: 800px;
+            width: 700px;
+            height: 700px;
             border: 1px solid black;
             z-index: 1;
         }
@@ -129,7 +129,7 @@
 
             <div class="row" style="margin-top: 4%;">
                 <!-- weather data table -->
-                <div class="col" style="width: fit-content;">
+                <div class="col-md-5" style="margin-right: 2%;">
                     <div class="row">
                         <div class="col-sm" style="max-width: 20%;">
                             <p>
@@ -138,7 +138,7 @@
                         </div>
                         <div class="col">
                             <!-- input field to get city weather data -->
-                            <select id="table_view_select" class="form-select" style="max-width: 30%;" onchange="selectCity(this.value)">
+                            <select id="table_view_select" class="form-select" style="max-width: 40%;" onchange="selectCity(this.value)">
                                 <option selected value="Missoula">
                                     Select Location
                                 </option>
@@ -154,12 +154,9 @@
                             </select>
                         </div>
                     </div>
-
-                    <!-- replace below code with selection options for different weather views on map -->
-
                     <div class="row" id="weather_forecast_table"></div>
                     <div class="row" id="forecast_time_slider"><label for="time_slider" class="form-label">Select Time</label>
-                        <input type="range" class="range" id="time_slider">
+                        <input type="range" class="range" id="time_slider" />
                         <div id="slider_ticks" class="ticks"></div>
                     </div>
 
