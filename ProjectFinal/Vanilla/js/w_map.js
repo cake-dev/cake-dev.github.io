@@ -63,9 +63,10 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
         return date.toLocaleTimeString();
     }
 
-    function geolocateCity(city) {
+    function geolocateCity(city, country = "US") {
         var coords = {};
-        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + api_key;
+        var country = this.country;
+        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
         $.getJSON(url, function (data) {
             coords.lat = data.coord.lat;;
             coords.lon = data.coord.lon;
@@ -94,8 +95,22 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                // string version of a table using all the data and table tags, creating a vertical table
-                var table_string = "<table id='weather_table' class='table table-sm'><thead class='thead-dark'><tr><th scope='col'>Weather Data</th></tr></thead><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + data.main.temp.toFixed(1) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
+                // string version of a table using all the data and table tags, creating a vertical table with minimal width
+                var table_string = "<table class='w3-table w3-striped w3-border w3-border-black w3-small w3-centered w3-hoverable' style='width: 100px;'>";
+                table_string += "<tr><th>City</th><td>" + data.name + "</td></tr>";
+                table_string += "<tr><th>Date</th><td>" + epochToDate(data.dt) + "</td></tr>";
+                table_string += "<tr><th>Temperature</th><td>" + data.main.temp + " F</td></tr>";
+                table_string += "<tr><th>Feels Like</th><td>" + data.main.feels_like + " F</td></tr>";
+                table_string += "<tr><th>Humidity</th><td>" + data.main.humidity + "%</td></tr>";
+                table_string += "<tr><th>Wind Speed</th><td>" + data.wind.speed + " mph</td></tr>";
+                table_string += "<tr><th>Wind Direction</th><td>" + data.wind.deg + " degrees</td></tr>";
+                table_string += "<tr><th>Cloud Cover</th><td>" + data.clouds.all + "%</td></tr>";
+                table_string += "<tr><th>Pressure</th><td>" + data.main.pressure + " hPa</td></tr>";
+                table_string += "<tr><th>Sunrise</th><td>" + epochToTime(data.sys.sunrise) + "</td></tr>";
+                table_string += "<tr><th>Sunset</th><td>" + epochToTime(data.sys.sunset) + "</td></tr>";
+                table_string += "</table>";
+                // set the innerHTML of the table div to the table string
+                // var table_string = "<table id='weather_table' class='table table-sm'><thead class='thead-dark'><tr><th scope='col'>Weather Data</th></tr></thead><tr><th>City: </th><td>" + data.name + "</td></tr><tr><th>Country: </th><td>" + data.sys.country + "</td></tr><tr><th>Date: </th><td>" + epochToDate(data.dt) + "</td></tr><tr><th>Temperature: </th><td>" + data.main.temp.toFixed(1) + "°F</td></tr><tr><th>Weather: </th><td>" + data.weather[0].main + "</td></tr><tr><th>Humidity: </th><td>" + data.main.humidity + "%</td></tr><tr><th>Wind Speed/Direction: </th><td>" + data.wind.speed + "mph/" + data.wind.deg + "°</td></tr><tr><th>Cloud Coverage: </th><td>" + data.clouds.all + "%</td></tr><tr><th>Sunrise: </th><td>" + epochToTime(data.sys.sunrise) + "</td></tr><tr><th>Sunset: </th><td>" + epochToTime(data.sys.sunset) + "</td></tr></table>";
                 d3.select("#weather_data_table").html(table_string);
             })
     }
@@ -126,15 +141,10 @@ fetchWeatherDataAndMakeTable();
             appId: api_key
         });
 
-        console.log(city_coords);
-
         var overlayMaps = {};
-        overlayMaps['Clouds'] = clouds;
-        overlayMaps['Clouds (alt)'] = cloudscls;
-        overlayMaps['Precipitation'] = precipitation;
-        overlayMaps['Precipitation (alt)'] = precipitationcls;
-        overlayMaps['Rain'] = rain;
-        overlayMaps['Rain (alt)'] = raincls;
+        overlayMaps['Clouds'] = cloudscls;
+        overlayMaps['Precipitation'] = precipitationcls;
+        overlayMaps['Rain'] = raincls;
         overlayMaps['Snow'] = snow;
         overlayMaps['Temperature'] = temp;
         overlayMaps['Wind Speed'] = wind;
@@ -163,15 +173,85 @@ fetchWeatherDataAndMakeTable();
         // add to map
         basemap_group.addTo(map);
 
-        // add layer controls
-        L.control.layers(basemap_layers, overlayMaps).addTo(map);
 
+        L.Control.Layers.include({
+            getOverlays: function () {
+                // create hash to hold all layers
+                var control, layers;
+                layers = {};
+                control = this;
+
+                // loop thru all layers in control
+                control._layers.forEach(function (obj) {
+                    var layerName;
+
+                    // check if layer is an overlay
+                    if (obj.overlay) {
+                        // get name of overlay
+                        layerName = obj.name;
+                        // store whether it's present on the map or not
+                        return layers[layerName] = control._map.hasLayer(obj.layer);
+                    }
+                });
+
+                return layers;
+            }
+        });
+
+        // add layer controls
+        var controls = L.control.layers(basemap_layers, overlayMaps)//.addTo(map);
+        controls.addTo(map);
+
+        // show selected layer names on map
+        map.on('overlayadd', function (eventLayer) {
+            var layerName = eventLayer.name;
+            var layer = eventLayer.layer;
+            var active_l = controls.getOverlays();
+            var active_layers = Object.keys(active_l).filter(function (key) { return active_l[key] });
+            console.log(active_layers);
+            setTextBoxLayerName(active_layers);
+        });
+        map.on('overlayremove', function (eventLayer) {
+            var layerName = eventLayer.name;
+            var layer = eventLayer.layer;
+            var active_l = controls.getOverlays();
+            var active_layers = Object.keys(active_l).filter(function (key) { return active_l[key] });
+            console.log(active_layers);
+            setTextBoxLayerName(active_layers);
+        });
+
+    }
+
+    function setTextBoxLayerName(selected_layers) {
+        // check if textbox already exists and remove if so
+        if (d3.select("#info_text").empty() == false) {
+            d3.select("#info_text").remove();
+        }
+        L.Control.textbox = L.Control.extend({
+            onAdd: function (map) {
+                var text = L.DomUtil.create('div');
+                text.id = "info_text";
+                // loop thru all layers in control
+                var layer_names_string = "";
+                for (var i = 0; i < selected_layers.length; i++) {
+                    layer_names_string += selected_layers[i] + ", ";
+                }
+                text.innerHTML = "<strong>" + layer_names_string + "</strong>"
+                return text;
+            },
+
+            onRemove: function (map) {
+                // Nothing to do here
+            }
+        });
+        L.control.textbox = function (opts) { return new L.Control.textbox(opts); }
+        L.control.textbox({ position: 'bottomleft' }).addTo(map);
     }
 
     function setMapView(coords) {
         // wait until coords are defined and then set the map view
         setTimeout(function () {
-            map.setView([coords.lat, coords.lon], 9);
+            map.setView([coords.lat, coords.lon], 11);
         }, 500);
     }
 }
@@ -179,49 +259,31 @@ fetchWeatherMapAndDisplay();
 
 // 5 day 3 hr WEATHER FORECAST functions
 {
-    function fetchWeatherForecastAndDisplay(city_name = "Missoula") {
-        var city = city_name;
-        var country = "US";
-        var city_coords = geolocateCity(city);
+    // dict mapping the slider value to the time string
+    var slider_dict = {
+        0: "2:00AM",
+        1: "5:00AM",
+        2: "8:00AM",
+        3: "11:00AM",
+        4: "2:00PM",
+        5: "5:00PM",
+        6: "8:00PM",
+        7: "11:00PM"
+    }
 
-        var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
-        // console.log(owm_url);
+    var slider = d3.select("#time_slider");
+    slider.attr("min", 0);
+    slider.attr("max", 7);
+    slider.attr("value", 0);
+    slider.attr("step", 1);
+    // set slider default value to 3
+    slider.property("value", 3);
 
-        d3.json(owm_url)
-            .then(function (data) {
-                console.log(data);
-                var forecast_data = data.list;
-                var forecast_data_table = d3.select("#weather_forecast_table");
-                var table_string = "<table class='table table-bordered table-striped table-hover'>";
-                table_string += "<thead><tr><th>Time</th><th>Temp</th><th>Humidity</th><th>Pressure</th><th>Wind</th><th>Clouds</th><th>Weather</th></tr></thead>";
-                table_string += "<tbody>";
-                forecast_data.forEach(function (forecast) {
-                    var forecast_time = new Date(forecast.dt * 1000);
-                    var forecast_time_string = forecast_time.toLocaleString();
-                    var forecast_temp = forecast.main.temp.toFixed(1);
-                    var forecast_humidity = forecast.main.humidity;
-                    var forecast_pressure = forecast.main.pressure;
-                    var forecast_wind = forecast.wind.speed;
-                    var forecast_clouds = forecast.clouds.all;
-                    var forecast_weather = forecast.weather[0].main;
-                    table_string += "<tr>";
-                    table_string += "<td>" + forecast_time_string + "</td>";
-                    table_string += "<td>" + forecast_temp + "</td>";
-                    table_string += "<td>" + forecast_humidity + "</td>";
-                    table_string += "<td>" + forecast_pressure + "</td>";
-                    table_string += "<td>" + forecast_wind + "</td>";
-                    table_string += "<td>" + forecast_clouds + "</td>";
-                    table_string += "<td>" + forecast_weather + "</td>";
-                    table_string += "</tr>";
-                });
-                table_string += "</tbody>";
-                table_string += "</table>";
-                forecast_data_table.html(table_string);
-
-                // TODO create a chart / widget to display the forecast data
-                // for the widget, reference the widgets from OWM
-
-            })
+    var slider_vals = d3.select("#slider_ticks");
+    for (var i = 0; i <= 7; i++) {
+        slider_vals.append("span")
+            .attr("class", "tick")
+            .text(slider_dict[i]);
     }
 
     function fetchWeatherForecastAndDisplayTable(city_name = "Missoula") {
@@ -230,7 +292,6 @@ fetchWeatherMapAndDisplay();
         var city_coords = geolocateCity(city);
 
         var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
-        // console.log(owm_url);
 
         d3.json(owm_url)
             .then(function (data) {
@@ -264,7 +325,6 @@ fetchWeatherMapAndDisplay();
                     daily_data[forecast_date].push(fixed_forecast);
                 })
 
-                console.log(daily_data);
 
                 // extract average values over each day
                 var daily_data_avg = {};
@@ -279,7 +339,6 @@ fetchWeatherMapAndDisplay();
                     daily_data_date_avg["weather"] = d3.mean(daily_data_date, function (d) { return d.weather; });
                     daily_data_avg[date] = daily_data_date_avg;
                 });
-                // console.log(daily_data_avg);
 
                 displayForecastTable(daily_data, date_strings);
 
@@ -301,7 +360,11 @@ fetchWeatherMapAndDisplay();
                     $(table1).find(".row100.head ." + column).removeClass('hov-column-head-' + verTable);
                 });
 
-                // TODO add another table with hourly data that includes a slider to change the date
+
+                slider.on("input", function () {
+                    var slider_value = d3.select(this).property("value");
+                    displayForecastTable(daily_data, date_strings, slider_value);
+                })
 
                 // TODO create a chart / widget to display the forecast data
                 // for the widget, reference the widgets from OWM
@@ -309,10 +372,13 @@ fetchWeatherMapAndDisplay();
             })
     }
 
+
     function displayForecastTable(f_data, f_dates, time = 3) {
         var forecast_data_table = d3.select("#weather_forecast_table");
+        // clear table before adding new data
+        forecast_data_table.html("");
         var table_string = "<div class='table100 ver5 m-b-110'><table data-vertable='ver5'>";
-        table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>Weather</th><th class='column100 column2' data-column='column2'>" + f_dates[0] + "</th><th class='column100 column3' data-column='column3'>" + f_dates[1] + "</th><th class='column100 column4' data-column='column4'>" + f_dates[2] + "</th><th class='column100 column5' data-column='column5'>" + f_dates[3] + "</th></tr></thead>";
+        table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>4 Day Forecast - " + slider_dict[time] + "</th><th class='column100 column2' data-column='column2'>" + f_dates[0] + "</th><th class='column100 column3' data-column='column3'>" + f_dates[1] + "</th><th class='column100 column4' data-column='column4'>" + f_dates[2] + "</th><th class='column100 column5' data-column='column5'>" + f_dates[3] + "</th></tr></thead>";
         table_string += "<tbody>";
         table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Weather</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].weather + "</td>";
@@ -504,6 +570,11 @@ map.on('click', onMapClick);
         console.log(value);
         // fetch data for selected city
         fetchWeatherDataAndMakeTable(value);
+        // fetch forecast data for selected city
+        fetchWeatherForecastAndDisplayTable(value);
+        var slider = d3.select("#time_slider");
+        // move slider to 3
+        slider.property("value", 3);
         var coords = geolocateCity(value);
         // set map view to city coords
         setMapView(coords);

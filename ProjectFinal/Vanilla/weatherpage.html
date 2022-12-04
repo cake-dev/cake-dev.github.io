@@ -11,8 +11,8 @@
         }
 
         #weather_map {
-            width: 600px;
-            height: 600px;
+            width: 800px;
+            height: 800px;
             border: 1px solid black;
             z-index: 1;
         }
@@ -40,9 +40,9 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" type="text/css" href="static/css/leaflet-owm-style.css" />
     <link rel="stylesheet" type="text/css" href="static/css/colorlib-bs-table.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/newslider.css" />
     <script type="text/javascript" src="js/leaflet-owm.js"></script>
     <script type="text/javascript" src="js/colorlib-bstable.js"></script>
-    <script type="text/javascript" src="js/bootstrap-slider.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js" integrity="sha512-tCkLWlSXiiMsUaDl5+8bqwpGXXh0zZsgzX6pB9IQCZH+8iwXRYfcCpdxl/owoM6U4ap7QZDW4kw7djQUiQ4G2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
     <!-- <link href="static/css/sidebarstyle.css" rel="stylesheet"> -->
@@ -50,6 +50,50 @@
 
 <body>
     <div id="wrapper">
+        <!-- Modal -->
+        <div id="id01" class="w3-modal">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+                <header class="w3-container w3-blue">
+                    <span onclick="closeModal()" class=" w3-button w3-clear w3-xlarge w3-display-topright">&times;</span>
+                    <h2>Live Weather Dashboard Tool</h2>
+                </header>
+                <div class="w3-bar w3-border-bottom">
+                    <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'London')">About</button>
+                    <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Data</button>
+                    <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Tokyo')">Methods</button>
+                </div>
+                <div id="London" class="w3-container city">
+                    <h1>An Interactive Visualization of Weather Data</h1>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam auctor leo dignissim pharetra fermentum. Donec quis egestas purus, eget pretium ipsum. Phasellus posuere felis vel dui sodales, in gravida nibh pulvinar. Vestibulum semper tortor odio. Curabitur pharetra facilisis aliquam. Sed eu rutrum massa. Proin luctus eros id sapien sagittis, a efficitur enim aliquet.
+                    </p>
+                </div>
+                <div id="Paris" class="w3-container city">
+                    <h1>Data</h1>
+                    <p>
+                        Primary data sourced from <a href="#" target="_blank">OpenWeatherMap</a>
+                    </p>
+                    <p style="font-weight: bold;">Notes on dataset:</p>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam auctor leo dignissim pharetra fermentum. Donec quis egestas purus, eget pretium ipsum. Phasellus posuere felis vel dui sodales, in gravida nibh pulvinar. Vestibulum semper tortor odio. Curabitur pharetra facilisis aliquam.
+                    </p>
+                </div>
+                <div id="Tokyo" class="w3-container city">
+                    <h1>Methods</h1>
+                    <p>
+                        Visualization created with D3.js, Jquery, and Leaflet
+                        <br>
+                    <p>Data prep done in python (Jupyter Notebook)</p>
+                    <br>
+                    </p>
+                </div>
+                <div class="w3-container w3-light-grey w3-padding">
+                    <button class="w3-button w3-right w3-white w3-border" onclick="closeModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="container-fluid" style="margin-left: 2%;margin-top: 8%;">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
@@ -82,55 +126,10 @@
                 <!-- Container wrapper -->
             </nav>
             <!-- Navbar End -->
-            <!-- Modal -->
-            <div id="id01" class="w3-modal">
-                <div class="w3-modal-content w3-card-4 w3-animate-zoom">
-                    <header class="w3-container w3-blue">
-                        <span onclick="closeModal()" class=" w3-button w3-clear w3-xlarge w3-display-topright">&times;</span>
-                        <h2>Live Weather Dashboard Tool</h2>
-                    </header>
-                    <div class="w3-bar w3-border-bottom">
-                        <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'London')">About</button>
-                        <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Data</button>
-                        <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Tokyo')">Methods</button>
-                    </div>
-                    <div id="London" class="w3-container city">
-                        <h1>An Interactive Visualization of Weather Data</h1>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam auctor leo dignissim pharetra fermentum. Donec quis egestas purus, eget pretium ipsum. Phasellus posuere felis vel dui sodales, in gravida nibh pulvinar. Vestibulum semper tortor odio. Curabitur pharetra facilisis aliquam. Sed eu rutrum massa. Proin luctus eros id sapien sagittis, a efficitur enim aliquet.
-                        </p>
-                    </div>
-                    <div id="Paris" class="w3-container city">
-                        <h1>Data</h1>
-                        <p>
-                            Primary data sourced from <a href="#" target="_blank">OpenWeatherMap</a>
-                        </p>
-                        <p style="font-weight: bold;">Notes on dataset:</p>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam auctor leo dignissim pharetra fermentum. Donec quis egestas purus, eget pretium ipsum. Phasellus posuere felis vel dui sodales, in gravida nibh pulvinar. Vestibulum semper tortor odio. Curabitur pharetra facilisis aliquam.
-                        </p>
-                    </div>
-                    <div id="Tokyo" class="w3-container city">
-                        <h1>Methods</h1>
-                        <p>
-                            Visualization created with D3.js, Jquery, and Leaflet
-                            <br>
-                        <p>Data prep done in python (Jupyter Notebook)</p>
-                        <br>
-                        </p>
-                    </div>
-                    <div class="w3-container w3-light-grey w3-padding">
-                        <button class="w3-button w3-right w3-white w3-border" onclick="closeModal()">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
+
             <div class="row" style="margin-top: 4%;">
                 <!-- weather data table -->
                 <div class="col" style="width: fit-content;">
-                    <div class="row" id="weather_data_table"></div>
-                    <!-- replace below code with selection options for different weather views on map -->
                     <div class="row">
                         <div class="col-sm" style="max-width: 20%;">
                             <p>
@@ -140,7 +139,7 @@
                         <div class="col">
                             <!-- input field to get city weather data -->
                             <select id="table_view_select" class="form-select" style="max-width: 30%;" onchange="selectCity(this.value)">
-                                <option selected>
+                                <option selected value="Missoula">
                                     Select Location
                                 </option>
                                 <option value="Missoula">
@@ -149,24 +148,34 @@
                                 <option value="Seattle">
                                     Seattle
                                 </option>
-                                <option value="New_York_City">
+                                <option value="New York City">
                                     New York City
                                 </option>
                             </select>
                         </div>
                     </div>
+
+                    <!-- replace below code with selection options for different weather views on map -->
+
                     <div class="row" id="weather_forecast_table"></div>
-                    <!-- TODO figure out why the slider is not showing but still functioning -->
-                    <div class="row" id="time_slider"><input id="timepicker" type="text" data-provide="slider" data-slider-ticks="[1, 2, 3]" data-slider-ticks-labels="['short', 'medium', 'long']" data-slider-min="1" data-slider-max="3" data-slider-step="1" data-slider-value="3" data-slider-tooltip="show" /></div>
+                    <div class="row" id="forecast_time_slider"><label for="time_slider" class="form-label">Select Time</label>
+                        <input type="range" class="range" id="time_slider">
+                        <div id="slider_ticks" class="ticks"></div>
+                    </div>
+
                 </div>
                 <!-- weather data map -->
                 <div class="col" style="width: fit-content;">
-                    <div id="weather_map">
+                    <div class="row" id="weather_map">
                     </div>
-                    <div class="container">
-                        <div class="row" id="map_subtext">
+                    <div class="row">
+                        <div id="map_subtext">
+                            <p>Live Weather Map</p>
                         </div>
                     </div>
+                </div>
+                <div class="col">
+                    <div class="row" id="weather_data_table"></div>
                 </div>
             </div>
         </div>
