@@ -41,8 +41,10 @@
     <link rel="stylesheet" type="text/css" href="static/css/leaflet-owm-style.css" />
     <link rel="stylesheet" type="text/css" href="static/css/colorlib-bs-table.css" />
     <link rel="stylesheet" type="text/css" href="static/css/newslider.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/billboard.css" />
     <script type="text/javascript" src="js/leaflet-owm.js"></script>
     <script type="text/javascript" src="js/colorlib-bstable.js"></script>
+    <script type="text/javascript" src="js/billboard.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js" integrity="sha512-tCkLWlSXiiMsUaDl5+8bqwpGXXh0zZsgzX6pB9IQCZH+8iwXRYfcCpdxl/owoM6U4ap7QZDW4kw7djQUiQ4G2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
     <!-- <link href="static/css/sidebarstyle.css" rel="stylesheet"> -->
@@ -139,8 +141,8 @@
                         <div class="col">
                             <!-- input field to get city weather data -->
                             <select id="table_view_select" class="form-select" style="max-width: 40%;" onchange="selectCity(this.value)">
-                                <option selected value="Missoula">
-                                    Select Location
+                                <option id="selected_default" value="current_location">
+                                    Current Location
                                 </option>
                                 <option value="Missoula">
                                     Missoula
@@ -158,6 +160,13 @@
                     <div class="row" id="forecast_time_slider"><label for="time_slider" class="form-label">Select Time</label>
                         <input type="range" class="range" id="time_slider" />
                         <div id="slider_ticks" class="ticks"></div>
+                    </div>
+                    <div class="row" id="forecast_graph">
+                        <!-- Markup
+                        <div id="areaChart"></div> -->
+                        <!-- Markup -->
+                        <div id="forecast_chart_controls"></div>
+                        <div id="forecast_chart"></div>
                     </div>
 
                 </div>

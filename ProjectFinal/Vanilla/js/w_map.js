@@ -1,5 +1,9 @@
 // create map object
-var map = L.map("weather_map");
+// limit the map to the world (prevents errors when requesting weather data for areas outside the map coordinates)
+var southWest = L.latLng(-90, -180);
+var northEast = L.latLng(90, 180);
+var bounds = L.latLngBounds(southWest, northEast);
+var map = L.map('weather_map', {}).setView([0, 0], 2).setMaxBounds(bounds).setMinZoom(2);
 
 var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
 
@@ -81,6 +85,17 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
             return city;
         });
     }
+
+    function getCurrentLocation() {
+        var coords = {};
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                coords.lat = position.coords.latitude;
+                coords.lon = position.coords.longitude;
+            });
+        }
+        return coords;
+    }
 }
 
 
@@ -124,6 +139,7 @@ fetchWeatherDataAndMakeTable();
         var city = city_name;
         var country = "US";
         var city_coords = geolocateCity(city);
+        var current_coords = getCurrentLocation();
 
         var clouds = L.OWM.clouds({ opacity: 0.8, appId: api_key });
         var cloudscls = L.OWM.cloudsClassic({ opacity: 0.5, appId: api_key });
@@ -136,10 +152,10 @@ fetchWeatherDataAndMakeTable();
         var temp = L.OWM.temperature({ opacity: 0.5, appId: api_key });
         var wind = L.OWM.wind({ opacity: 0.5, appId: api_key });
 
-        var current_city = L.OWM.current({
-            intervall: 15, minZoom: 5,
-            appId: api_key
-        });
+        // var current_city = L.OWM.current({
+        //     intervall: 15, minZoom: 5,
+        //     appId: api_key
+        // });
 
         var overlayMaps = {};
         overlayMaps['Clouds'] = cloudscls;
@@ -166,7 +182,14 @@ fetchWeatherDataAndMakeTable();
             "ESRI World Street Map": L.tileLayer(basemap_tiles),
         }
 
-        setMapView(city_coords);
+        // limit the map to the world
+        var southWest = L.latLng(-90, -180);
+        var northEast = L.latLng(90, 180);
+        var bounds = L.latLngBounds(southWest, northEast);
+
+
+
+        setMapView(current_coords);
 
         // create basemap layer group
         var basemap_group = L.layerGroup([basemap_layers["Stamen Toner"]]);
@@ -219,7 +242,6 @@ fetchWeatherDataAndMakeTable();
             console.log(active_layers);
             setTextBoxLayerName(active_layers);
         });
-
     }
 
     function setTextBoxLayerName(selected_layers) {
@@ -252,13 +274,17 @@ fetchWeatherDataAndMakeTable();
         // wait until coords are defined and then set the map view
         setTimeout(function () {
             map.setView([coords.lat, coords.lon], 11);
-        }, 500);
+        }, 1000);
     }
 }
 fetchWeatherMapAndDisplay();
 
 // 5 day 3 hr WEATHER FORECAST functions
 {
+
+    // the current forecast data
+    var forecast_data = null;
+
     // dict mapping the slider value to the time string
     var slider_dict = {
         0: "2:00AM",
@@ -306,10 +332,10 @@ fetchWeatherMapAndDisplay();
                 var date_n4_string = date_n4.toLocaleDateString();
                 var date_n5 = new Date(forecast_data[32].dt * 1000);
                 var date_n5_string = date_n5.toLocaleDateString();
-                var date_n6 = new Date(forecast_data[forecast_data.length - 1].dt * 1000);
-                var date_n6_string = date_n6.toLocaleDateString();
+                // var date_n6 = new Date(forecast_data[forecast_data.length - 1].dt * 1000);
+                // var date_n6_string = date_n6.toLocaleDateString();
 
-                var date_strings = [date_n2_string, date_n3_string, date_n4_string, date_n5_string, date_n6_string];
+                var date_strings = [date_n2_string, date_n3_string, date_n4_string, date_n5_string];
 
                 var daily_data = {}
 
@@ -317,47 +343,37 @@ fetchWeatherMapAndDisplay();
                 forecast_data.forEach(function (forecast) {
                     var forecast_time = new Date(forecast.dt * 1000);
                     var forecast_date = forecast_time.toLocaleDateString();
-                    if (daily_data[forecast_date] == undefined) {
-                        daily_data[forecast_date] = [];
+                    // if the date is not in date strings, skip it
+                    if (date_strings.includes(forecast_date) == true) {
+                        if (daily_data[forecast_date] == undefined) {
+                            daily_data[forecast_date] = [];
+                        }
+                        var fixed_forecast = formatForecast(forecast);
+                        daily_data[forecast_date].push(fixed_forecast);
                     }
-                    var fixed_forecast = formatForecast(forecast);
-                    daily_data[forecast_date].push(fixed_forecast);
                 })
 
 
-                // extract average values over each day
-                var daily_data_avg = {};
-                Object.keys(daily_data).forEach(function (date) {
-                    var daily_data_date = daily_data[date];
-                    var daily_data_date_avg = {};
-                    daily_data_date_avg["temp"] = d3.mean(daily_data_date, function (d) { return d.temp; });
-                    daily_data_date_avg["humidity"] = d3.mean(daily_data_date, function (d) { return d.humidity; });
-                    daily_data_date_avg["pressure"] = d3.mean(daily_data_date, function (d) { return d.pressure; });
-                    daily_data_date_avg["wind"] = d3.mean(daily_data_date, function (d) { return d.wind; });
-                    daily_data_date_avg["clouds"] = d3.mean(daily_data_date, function (d) { return d.clouds; });
-                    daily_data_date_avg["weather"] = d3.mean(daily_data_date, function (d) { return d.weather; });
-                    daily_data_avg[date] = daily_data_date_avg;
-                });
+                // // extract average values over each day
+                // var daily_data_avg = {};
+                // Object.keys(daily_data).forEach(function (date) {
+                //     var daily_data_date = daily_data[date];
+                //     var daily_data_date_avg = {};
+                //     daily_data_date_avg["temp"] = d3.mean(daily_data_date, function (d) { return d.temp; });
+                //     daily_data_date_avg["humidity"] = d3.mean(daily_data_date, function (d) { return d.humidity; });
+                //     daily_data_date_avg["pressure"] = d3.mean(daily_data_date, function (d) { return d.pressure; });
+                //     daily_data_date_avg["wind"] = d3.mean(daily_data_date, function (d) { return d.wind; });
+                //     daily_data_date_avg["clouds"] = d3.mean(daily_data_date, function (d) { return d.clouds; });
+                //     daily_data_avg[date] = daily_data_date_avg;
+                // });
 
+                var selected_day = date_n2_string;
+
+                setCurrentForecastData(daily_data);
                 displayForecastTable(daily_data, date_strings);
+                displayForecastChart(daily_data, selected_day);
 
-                // table hover functionality 
-                $('.column100').on('mouseover', function () {
-                    var table1 = $(this).parent().parent().parent();
-                    var table2 = $(this).parent().parent();
-                    var verTable = $(table1).data('vertable') + "";
-                    var column = $(this).data('column') + "";
-                    $(table2).find("." + column).addClass('hov-column-' + verTable);
-                    $(table1).find(".row100.head ." + column).addClass('hov-column-head-' + verTable);
-                });
-                $('.column100').on('mouseout', function () {
-                    var table1 = $(this).parent().parent().parent();
-                    var table2 = $(this).parent().parent();
-                    var verTable = $(table1).data('vertable') + "";
-                    var column = $(this).data('column') + "";
-                    $(table2).find("." + column).removeClass('hov-column-' + verTable);
-                    $(table1).find(".row100.head ." + column).removeClass('hov-column-head-' + verTable);
-                });
+
 
 
                 slider.on("input", function () {
@@ -371,50 +387,151 @@ fetchWeatherMapAndDisplay();
             })
     }
 
+    // billboart.js chart for displaying the forecast data based on a specified weather parameter
+    function displayForecastChart(daily_data, day, weather_param = "temp") {
+        var chart_data = [];
+        var chart_labels = [];
+        var chart_colors = [];
+        var chart_colors_dict = {
+            "temp": "#ff0000",
+            "humidity": "#0000ff",
+            "pressure": "#00ff00",
+            "wind": "#ffff00",
+            "clouds": "#ff00ff",
+            "weather": "#00ffff"
+        }
+        var day_to_display = day;
+        var day_data = daily_data[day_to_display];
+        day_data.forEach(function (d) {
+            chart_data.push(d.temp);
+            chart_labels.push(d.time);
+            chart_colors.push(chart_colors_dict[weather_param]);
+        })
+
+        // clear the chart if it already exists
+        d3.select("#forecast_chart").selectAll("*").remove();
+
+        var chart = bb.generate({
+            data: {
+                columns: [
+                    chart_data
+                ],
+                type: "bar",
+                colors: {
+                    data1: chart_colors_dict[weather_param]
+                }
+            },
+            axis: {
+                x: {
+                    type: "category",
+                    categories: chart_labels
+                }
+            },
+            bindto: "#forecast_chart"
+
+        });
+
+        // add controls to the chart to change the weather parameter
+        var chart_controls = d3.select("#forecast_chart_controls");
+        chart_controls.selectAll("*").remove();
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .text("Temperature")
+            .on("click", function () {
+                displayForecastChart(daily_data, day_to_display, "temp");
+            }
+            )
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .text("Humidity")
+            .on("click", function () {
+                displayForecastChart(daily_data, day_to_display, "humidity");
+            })
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .text("Pressure")
+            .on("click", function () {
+                displayForecastChart(daily_data, day_to_display, "pressure");
+            })
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .text("Wind")
+            .on("click", function () {
+                displayForecastChart(daily_data, day_to_display, "wind");
+            }
+            )
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .text("Clouds")
+            .on("click", function () {
+                displayForecastChart(daily_data, day_to_display, "cloudcover");
+            }
+            )
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .text("Weather")
+            .on("click", function () {
+                displayForecastChart(daily_data, day_to_display, "weather");
+            }
+            )
+    }
+
+    // TODO get this function to change the forecast chart based on the selected weather parameter
+    function selectWeatherParamater(value) {
+        // get weather param as lowercase
+        var weather_param = value.toLowerCase();
+        var current_forecast_data = getCurrentForecastData();
+        console.log(weather_param);
+        console.log(current_forecast_data);
+        var day = Object.keys(current_forecast_data)[0];
+        displayForecastChart(current_forecast_data, day, weather_param);
+
+    }
+
 
     function displayForecastTable(f_data, f_dates, time = 3) {
         var forecast_data_table = d3.select("#weather_forecast_table");
         // clear table before adding new data
         forecast_data_table.html("");
-        var table_string = "<div class='table100 ver5 m-b-110'><table data-vertable='ver5'>";
+        var table_string = "<div class='table100 ver4 m-b-110'><table data-vertable='ver4'>";
         table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>4 Day Forecast - " + slider_dict[time] + "</th><th class='column100 column2' data-column='column2'>" + f_dates[0] + "</th><th class='column100 column3' data-column='column3'>" + f_dates[1] + "</th><th class='column100 column4' data-column='column4'>" + f_dates[2] + "</th><th class='column100 column5' data-column='column5'>" + f_dates[3] + "</th></tr></thead>";
         table_string += "<tbody>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Weather</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Weather</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].weather + "</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].weather + "</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].weather + "</td>";
         table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].weather + "</td>";
         // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].weather + "</td>";
         table_string += "</tr>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Temp</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Temp</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].temp + "°F</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].temp + "°F</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].temp + "°F</td>";
         table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].temp + "°F</td>";
         // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].temp + "°F</td>";
         table_string += "</tr>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Humidity</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Humidity</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].humidity + "%</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].humidity + "%</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].humidity + "%</td>";
         table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].humidity + "%</td>";
         // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].humidity + "%</td>";
         table_string += "</tr>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Pressure</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Pressure</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].pressure + "hPa</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].pressure + "hPa</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].pressure + "hPa</td>";
         table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].pressure + "hPa</td>";
         // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].pressure + "hPa</td>";
         table_string += "</tr>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Wind</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Wind</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].wind + "mph</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].wind + "mph</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].wind + "mph</td>";
         table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].wind + "mph</td>";
         // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].wind + "mph</td>";
         table_string += "</tr>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Cloudcover</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Cloudcover</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].clouds + "%</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].clouds + "%</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].clouds + "%</td>";
@@ -427,6 +544,23 @@ fetchWeatherMapAndDisplay();
         // table_string += "<span id='ex18-label-1' class='sr-only'>Change Time</span>"
 
         forecast_data_table.html(table_string);
+        // table hover functionality 
+        $('.column100').on('mouseover', function () {
+            var table1 = $(this).parent().parent().parent();
+            var table2 = $(this).parent().parent();
+            var verTable = $(table1).data('vertable') + "";
+            var column = $(this).data('column') + "";
+            $(table2).find("." + column).addClass('hov-column-' + verTable);
+            $(table1).find(".row100.head ." + column).addClass('hov-column-head-' + verTable);
+        });
+        $('.column100').on('mouseout', function () {
+            var table1 = $(this).parent().parent().parent();
+            var table2 = $(this).parent().parent();
+            var verTable = $(table1).data('vertable') + "";
+            var column = $(this).data('column') + "";
+            $(table2).find("." + column).removeClass('hov-column-' + verTable);
+            $(table1).find(".row100.head ." + column).removeClass('hov-column-head-' + verTable);
+        });
     }
 
     function formatForecast(forecast_d) {
@@ -449,6 +583,14 @@ fetchWeatherMapAndDisplay();
             weather: forecast_weather,
             date: forecast_date
         }
+    }
+
+    function setCurrentForecastData(data) {
+        forecast_data = data;
+    }
+
+    function getCurrentForecastData() {
+        return forecast_data;
     }
 
 }
@@ -563,6 +705,7 @@ map.on('click', onMapClick);
 // location functions 
 // TODO allow for text entry and autocomplete city names
 {
+
     function selectCity(value) {
         console.log(value);
         // fetch data for selected city
@@ -572,7 +715,12 @@ map.on('click', onMapClick);
         var slider = d3.select("#time_slider");
         // move slider to 3
         slider.property("value", 3);
-        var coords = geolocateCity(value);
+        var coords;
+        if (value == "current_location") {
+            coords = getCurrentLocation();
+        } else {
+            coords = geolocateCity(value);
+        }
         // set map view to city coords
         setMapView(coords);
     }
@@ -583,3 +731,17 @@ map.on('click', onMapClick);
 {
     document.getElementsByClassName('leaflet-control-attribution')[0].style.display = 'none';
 }
+
+var chart = bb.generate({
+    data: {
+        columns: [
+            ["data1", 300, 350, 300, 0, 0, 0],
+            ["data2", 130, 100, 140, 200, 150, 50]
+        ],
+        types: {
+            data1: "area", // for ESM specify as: area()
+            data2: "area-spline", // for ESM specify as: areaSpline()
+        }
+    },
+    bindto: "#areaChart"
+});
