@@ -388,6 +388,7 @@ fetchWeatherMapAndDisplay();
     }
 
     // billboart.js chart for displaying the forecast data based on a specified weather parameter
+    // TODO investigate why the chart is not displaying the data correctly (cuts off the last data point, weird data title) 
     function displayForecastChart(daily_data, day, weather_param = "temp") {
         console.log(bb.instance);
         // clear bb instance
