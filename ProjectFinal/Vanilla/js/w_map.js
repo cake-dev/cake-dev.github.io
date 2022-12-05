@@ -389,6 +389,11 @@ fetchWeatherMapAndDisplay();
 
     // billboart.js chart for displaying the forecast data based on a specified weather parameter
     function displayForecastChart(daily_data, day, weather_param = "temp") {
+        console.log(bb.instance);
+        // clear bb instance
+        bb.instance = [];
+        console.log(weather_param);
+        console.log(daily_data);
         var chart_data = [];
         var chart_labels = [];
         var chart_colors = [];
@@ -403,7 +408,7 @@ fetchWeatherMapAndDisplay();
         var day_to_display = day;
         var day_data = daily_data[day_to_display];
         day_data.forEach(function (d) {
-            chart_data.push(d.temp);
+            chart_data.push(d[weather_param]);
             chart_labels.push(d.time);
             chart_colors.push(chart_colors_dict[weather_param]);
         })
@@ -416,7 +421,7 @@ fetchWeatherMapAndDisplay();
                 columns: [
                     chart_data
                 ],
-                type: "bar",
+                type: "area",
                 colors: {
                     data1: chart_colors_dict[weather_param]
                 }
@@ -436,53 +441,29 @@ fetchWeatherMapAndDisplay();
         chart_controls.selectAll("*").remove();
         chart_controls.append("button")
             .attr("class", "btn btn-primary")
+            .attr("value", "temp")
             .text("Temperature")
-            .on("click", function () {
-                displayForecastChart(daily_data, day_to_display, "temp");
-            }
-            )
         chart_controls.append("button")
             .attr("class", "btn btn-primary")
-            .text("Humidity")
-            .on("click", function () {
-                displayForecastChart(daily_data, day_to_display, "humidity");
-            })
-        chart_controls.append("button")
-            .attr("class", "btn btn-primary")
-            .text("Pressure")
-            .on("click", function () {
-                displayForecastChart(daily_data, day_to_display, "pressure");
-            })
-        chart_controls.append("button")
-            .attr("class", "btn btn-primary")
+            .attr("value", "wind")
             .text("Wind")
-            .on("click", function () {
-                displayForecastChart(daily_data, day_to_display, "wind");
-            }
-            )
         chart_controls.append("button")
             .attr("class", "btn btn-primary")
-            .text("Clouds")
-            .on("click", function () {
-                displayForecastChart(daily_data, day_to_display, "cloudcover");
-            }
-            )
-        chart_controls.append("button")
-            .attr("class", "btn btn-primary")
-            .text("Weather")
-            .on("click", function () {
-                displayForecastChart(daily_data, day_to_display, "weather");
-            }
-            )
+            .attr("value", "humidity")
+            .text("Humidity")
+
+        chart_controls.selectAll("button").on("click", function () {
+            var weather_param = d3.select(this).attr("value");
+            displayForecastChart(daily_data, day_to_display, weather_param);
+        })
     }
+
 
     // TODO get this function to change the forecast chart based on the selected weather parameter
     function selectWeatherParamater(value) {
         // get weather param as lowercase
         var weather_param = value.toLowerCase();
         var current_forecast_data = getCurrentForecastData();
-        console.log(weather_param);
-        console.log(current_forecast_data);
         var day = Object.keys(current_forecast_data)[0];
         displayForecastChart(current_forecast_data, day, weather_param);
 
@@ -731,17 +712,3 @@ map.on('click', onMapClick);
 {
     document.getElementsByClassName('leaflet-control-attribution')[0].style.display = 'none';
 }
-
-var chart = bb.generate({
-    data: {
-        columns: [
-            ["data1", 300, 350, 300, 0, 0, 0],
-            ["data2", 130, 100, 140, 200, 150, 50]
-        ],
-        types: {
-            data1: "area", // for ESM specify as: area()
-            data2: "area-spline", // for ESM specify as: areaSpline()
-        }
-    },
-    bindto: "#areaChart"
-});
