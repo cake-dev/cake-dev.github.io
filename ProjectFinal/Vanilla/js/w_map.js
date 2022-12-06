@@ -92,33 +92,76 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
             navigator.geolocation.getCurrentPosition(function (position) {
                 coords.lat = position.coords.latitude;
                 coords.lon = position.coords.longitude;
+                coords.city = getCityName(coords.lat, coords.lon);
             });
         }
         return coords;
+    }
+
+    function windDirectionFromDegrees(winddirection) {
+        var winddirectionstring = ""; // Wind from direction x as text
+        if (winddirection > 348.75 && winddirection <= 11.25) {
+            winddirectionstring = "North";
+        } else if (winddirection > 11.25 && winddirection <= 33.75) {
+            winddirectionstring = "Northnortheast";
+        } else if (winddirection > 33.75 && winddirection <= 56.25) {
+            winddirectionstring = "Northeast";
+        } else if (winddirection > 56.25 && winddirection <= 78.75) {
+            winddirectionstring = "Eastnortheast";
+        } else if (winddirection > 78.75 && winddirection <= 101.25) {
+            winddirectionstring = "East";
+        } else if (winddirection > 101.25 && winddirection <= 123.75) {
+            winddirectionstring = "Eastsoutheast";
+        } else if (winddirection > 123.75 && winddirection <= 146.25) {
+            winddirectionstring = "Southeast";
+        } else if (winddirection > 146.25 && winddirection <= 168.75) {
+            winddirectionstring = "Southsoutheast";
+        } else if (winddirection > 168.75 && winddirection <= 191.25) {
+            winddirectionstring = "South";
+        } else if (winddirection > 191.25 && winddirection <= 213.75) {
+            winddirectionstring = "Southsouthwest";
+        } else if (winddirection > 213.75 && winddirection <= 236.25) {
+            winddirectionstring = "Southwest";
+        } else if (winddirection > 236.25 && winddirection <= 258.75) {
+            winddirectionstring = "Westsouthwest";
+        } else if (winddirection > 258.75 && winddirection <= 281.25) {
+            winddirectionstring = "West";
+        } else if (winddirection > 281.25 && winddirection <= 303.75) {
+            winddirectionstring = "Westnorthwest";
+        } else if (winddirection > 303.75 && winddirection <= 326.25) {
+            winddirectionstring = "Northwest";
+        } else if (winddirection > 326.25 && winddirection <= 348.75) {
+            winddirectionstring = "Northnorthwest";
+        } else {
+            winddirectionstring = " - currently no winddata available - ";
+        };
+        return winddirectionstring;
     }
 }
 
 
 // CURRENT WEATHER DATA TABLE functions
 {
-    function fetchWeatherDataAndMakeTable(city_name = "Missoula") {
+    function fetchWeatherDataAndMakeTable(city_name = "Missoula", coords = { lat: 46.8787, lon: -113.996 }) {
 
         // create table
         var city = city_name;
         var country = "US";
-        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
+        // url for lat long weather
+        var url2 = "https://api.openweathermap.org/data/2.5/weather?lat=" + coords.lat + "&lon=" + coords.lon + "&appid=" + api_key;
+        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + api_key;
         fetch(url)
             .then(response => response.json())
             .then(data => {
                 // string version of a table using all the data and table tags, creating a vertical table with minimal width
-                var table_string = "<table class='w3-table w3-striped w3-border w3-border-black w3-small w3-left w3-hoverable' style='width: 200px;'>";
+                var table_string = "<table class='w3-table w3-striped w3-border w3-border-black w3-small w3-left w3-hoverable' style='width: 100%;'>";
                 table_string += "<tr><th>City</th><td>" + data.name + "</td></tr>";
                 table_string += "<tr><th>Date</th><td>" + epochToDate(data.dt) + "</td></tr>";
                 table_string += "<tr><th>Temperature</th><td>" + data.main.temp + " F</td></tr>";
                 table_string += "<tr><th>Feels Like</th><td>" + data.main.feels_like + " F</td></tr>";
                 table_string += "<tr><th>Humidity</th><td>" + data.main.humidity + "%</td></tr>";
                 table_string += "<tr><th>Wind Speed</th><td>" + data.wind.speed + " mph</td></tr>";
-                table_string += "<tr><th>Wind Direction</th><td>" + data.wind.deg + " degrees</td></tr>";
+                table_string += "<tr><th>Wind Direction</th><td>" + data.wind.deg + " degrees <br>(from: " + windDirectionFromDegrees(data.wind.deg) + ")</td></tr>";
                 table_string += "<tr><th>Cloud Cover</th><td>" + data.clouds.all + "%</td></tr>";
                 table_string += "<tr><th>Pressure</th><td>" + data.main.pressure + " hPa</td></tr>";
                 table_string += "<tr><th>Sunrise</th><td>" + epochToTime(data.sys.sunrise) + "</td></tr>";
@@ -312,7 +355,7 @@ fetchWeatherMapAndDisplay();
             .text(slider_dict[i]);
     }
 
-    function fetchWeatherForecastAndDisplayTable(city_name = "Missoula") {
+    function fetchWeatherForecastAndDisplayTable(city_name = "Missoula", coords = null, day = "none") {
         var city = city_name;
         var country = "US";
         var city_coords = geolocateCity(city);
@@ -369,6 +412,12 @@ fetchWeatherMapAndDisplay();
 
                 var selected_day = date_n2_string;
 
+                if (day != "none") {
+                    selected_day = day
+                } else {
+                    console.log("no day specified");
+                }
+
                 setCurrentForecastData(daily_data);
                 displayForecastTable(daily_data, date_strings);
                 displayForecastChart(daily_data, selected_day);
@@ -390,11 +439,8 @@ fetchWeatherMapAndDisplay();
     // billboart.js chart for displaying the forecast data based on a specified weather parameter
     // TODO investigate why the chart is not displaying the data correctly (cuts off the last data point, weird data title) 
     function displayForecastChart(daily_data, day, weather_param = "temp") {
-        console.log(bb.instance);
-        // clear bb instance
+        // clear bb instance to prevent multiple charts from being displayed
         bb.instance = [];
-        console.log(weather_param);
-        console.log(daily_data);
         var chart_data = [];
         var chart_labels = [];
         var chart_colors = [];
@@ -413,7 +459,9 @@ fetchWeatherMapAndDisplay();
             chart_labels.push(d.time);
             chart_colors.push(chart_colors_dict[weather_param]);
         })
-
+        console.log(day_data)
+        // add weather parameter to the front of the chart data array (for the data title)
+        chart_data.unshift(weather_param);
         // clear the chart if it already exists
         d3.select("#forecast_chart").selectAll("*").remove();
 
@@ -452,6 +500,14 @@ fetchWeatherMapAndDisplay();
             .attr("class", "btn btn-primary")
             .attr("value", "humidity")
             .text("Humidity")
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .attr("value", "clouds")
+            .text("Clouds")
+        chart_controls.append("button")
+            .attr("class", "btn btn-primary")
+            .attr("value", "weather")
+            .text("Weather")
 
         chart_controls.selectAll("button").on("click", function () {
             var weather_param = d3.select(this).attr("value");
@@ -461,15 +517,17 @@ fetchWeatherMapAndDisplay();
 
 
     // TODO get this function to change the forecast chart based on the selected weather parameter
-    function selectWeatherParamater(value) {
+    function selectWeatherParamater(value = "temp", day = "none") {
         // get weather param as lowercase
         var weather_param = value.toLowerCase();
         var current_forecast_data = getCurrentForecastData();
-        var day = Object.keys(current_forecast_data)[0];
-        displayForecastChart(current_forecast_data, day, weather_param);
+        var the_day = Object.keys(current_forecast_data)[0];
+        if (day != "none") {
+            var the_day = day;
+        }
+        displayForecastChart(current_forecast_data, the_day, weather_param);
 
     }
-
 
     function displayForecastTable(f_data, f_dates, time = 3) {
         var forecast_data_table = d3.select("#weather_forecast_table");
@@ -513,7 +571,7 @@ fetchWeatherMapAndDisplay();
         table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].wind + "mph</td>";
         // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].wind + "mph</td>";
         table_string += "</tr>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Cloudcover</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Clouds</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].clouds + "%</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].clouds + "%</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].clouds + "%</td>";
@@ -669,7 +727,7 @@ function onMapClick(e) {
 
                 //Popup with content
                 var fontsizesmall = 1;
-                popup.setContent("Weatherdata:<br>" + "<img src=" + weathercondtioniconhtml + "><br>" + weatherconditionstring + " (Weather-ID: " + weatherconditionid + "): " + weatherconditiondescription + "<br><br>Temperature: " + temperaturefahrenheit + "°F<br>Airpressure: " + airpressure + " hPa<br>Humidity: " + airhumidity + "%" + "<br>Cloudcoverage: " + cloudcoverage + "%<br><br>Windspeed: " + windspeedmph + " mph<br>Wind from direction: " + winddirectionstring + " (" + winddirection + "°)" + "<br><br><font size=" + fontsizesmall + ">Source:<br>openweathermap.org<br>Measure time: " + weathertimenormal + "<br>Weatherstation: " + weatherstationname + "<br>Weatherstation-ID: " + weatherstationid + "<br>Weatherstation Coordinates: " + weatherlocation_lon + ", " + weatherlocation_lat);
+                popup.setContent("Weatherdata:<br>" + "<img src=" + weathercondtioniconhtml + "><br>" + weatherconditionstring + " (Weather-ID: " + weatherconditionid + "): " + weatherconditiondescription + "<br><br>Temperature: " + temperaturefahrenheit + "°F<br>Airpressure: " + airpressure + " hPa<br>Humidity: " + airhumidity + "%" + "<br>Cloudcoverage: " + cloudcoverage + "%<br><br>Windspeed: " + windspeedmph + " mph<br>Wind from direction: " + winddirectionstring + " (" + winddirection + "°)" + "<br><br><font size=" + fontsizesmall + ">Source:<br>openweathermap.org<br>Measure time: " + weathertimenormal + "<br>Weatherstation: " + weatherstationname + "<br>Weatherstation Coordinates: " + weatherlocation_lon + ", " + weatherlocation_lat);
 
             },
             error: function () {
@@ -690,19 +748,23 @@ map.on('click', onMapClick);
 
     function selectCity(value) {
         console.log(value);
-        // fetch data for selected city
-        fetchWeatherDataAndMakeTable(value);
-        // fetch forecast data for selected city
-        fetchWeatherForecastAndDisplayTable(value);
-        var slider = d3.select("#time_slider");
-        // move slider to 3
-        slider.property("value", 3);
         var coords;
         if (value == "current_location") {
             coords = getCurrentLocation();
+            // fetch data for selected city
+            fetchWeatherDataAndMakeTable(coords = coords);
+            // fetch forecast data for selected city
+            fetchWeatherForecastAndDisplayTable(value);
         } else {
             coords = geolocateCity(value);
+            // fetch data for selected city
+            fetchWeatherDataAndMakeTable(value);
+            // fetch forecast data for selected city
+            fetchWeatherForecastAndDisplayTable(value);
         }
+        var slider = d3.select("#time_slider");
+        // move slider to 3
+        slider.property("value", 3);
         // set map view to city coords
         setMapView(coords);
     }
@@ -713,3 +775,24 @@ map.on('click', onMapClick);
 {
     document.getElementsByClassName('leaflet-control-attribution')[0].style.display = 'none';
 }
+
+// Get all inputs that have a word limit
+document.querySelectorAll('input[data-max-words]').forEach(input => {
+    // Remember the word limit for the current input
+    let maxWords = parseInt(input.getAttribute('data-max-words') || 0)
+    // Add an eventlistener to test for key inputs
+    input.addEventListener('keydown', e => {
+        let target = e.currentTarget
+        // Split the text in the input and get the current number of words
+        let words = target.value.split(/\s+/).length
+        // If the word count is > than the max amount and a space is pressed
+        // Don't allow for the space to be inserted
+        if (!target.getAttribute('data-announce'))
+            // Note: this is a shorthand if statement
+            // If the first two tests fail allow the key to be inserted
+            // Otherwise we prevent the default from happening
+            words >= maxWords && e.keyCode == 32 && e.preventDefault()
+        else
+            words >= maxWords && e.keyCode == 32 && (e.preventDefault() || alert('Word Limit Reached'))
+    })
+})
