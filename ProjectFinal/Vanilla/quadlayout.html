@@ -62,6 +62,7 @@
 <body>
     <div class="container-fluid">
         <div class="row">
+            <p id="coordinates">coords go here</p>
             <div class="col-sm-3" id="topleft">
                 <div class="alert alert-primary">
                     <div class="row">
@@ -102,16 +103,18 @@
                 </div>
             </div>
             <div class="col-sm-6" id="bottomright">
-                <div class="row">
-                    <div class="col-sm" style="max-width: 100%;">
-                        <p>
-                            Hourly Forecast Chart
-                        </p>
+                <div class="alert alert-dark">
+                    <div class="row">
+                        <div class="col-sm" style="max-width: 100%;">
+                            <p>
+                                Hourly Forecast Chart
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div class="row" id="forecast_graph">
-                    <div id="forecast_chart_controls"></div>
-                    <div id="forecast_chart"></div>
+                    <div class="row" id="forecast_graph">
+                        <div id="forecast_chart_controls"></div>
+                        <div id="forecast_chart"></div>
+                    </div>
                 </div>
             </div>
         </div>

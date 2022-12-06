@@ -92,8 +92,10 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
             navigator.geolocation.getCurrentPosition(function (position) {
                 coords.lat = position.coords.latitude;
                 coords.lon = position.coords.longitude;
-                coords.city = getCityName(coords.lat, coords.lon);
             });
+        }
+        if (coords.lat == undefined || coords.lon == undefined) {
+            setTimeout(getCurrentLocation, 1000)
         }
         return coords;
     }
@@ -142,14 +144,18 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
 
 // CURRENT WEATHER DATA TABLE functions
 {
-    function fetchWeatherDataAndMakeTable(city_name = "Missoula", coords = { lat: 46.8787, lon: -113.996 }) {
-
+    function fetchWeatherDataAndMakeTable(city_name = "Missoula", coords = null) {
         // create table
         var city = city_name;
         var country = "US";
+        var url = "";
         // url for lat long weather
-        var url2 = "https://api.openweathermap.org/data/2.5/weather?lat=" + coords.lat + "&lon=" + coords.lon + "&appid=" + api_key;
-        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + api_key;
+        if (coords != null) {
+            url = "https://api.openweathermap.org/data/2.5/weather?lat=" + coords.lat + "&lon=" + coords.lon + "&appid=" + api_key;
+        } else {
+            url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + api_key;
+        }
+        // console.log(url);
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -183,6 +189,7 @@ fetchWeatherDataAndMakeTable();
         var country = "US";
         var city_coords = geolocateCity(city);
         var current_coords = getCurrentLocation();
+
 
         var clouds = L.OWM.clouds({ opacity: 0.8, appId: api_key });
         var cloudscls = L.OWM.cloudsClassic({ opacity: 0.5, appId: api_key });
@@ -233,6 +240,8 @@ fetchWeatherDataAndMakeTable();
 
 
         setMapView(current_coords);
+        console.log(current_coords);
+        d3.select("#coordinates").text(current_coords.lat + ", " + current_coords.lng);
 
         // create basemap layer group
         var basemap_group = L.layerGroup([basemap_layers["Stamen Toner"]]);
@@ -274,7 +283,6 @@ fetchWeatherDataAndMakeTable();
             var layer = eventLayer.layer;
             var active_l = controls.getOverlays();
             var active_layers = Object.keys(active_l).filter(function (key) { return active_l[key] });
-            console.log(active_layers);
             setTextBoxLayerName(active_layers);
         });
         map.on('overlayremove', function (eventLayer) {
@@ -282,7 +290,6 @@ fetchWeatherDataAndMakeTable();
             var layer = eventLayer.layer;
             var active_l = controls.getOverlays();
             var active_layers = Object.keys(active_l).filter(function (key) { return active_l[key] });
-            console.log(active_layers);
             setTextBoxLayerName(active_layers);
         });
     }
@@ -415,7 +422,7 @@ fetchWeatherMapAndDisplay();
                 if (day != "none") {
                     selected_day = day
                 } else {
-                    console.log("no day specified");
+                    // console.log("no day specified");
                 }
 
                 setCurrentForecastData(daily_data);
@@ -459,7 +466,7 @@ fetchWeatherMapAndDisplay();
             chart_labels.push(d.time);
             chart_colors.push(chart_colors_dict[weather_param]);
         })
-        console.log(day_data)
+        // console.log(day_data)
         // add weather parameter to the front of the chart data array (for the data title)
         chart_data.unshift(weather_param);
         // clear the chart if it already exists
@@ -748,13 +755,17 @@ map.on('click', onMapClick);
 
     function selectCity(value) {
         console.log(value);
-        var coords;
+        var coords = null;
         if (value == "current_location") {
-            coords = getCurrentLocation();
+            // wait for coords to be set
+            while (coords == null) {
+                coords = getCurrentLocation();
+            }
+            // TODO fix this so it updates the weather data views
             // fetch data for selected city
-            fetchWeatherDataAndMakeTable(coords = coords);
+            // fetchWeatherDataAndMakeTable(coords = coords);
             // fetch forecast data for selected city
-            fetchWeatherForecastAndDisplayTable(value);
+            // fetchWeatherForecastAndDisplayTable(coords = coords);
         } else {
             coords = geolocateCity(value);
             // fetch data for selected city
