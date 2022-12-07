@@ -1,9 +1,9 @@
 // create map object
 // limit the map to the world (prevents errors when requesting weather data for areas outside the map coordinates)
-var southWest = L.latLng(-90, -180);
-var northEast = L.latLng(90, 180);
+var southWest = L.latLng(-90, -160);
+var northEast = L.latLng(90, 160);
 var bounds = L.latLngBounds(southWest, northEast);
-var map = L.map('weather_map', {}).setView([0, 0], 2).setMaxBounds(bounds).setMinZoom(2);
+var map = L.map('weather_map', { zoomControl: false }).setView([0, 0], 2).setMaxBounds(bounds).setMinZoom(2);
 
 var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
 
@@ -191,16 +191,16 @@ fetchWeatherDataAndMakeTable();
         var current_coords = getCurrentLocation();
 
 
-        var clouds = L.OWM.clouds({ opacity: 0.8, appId: api_key });
-        var cloudscls = L.OWM.cloudsClassic({ opacity: 0.5, appId: api_key });
-        var precipitation = L.OWM.precipitation({ opacity: 0.5, appId: api_key });
-        var precipitationcls = L.OWM.precipitationClassic({ opacity: 0.5, appId: api_key });
-        var rain = L.OWM.rain({ opacity: 0.5, appId: api_key });
-        var raincls = L.OWM.rainClassic({ opacity: 0.5, appId: api_key });
-        var snow = L.OWM.snow({ opacity: 0.5, appId: api_key });
-        var pressure = L.OWM.pressure({ opacity: 0.4, appId: api_key });
-        var temp = L.OWM.temperature({ opacity: 0.5, appId: api_key });
-        var wind = L.OWM.wind({ opacity: 0.5, appId: api_key });
+        var clouds = L.OWM.clouds({ opacity: 0.8, appId: api_key, noWrap: true });
+        var cloudscls = L.OWM.cloudsClassic({ opacity: 0.5, appId: api_key, noWrap: true });
+        var precipitation = L.OWM.precipitation({ opacity: 0.5, appId: api_key, noWrap: true });
+        var precipitationcls = L.OWM.precipitationClassic({ opacity: 0.5, appId: api_key, noWrap: true });
+        var rain = L.OWM.rain({ opacity: 0.5, appId: api_key, noWrap: true });
+        var raincls = L.OWM.rainClassic({ opacity: 0.5, appId: api_key, noWrap: true });
+        var snow = L.OWM.snow({ opacity: 0.5, appId: api_key, noWrap: true });
+        var pressure = L.OWM.pressure({ opacity: 0.4, appId: api_key, noWrap: true });
+        var temp = L.OWM.temperature({ opacity: 0.5, appId: api_key, noWrap: true });
+        var wind = L.OWM.wind({ opacity: 0.5, appId: api_key, noWrap: true });
 
         // var current_city = L.OWM.current({
         //     intervall: 15, minZoom: 5,
@@ -223,24 +223,22 @@ fetchWeatherDataAndMakeTable();
             subdomains: 'abcd',
             minZoom: 0,
             maxZoom: 20,
-            ext: 'png'
+            ext: 'png',
+            noWrap: true
         });
 
         var basemap_layers = {
             "Stamen Toner": Stamen_Toner,
-            "Stamen Terrain": L.tileLayer(stamen_terrain_tiles),
-            "ESRI World Street Map": L.tileLayer(basemap_tiles),
+            "Stamen Terrain": L.tileLayer(stamen_terrain_tiles, { noWrap: true }),
+            "ESRI World Street Map": L.tileLayer(basemap_tiles, { noWrap: true }),
         }
 
-        // limit the map to the world
-        var southWest = L.latLng(-90, -180);
-        var northEast = L.latLng(90, 180);
-        var bounds = L.latLngBounds(southWest, northEast);
 
+
+        // add bounds to map
 
 
         setMapView(current_coords);
-        console.log(current_coords);
 
         // create basemap layer group
         var basemap_group = L.layerGroup([basemap_layers["Stamen Toner"]]);
@@ -384,8 +382,6 @@ fetchWeatherMapAndDisplay();
                 var date_n4_string = date_n4.toLocaleDateString();
                 var date_n5 = new Date(forecast_data[32].dt * 1000);
                 var date_n5_string = date_n5.toLocaleDateString();
-                // var date_n6 = new Date(forecast_data[forecast_data.length - 1].dt * 1000);
-                // var date_n6_string = date_n6.toLocaleDateString();
 
                 var date_strings = [date_n2_string, date_n3_string, date_n4_string, date_n5_string];
 
@@ -404,6 +400,8 @@ fetchWeatherMapAndDisplay();
                         daily_data[forecast_date].push(fixed_forecast);
                     }
                 })
+
+                console.log(daily_data)
 
 
                 // // extract average values over each day
@@ -468,7 +466,6 @@ fetchWeatherMapAndDisplay();
             chart_labels.push(d.time);
             chart_colors.push(chart_colors_dict[weather_param]);
         })
-        // console.log(day_data)
         // add weather parameter to the front of the chart data array (for the data title)
         chart_data.unshift(weather_param);
         // clear the chart if it already exists
@@ -567,7 +564,6 @@ fetchWeatherMapAndDisplay();
         var weather_param = value.toLowerCase();
         var current_forecast_data = getCurrentForecastData();
         var the_day = Object.keys(current_forecast_data)[0];
-        console.log(the_day);
         if (day != "none") {
             var the_day = day;
         }
@@ -587,10 +583,10 @@ fetchWeatherMapAndDisplay();
         table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>4 Day Forecast - " + slider_dict[time] + "</th><th class='column100 column2' data-column='column2' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[0] + "</th><th class='column100 column3' data-column='column3' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[1] + "</th><th class='column100 column4' data-column='column4' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[2] + "</th><th class='column100 column5' data-column='column5' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[3] + "</th></tr></thead>";
         table_string += "<tbody>";
         table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Weather</td>";
-        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].weather + "</td>";
-        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].weather + "</td>";
-        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].weather + "</td>";
-        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].weather + "</td>";
+        table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].weather_detail + "</td>";
+        table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].weather_detail + "</td>";
+        table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].weather_detail + "</td>";
+        table_string += "<td class='column100 column5' data-column='column5'>" + f_data[f_dates[3]][time].weather_detail + "</td>";
         // table_string += "<td class='column100 column6' data-column='column6'>" + f_data[f_dates[4]][time].weather + "</td>";
         table_string += "</tr>";
         table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Temp</td>";
@@ -663,6 +659,8 @@ fetchWeatherMapAndDisplay();
         var forecast_clouds = forecast_d.clouds.all;
         var forecast_weather = forecast_d.weather[0].main;
         var forecast_date = forecast_time.toLocaleDateString();
+        var forecast_weather_detail = forecast_d.weather[0].description
+
         return {
             time: forecast_time_string,
             temp: forecast_temp,
@@ -671,6 +669,7 @@ fetchWeatherMapAndDisplay();
             wind: forecast_wind,
             clouds: forecast_clouds,
             weather: forecast_weather,
+            weather_detail: forecast_weather_detail,
             date: forecast_date
         }
     }
