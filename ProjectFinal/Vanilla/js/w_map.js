@@ -155,7 +155,6 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
         } else {
             url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + api_key;
         }
-        // console.log(url);
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -401,9 +400,6 @@ fetchWeatherMapAndDisplay();
                     }
                 })
 
-                console.log(daily_data)
-
-
                 // // extract average values over each day
                 // var daily_data_avg = {};
                 // Object.keys(daily_data).forEach(function (date) {
@@ -422,7 +418,7 @@ fetchWeatherMapAndDisplay();
                 if (day != "none") {
                     selected_day = day
                 } else {
-                    // console.log("no day specified");
+                    selected_day = date_n2_string;
                 }
 
                 setCurrentForecastData(daily_data);
@@ -457,24 +453,36 @@ fetchWeatherMapAndDisplay();
             "pressure": "#00ff00",
             "wind": "#ffff00",
             "clouds": "#ff00ff",
-            "weather": "#00ffff"
+            "weather_detail": "#00ffff"
         }
         var day_to_display = day;
+        console.log(daily_data)
         var day_data = daily_data[day_to_display];
+        var weather_detail_data = [];
+        var weather_detail_labels = [];
+        console.log(day_data)
         day_data.forEach(function (d) {
             chart_data.push(d[weather_param]);
             chart_labels.push(d.time);
             chart_colors.push(chart_colors_dict[weather_param]);
         })
+        day_data.forEach(function (d) {
+            weather_detail_data.push(d.weather_detail);
+            weather_detail_labels.push(d.time);
+        })
+        console.log(weather_detail_data)
         // add weather parameter to the front of the chart data array (for the data title)
         chart_data.unshift(weather_param);
         // clear the chart if it already exists
         d3.select("#forecast_chart").selectAll("*").remove();
 
         var chart = bb.generate({
+            title: {
+                text: weather_param + " for " + day
+            },
             data: {
                 columns: [
-                    chart_data
+                    chart_data,
                 ],
                 type: "area",
                 colors: {
@@ -485,6 +493,10 @@ fetchWeatherMapAndDisplay();
                 x: {
                     type: "category",
                     categories: chart_labels
+                },
+                x2: {
+                    type: "category",
+                    categories: weather_detail_labels
                 },
                 // add y axis and format symbol based on weather parameter
                 y: {
@@ -525,6 +537,14 @@ fetchWeatherMapAndDisplay();
                             return format(value);
                         }
                     }
+                }
+            },
+            background: {
+                color: "white"
+            },
+            grid: {
+                y: {
+                    show: true
                 }
             },
             bindto: "#forecast_chart"
