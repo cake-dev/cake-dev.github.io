@@ -241,7 +241,6 @@ fetchWeatherDataAndMakeTable();
 
         setMapView(current_coords);
         console.log(current_coords);
-        d3.select("#coordinates").text(current_coords.lat + ", " + current_coords.lng);
 
         // create basemap layer group
         var basemap_group = L.layerGroup([basemap_layers["Stamen Toner"]]);
@@ -292,6 +291,9 @@ fetchWeatherDataAndMakeTable();
             var active_layers = Object.keys(active_l).filter(function (key) { return active_l[key] });
             setTextBoxLayerName(active_layers);
         });
+
+        // set initial layer to temp
+        temp.addTo(map);
     }
 
     function setTextBoxLayerName(selected_layers) {
@@ -486,6 +488,46 @@ fetchWeatherMapAndDisplay();
                 x: {
                     type: "category",
                     categories: chart_labels
+                },
+                // add y axis and format symbol based on weather parameter
+                y: {
+                    tick: {
+                        format: function (d) {
+                            if (weather_param == "temp") {
+                                return d + " °F";
+                            } else if (weather_param == "humidity") {
+                                return d + " %";
+                            } else if (weather_param == "pressure") {
+                                return d + " hPa";
+                            } else if (weather_param == "wind") {
+                                return d + " mph";
+                            } else if (weather_param == "clouds") {
+                                return d + " %";
+                            }
+                        }
+                    }
+                }
+
+            },
+            // add tooltip and format symbol based on weather parameter
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id) {
+                        var format = d3.format(".1f");
+                        if (weather_param == "temp") {
+                            return format(value) + " °F";
+                        } else if (weather_param == "humidity") {
+                            return format(value) + " %";
+                        } else if (weather_param == "pressure") {
+                            return format(value) + " hPa";
+                        } else if (weather_param == "wind") {
+                            return format(value) + " mph";
+                        } else if (weather_param == "clouds") {
+                            return format(value) + " %";
+                        } else if (weather_param == "weather") {
+                            return format(value);
+                        }
+                    }
                 }
             },
             bindto: "#forecast_chart"
@@ -511,10 +553,6 @@ fetchWeatherMapAndDisplay();
             .attr("class", "btn btn-primary")
             .attr("value", "clouds")
             .text("Clouds")
-        chart_controls.append("button")
-            .attr("class", "btn btn-primary")
-            .attr("value", "weather")
-            .text("Weather")
 
         chart_controls.selectAll("button").on("click", function () {
             var weather_param = d3.select(this).attr("value");
@@ -529,11 +567,16 @@ fetchWeatherMapAndDisplay();
         var weather_param = value.toLowerCase();
         var current_forecast_data = getCurrentForecastData();
         var the_day = Object.keys(current_forecast_data)[0];
+        console.log(the_day);
         if (day != "none") {
             var the_day = day;
         }
         displayForecastChart(current_forecast_data, the_day, weather_param);
+    }
 
+    function selectWeatherForecastDay(day) {
+        var current_forecast_data = getCurrentForecastData();
+        displayForecastChart(current_forecast_data, day);
     }
 
     function displayForecastTable(f_data, f_dates, time = 3) {
@@ -541,9 +584,9 @@ fetchWeatherMapAndDisplay();
         // clear table before adding new data
         forecast_data_table.html("");
         var table_string = "<div class='table100 ver4 m-b-110'><table data-vertable='ver4'>";
-        table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>4 Day Forecast - " + slider_dict[time] + "</th><th class='column100 column2' data-column='column2'>" + f_dates[0] + "</th><th class='column100 column3' data-column='column3'>" + f_dates[1] + "</th><th class='column100 column4' data-column='column4'>" + f_dates[2] + "</th><th class='column100 column5' data-column='column5'>" + f_dates[3] + "</th></tr></thead>";
+        table_string += "<thead><tr class='row100 head'><th class='column100 column1' data-column='column1'>4 Day Forecast - " + slider_dict[time] + "</th><th class='column100 column2' data-column='column2' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[0] + "</th><th class='column100 column3' data-column='column3' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[1] + "</th><th class='column100 column4' data-column='column4' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[2] + "</th><th class='column100 column5' data-column='column5' onclick='selectWeatherForecastDay(this.innerText)'>" + f_dates[3] + "</th></tr></thead>";
         table_string += "<tbody>";
-        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1' onclick='selectWeatherParamater(this.innerText)'>Weather</td>";
+        table_string += "<tr class='row100'><td class='column100 column1' data-column='column1'>Weather</td>";
         table_string += "<td class='column100 column2' data-column='column2'>" + f_data[f_dates[0]][time].weather + "</td>";
         table_string += "<td class='column100 column3' data-column='column3'>" + f_data[f_dates[1]][time].weather + "</td>";
         table_string += "<td class='column100 column4' data-column='column4'>" + f_data[f_dates[2]][time].weather + "</td>";
@@ -807,3 +850,35 @@ document.querySelectorAll('input[data-max-words]').forEach(input => {
             words >= maxWords && e.keyCode == 32 && (e.preventDefault() || alert('Word Limit Reached'))
     })
 })
+
+// a function that calls to an api and returns a list of every major city in the world
+function getCityList() {
+    var cityList = [];
+    $.ajax({
+        url: "https://raw.githubusercontent.com/David-Haim/CountriesToCitiesJSON/master/countriesToCities.json",
+        dataType: "json",
+        success: function (data) {
+            for (var country in data) {
+                for (var city in data[country]) {
+                    cityList.push(data[country][city]);
+                }
+            }
+        },
+        async: false
+    });
+    return cityList;
+}
+
+var city_list = getCityList();
+
+$("#city_input").autocomplete({
+    source: city_list,
+    minLength: 3,
+    select: function (event, ui) {
+        selectCity(ui.item.value);
+    }
+});
+
+setTimeout(function () {
+    map.invalidateSize(true);
+}, 100);

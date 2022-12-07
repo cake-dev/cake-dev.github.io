@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
+    "all-the-cities": "^3.1.0",
     "d3": "^7.6.1",
     "d3-scale": "^4.0.2"
   }
