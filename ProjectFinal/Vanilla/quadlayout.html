@@ -159,26 +159,29 @@
             <div id="London" class="w3-container city">
                 <h1>An Interactive Visualization of Weather Data</h1>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam auctor leo dignissim pharetra fermentum. Donec quis egestas purus, eget pretium ipsum. Phasellus posuere felis vel dui sodales, in gravida nibh pulvinar. Vestibulum semper tortor odio. Curabitur pharetra facilisis aliquam. Sed eu rutrum massa. Proin luctus eros id sapien sagittis, a efficitur enim aliquet.
+                    This dashboard tool allows users to explore weather data for a given location. The data is sourced from OpenWeatherMap. The top half of the dashboard is for a snapshot of live data, while the bottom half shows four day forecast info. The user can enter a location into a textbox,
+                    and then explore the weather data for that location. On the forecast table, a data can be selected to view the forecast charts for that day. The slider below the adjusts the time of day for the forecast table.
                 </p>
+                <br>
+                <p><strong>Note:</strong></p>
+                <p>Due to the limitations of the free OpenWeatherMap API, the dashboard is limited to 60 calls per minute. If the dashboard is not working, please wait a minute and try again.</p>
+                <p>If something seems to be not working correctly, try refreshing the page.</p>
             </div>
             <div id="Paris" class="w3-container city">
                 <h1>Data</h1>
                 <p>
                     Primary data sourced from <a href="#" target="_blank">OpenWeatherMap</a>
                 </p>
-                <p style="font-weight: bold;">Notes on dataset:</p>
+                <p style="font-weight: bold;">Notes on data:</p>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam auctor leo dignissim pharetra fermentum. Donec quis egestas purus, eget pretium ipsum. Phasellus posuere felis vel dui sodales, in gravida nibh pulvinar. Vestibulum semper tortor odio. Curabitur pharetra facilisis aliquam.
+                    The library used to fetch the weather tile layers had only Celsius legend values available. I chose to keep these, and represent the units of other data values in the dashboard as Fahrenheit.
                 </p>
             </div>
             <div id="Tokyo" class="w3-container city">
                 <h1>Methods</h1>
                 <p>
-                    Visualization created with D3.js, Jquery, and Leaflet
+                    Visualization created with Leaflet, D3.js, Billboard.js, Bootstrap, and jQuery. Data fetched from OpenWeatherMap API.
                     <br>
-                <p>Data prep done in python (Jupyter Notebook)</p>
-                <br>
                 </p>
             </div>
             <div class="w3-container w3-light-grey w3-padding">

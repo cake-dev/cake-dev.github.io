@@ -70,7 +70,8 @@ var api_key = "8f7c8250dda489ee29edf30dd09ee65b";
     function geolocateCity(city, country = "US") {
         var coords = {};
         var country = this.country;
-        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
+        // var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country + "&appid=" + api_key;
+        var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + api_key;
         $.getJSON(url, function (data) {
             coords.lat = data.coord.lat;;
             coords.lon = data.coord.lon;
@@ -366,7 +367,8 @@ fetchWeatherMapAndDisplay();
         var country = "US";
         var city_coords = geolocateCity(city);
 
-        var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
+        // var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country + "&units=imperial&appid=" + api_key;
+        var owm_url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=" + api_key;
 
         d3.json(owm_url)
             .then(function (data) {
