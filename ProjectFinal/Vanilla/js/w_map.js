@@ -458,11 +458,9 @@ fetchWeatherMapAndDisplay();
             "weather_detail": "#00ffff"
         }
         var day_to_display = day;
-        console.log(daily_data)
         var day_data = daily_data[day_to_display];
         var weather_detail_data = [];
         var weather_detail_labels = [];
-        console.log(day_data)
         day_data.forEach(function (d) {
             chart_data.push(d[weather_param]);
             chart_labels.push(d.time);
@@ -472,7 +470,6 @@ fetchWeatherMapAndDisplay();
             weather_detail_data.push(d.weather_detail);
             weather_detail_labels.push(d.time);
         })
-        console.log(weather_detail_data)
         // add weather parameter to the front of the chart data array (for the data title)
         chart_data.unshift(weather_param);
         // clear the chart if it already exists
@@ -818,7 +815,7 @@ map.on('click', onMapClick);
 {
 
     function selectCity(value) {
-        console.log(value);
+        console.log("selected city: " + value);
         var coords = null;
         if (value == "current_location") {
             // wait for coords to be set
