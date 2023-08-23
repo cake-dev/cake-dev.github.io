@@ -1,5 +1,5 @@
 .donation-form {display: grid;grid-template-columns: 1fr 1fr;grid-gap: 5px;}
-.registration-form-container {display: grid;grid-template-columns: 1fr 1fr;grid-gap: 5px;}
+.registration-form {display: grid;grid-template-columns: 1fr 1fr;grid-gap: 5px;}
 .btn-gb {
   -webkit-border-radius: 28;
   -moz-border-radius: 28;
