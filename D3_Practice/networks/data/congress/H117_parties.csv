@@ -1,5 +1,0 @@
-congress,chamber,party_code,party_name,n_members,nominate_dim1_median,nominate_dim2_median,nominate_dim1_mean,nominate_dim2_mean
-117,President,100,Democrat,1,-0.32,0.283,-0.32,0.283
-117,President,200,Republican,1,0.403,0.162,0.403,0.162
-117,House,100,Democrat,230,-0.381,-0.0245,-0.3810869565217394,-0.029386956521739133
-117,House,200,Republican,221,0.5,0.11549999999999999,0.503259090909091,0.07344090909090913
