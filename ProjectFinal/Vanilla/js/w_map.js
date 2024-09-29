@@ -241,7 +241,7 @@ fetchWeatherDataAndMakeTable();
         setMapView(current_coords);
 
         // create basemap layer group
-        var basemap_group = L.layerGroup([basemap_layers["Stamen Toner"]]);
+        var basemap_group = L.layerGroup([basemap_layers["ESRI World Street Map"]]);
         // add to map
         basemap_group.addTo(map);
 
