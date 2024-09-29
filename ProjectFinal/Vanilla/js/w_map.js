@@ -228,8 +228,8 @@ fetchWeatherDataAndMakeTable();
         });
 
         var basemap_layers = {
-            "Stamen Toner": Stamen_Toner,
-            "Stamen Terrain": L.tileLayer(stamen_terrain_tiles, { noWrap: true }),
+            // "Stamen Toner": Stamen_Toner,
+            // "Stamen Terrain": L.tileLayer(stamen_terrain_tiles, { noWrap: true }),
             "ESRI World Street Map": L.tileLayer(basemap_tiles, { noWrap: true }),
         }
 
