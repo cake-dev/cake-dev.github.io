@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <style>
+    .card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .card-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .image.is-square {
+        padding-top: 100%;
+        position: relative;
+    }
+    .image.is-square img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+</head>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+  // Functions to open and close a modal
+  function openModal($el) {
+    $el.classList.add('is-active');
+  }
+
+  function closeModal($el) {
+    $el.classList.remove('is-active');
+  }
+
+  function closeAllModals() {
+    (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+      closeModal($modal);
+    });
+  }
+
+  // Add a click event on buttons to open a specific modal
+  (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+    const modal = $trigger.dataset.target;
+    const $target = document.getElementById(modal);
+
+    $trigger.addEventListener('click', () => {
+      openModal($target);
+    });
+  });
+
+  // Add a click event on various child elements to close the parent modal
+  (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+    const $target = $close.closest('.modal');
+
+    $close.addEventListener('click', () => {
+      closeModal($target);
+    });
+  });
+
+  // Add a keyboard event to close all modals
+  document.addEventListener('keydown', (event) => {
+    if(event.key === "Escape") {
+      closeAllModals();
+    }
+  });
+});
+</script>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="https://www.ci.missoula.mt.us/332/Police-Department" target="blank">
+      <img src="img/missoula_pd_logo.jpg" alt="Missoula Police Department" width="40" height="1000">
+
+    </a>
+
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item" href="index.html">
+        Home
+      </a>
+      <button class="js-modal-trigger navbar-item" data-target="modal-js-example">
+        Data Details
+      </button>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+      </div>
+    </div>
+  </div>
+  <div id="modal-js-example" class="modal">
+    <div class="modal-background"></div>
+  
+    <div class="modal-content">
+      <div class="box">
+        <article class="message">
+          <div class="message-header">
+            <p>Data Sources</p>
+          </div>
+          <div class="message-body">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec
+            nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus
+            diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac
+            <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et
+            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
+            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+          </div>
+        </article>
+        <article class="message">
+          <div class="message-header">
+            <p>Analysis Methods</p>
+          </div>
+          <div class="message-body">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec
+            nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus
+            diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac
+            <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et
+            sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
+            neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+          </div>
+        </article>
+      </div>
+    </div>
+  
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+</nav>
+
+<body>
+  <div class="container">
+      <div class="columns is-centered">
+          <div class="column is-third">
+              <div class="columns">
+                  <div class="column">
+                      <div class="card">
+                          <div class="card-content">
+                              <p class="title is-6">Missoula POI map</p>
+                              <a href="maps/poimap.html"> 
+                                  <figure class="image is-square">
+                                      <img src="img/poimaplogo.png" alt="Placeholder image">
+                                  </figure>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="column">
+                      <div class="card">
+                          <div class="card-content">
+                            <p class="title is-6">POI map + 911 searchable radius (long load)</p>
+                            <a href="maps/911radiusmap.html"> 
+                                <figure class="image is-square">
+                                    <img src="img/911radiusmaplogo.png" alt="Placeholder image">
+                                </figure>
+                            </a>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="column">
+                    <div class="card">
+                        <div class="card-content">
+                          <p class="title is-6">Missoula Roads All 911 call counts</p>
+                          <a href="maps/911roadsmap_all.html"> 
+                              <figure class="image is-square">
+                                  <img src="img/911roadsmaplogo.png" alt="Placeholder image">
+                              </figure>
+                          </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="card">
+                        <div class="card-content">
+                          <p class="title is-6">Missoula Roads Violent 911 call counts</p>
+                          <a href="maps/911roadsmap_violent.html"> 
+                              <figure class="image is-square">
+                                  <img src="img/911violentroadslogo.png" alt="Placeholder image">
+                              </figure>
+                          </a>
+                        </div>
+                    </div>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</body>
+
+</html>
