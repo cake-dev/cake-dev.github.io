@@ -39,8 +39,10 @@
         function formatDisplayName(filename) {
             // Remove the _weekly_heatmap.html suffix
             let name = filename.replace('_weekly_heatmap.html', '');
-            // Replace underscores and dashes with spaces
-            name = name.replace(/[_-]/g, ' ');
+            // Replace underscores with spaces
+            name = name.replace(/[_]/g, ' ');
+            // Replace < or > with empty
+            name = name.replace(/[<>]/g, '');
             // Handle special case of " vs " (lowercase it)
             name = name.replace(' Vs ', ' vs ');
             return name;
@@ -110,7 +112,7 @@
 
         function updateIframeSrc(filename) {
             const iframe = document.getElementById('heatmap-iframe');
-            iframe.src = `maps/heatmap_timelines/${filename}`;
+            iframe.src = `heatmap_timelines/${filename}`;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
