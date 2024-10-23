@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Interactive 911 Radius Search</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .plot-container {
+      width: 100%;
+      height: calc(100vh - 8rem);
+      border: none;
+      display: block;
+    }
+    .select-container {
+      padding: 1rem;
+      background: white;
+    }
+    .select.is-loading::after {
+      border: 2px solid #485fc7;
+      border-radius: 9999px;
+      border-right-color: transparent;
+      border-top-color: transparent;
+    }
+  </style>
+</head>
+
+<body>
+    <script>
+        function formatDisplayName(filename) {
+            // Remove the _weekly_heatmap.html suffix
+            let name = filename.replace('_weekly_heatmap.html', '');
+            // Replace underscores and dashes with spaces
+            name = name.replace(/[_-]/g, ' ');
+            // Handle special case of " vs " (lowercase it)
+            name = name.replace(' Vs ', ' vs ');
+            return name;
+        }
+
+        async function loadHeatmapFiles() {
+            const selectContainer = document.querySelector('.select');
+            const select = document.getElementById('heatmap-select');
+            
+            // Add loading state
+            selectContainer.classList.add('is-loading');
+            
+            try {
+                const files = await getDirectoryContents();
+                
+                // Clear any existing options
+                select.innerHTML = '';
+                
+                // Add placeholder option
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = 'Select a heatmap...';
+                select.appendChild(placeholder);
+                
+                // Add options for each file
+                files.forEach(file => {
+                    const option = document.createElement('option');
+                    option.value = file;
+                    option.textContent = formatDisplayName(file);
+                    select.appendChild(option);
+                });
+
+                // Load first heatmap if none selected
+                if (!select.value && files.length > 0) {
+                    select.value = files[0];
+                    updateIframeSrc(files[0]);
+                }
+            } catch (error) {
+                console.error('Error loading heatmap files:', error);
+                select.innerHTML = '<option>Error loading heatmaps</option>';
+            } finally {
+                // Remove loading state
+                selectContainer.classList.remove('is-loading');
+            }
+        }
+
+        async function getDirectoryContents() {
+            try {
+                const response = await fetch(
+                    'https://api.github.com/repos/cake-dev/cake-dev.github.io/contents/missoula911/maps/heatmap_timelines'
+                );
+                
+                if (!response.ok) throw new Error('Failed to fetch directory contents');
+                
+                const data = await response.json();
+                
+                // Filter for weekly heatmap files and sort them
+                return data
+                    .filter(file => file.name.endsWith('_weekly_heatmap.html'))
+                    .map(file => file.name)
+                    .sort();
+            } catch (error) {
+                console.error('Error fetching directory contents:', error);
+                throw error;
+            }
+        }
+
+        function updateIframeSrc(filename) {
+            const iframe = document.getElementById('heatmap-iframe');
+            iframe.src = `maps/heatmap_timelines/${filename}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load heatmap files
+            loadHeatmapFiles();
+
+            // Dropdown change handler
+            document.getElementById('heatmap-select').addEventListener('change', function() {
+                if (this.value) {
+                    updateIframeSrc(this.value);
+                }
+            });
+            
+            // Navbar burger functionality
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+            $navbarBurgers.forEach(el => {
+                el.addEventListener('click', () => {
+                    const target = el.dataset.target;
+                    const $target = document.getElementById(target);
+
+                    el.classList.toggle('is-active');
+                    $target.classList.toggle('is-active');
+                });
+            });
+        });
+    </script>
+
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="https://www.ci.missoula.mt.us/332/Police-Department" target="blank">
+            <img src="../img/missoula_pd_logo.jpg" alt="Missoula Police Department" width="40" height="1000">
+          </a>
+      
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item" href="../index.html">
+              Home
+            </a>
+            <button class="js-modal-trigger navbar-item" data-target="modal-js-example">
+              Data Details
+            </button>
+          </div>
+      
+          <div class="navbar-end">
+            <div class="navbar-item">
+            </div>
+          </div>
+        </div>
+        
+        <div id="modal-js-example" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-content" style="width: 60%;">
+            <div class="box">
+              <!-- Modal content remains the same -->
+            </div>
+          </div>
+          <button class="modal-close is-large" aria-label="close"></button>
+        </div>
+    </nav>
+
+    <!-- Dropdown container with empty select -->
+    <div class="select-container">
+        <div class="select is-medium">
+            <select id="heatmap-select">
+                <option>Loading heatmaps...</option>
+            </select>
+        </div>
+    </div>
+
+    <iframe id="heatmap-iframe" src="about:blank" class="plot-container"></iframe>
+</body>
+
+</html>

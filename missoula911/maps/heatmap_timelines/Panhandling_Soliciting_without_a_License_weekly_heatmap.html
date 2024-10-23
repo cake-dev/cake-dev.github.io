@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_5ae8776c3422a38d050bd8c248f9acc6 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@main/folium/templates/leaflet_heat.min.js"></script>
+</head>
+<body>
+    
+    
+    <div id='time-slider' style='position: fixed; bottom: 50px; left: 50px; z-index: 1000; background-color: white; 
+         padding: 10px; border: 2px solid grey; border-radius: 5px;'>
+        <h4>Week Selection</h4>
+        <input type='range' min='0' max='34' value='0' class='slider' id='weekSlider'>
+        <p>Current Week: <span id='currentWeek'>2023-01-03/2023-01-09</span></p>
+        <button onclick='playTimeline()'>Play</button>
+        <button onclick='pauseTimeline()'>Pause</button>
+    </div>
+
+    <script>
+    var weeks = ["2023-01-03/2023-01-09", "2023-01-10/2023-01-16", "2023-01-17/2023-01-23", "2023-01-31/2023-02-06", "2023-03-07/2023-03-13", "2023-03-21/2023-03-27", "2023-03-28/2023-04-03", "2023-04-04/2023-04-10", "2023-04-11/2023-04-17", "2023-04-25/2023-05-01", "2023-05-09/2023-05-15", "2023-05-16/2023-05-22", "2023-05-23/2023-05-29", "2023-06-06/2023-06-12", "2023-06-20/2023-06-26", "2023-06-27/2023-07-03", "2023-07-04/2023-07-10", "2023-07-11/2023-07-17", "2023-07-18/2023-07-24", "2023-08-22/2023-08-28", "2023-08-29/2023-09-04", "2023-09-05/2023-09-11", "2024-01-09/2024-01-15", "2024-03-12/2024-03-18", "2024-03-19/2024-03-25", "2024-05-07/2024-05-13", "2024-06-18/2024-06-24", "2024-07-02/2024-07-08", "2024-07-09/2024-07-15", "2024-07-16/2024-07-22", "2024-07-23/2024-07-29", "2024-07-30/2024-08-05", "2024-08-13/2024-08-19", "2024-08-20/2024-08-26", "2024-09-03/2024-09-09"];
+    var playing = false;
+    var currentIndex = 0;
+    var playInterval;
+
+    function updateMap(weekIndex) {
+        // Update current week display
+        document.getElementById('currentWeek').textContent = weeks[weekIndex];
+
+        // Get all layer checkboxes
+        const checkboxes = document.getElementsByClassName('leaflet-control-layers-selector');
+
+        // Ensure OSM base layer (index 0) stays checked
+        if (!checkboxes[0].checked) {
+            checkboxes[0].click();
+        }
+
+        // Uncheck "All Dates Combined" (index 1) if it's checked
+        if (checkboxes[1].checked) {
+            checkboxes[1].click();
+        }
+
+        // Hide all weekly layers first (starting from index 2)
+        for (let i = 2; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                checkboxes[i].click();
+            }
+        }
+
+        // Show selected week (add 2 to weekIndex to account for OSM and All Dates layers)
+        if (weekIndex > 0) {
+            const targetIndex = weekIndex + 1;  // +1 because weekIndex starts at 1
+            if (targetIndex < checkboxes.length && !checkboxes[targetIndex].checked) {
+                checkboxes[targetIndex].click();
+            }
+        }
+    }
+
+    document.getElementById('weekSlider').addEventListener('input', function() {
+        var weekIndex = parseInt(this.value);
+        updateMap(weekIndex);
+    });
+
+    function playTimeline() {
+        if(!playing) {
+            playing = true;
+            // Start by updating the map to ensure proper initial state
+            updateMap(currentIndex);
+            playInterval = setInterval(function() {
+                currentIndex = (currentIndex + 1) % weeks.length;
+                document.getElementById('weekSlider').value = currentIndex;
+                updateMap(currentIndex);
+            }, 250); // Change week every quarter second
+        }
+    }
+
+    function pauseTimeline() {
+        playing = false;
+        clearInterval(playInterval);
+    }
+
+    // Initial setup to ensure proper layer visibility
+    window.addEventListener('load', function() {
+        const checkboxes = document.getElementsByClassName('leaflet-control-layers-selector');
+        // Ensure OSM layer is visible
+        if (!checkboxes[0].checked) {
+            checkboxes[0].click();
+        }
+    });
+    </script>
+    
+    
+            <div class="folium-map" id="map_5ae8776c3422a38d050bd8c248f9acc6" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_5ae8776c3422a38d050bd8c248f9acc6 = L.map(
+                "map_5ae8776c3422a38d050bd8c248f9acc6",
+                {
+                    center: [46.87, -113.99],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 12,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_17853d58dba812c262164ef92b950712 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_17853d58dba812c262164ef92b950712.addTo(map_5ae8776c3422a38d050bd8c248f9acc6);
+        
+    
+            var feature_group_fa82cd6651365a347475ba6f0702a224 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_b6a3060304d8fb220af86fac3098b648 = L.heatLayer(
+                [[46.8928079504989, -114.04096236345], [46.8806156326903, -114.021712267646], [46.8515836074465, -114.018316465016], [46.8917037361603, -114.036751259498], [46.8457028099847, -114.021546017786], [46.880048891511, -113.993272800656], [46.8880807208639, -114.036842668214], [46.8839116243792, -114.042019879809], [46.8361369356868, -114.015406134545], [46.835923644612, -114.037321927356], [46.8487515050305, -114.039594439433], [46.8643291705473, -114.013720678702], [46.8673135245167, -114.018928003296], [46.8681181487213, -113.982763328129], [46.8318058982701, -114.047297036226], [46.8461360649588, -114.021899361116], [46.8520946309958, -114.013044032725], [46.8495541256516, -114.037640356124], [46.8851747928558, -114.039674769632], [46.8859341522737, -114.036638426221], [46.8888685449805, -114.039302543731], [46.8850570256204, -114.039328775477], [46.8863759260834, -114.038685335857], [46.8504094366248, -114.016052107794], [46.8939580631179, -114.039290933608], [46.8897857432825, -114.036624417708], [46.8754259385078, -113.997156765256], [46.8583625191768, -113.997427176552], [46.885563342094, -114.04406249393], [46.8880807208639, -114.036842668214], [46.8758891915046, -114.005474027306], [46.8859341522737, -114.036638426221], [46.8937109517172, -114.039902622088], [46.870016639069, -113.995598903547], [46.8510344522736, -114.017573378249], [46.8780584729631, -114.018577057543], [46.8431213435168, -114.026768946443], [46.8780193134381, -114.006306690784], [46.878189642968, -114.020602275398], [46.8520946309958, -114.013044032725], [46.8520141356797, -114.012021298232], [46.8520946309958, -114.013044032725], [46.8505188464914, -114.017797506278], [46.8782698026442, -113.993045695837], [46.8559872821132, -114.077331222286], [46.885360327664, -114.038576146296], [46.870016639069, -113.995598903547], [46.8507375918534, -114.015447798072], [46.9137401294148, -114.051687584968], [46.8381108342205, -114.016948571482], [46.850678555581, -114.016534114828], [46.8939580631179, -114.039290933608], [46.8927887087524, -114.039920876474], [46.8510344522736, -114.017573378249]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_b6a3060304d8fb220af86fac3098b648.addTo(feature_group_fa82cd6651365a347475ba6f0702a224);
+        
+    
+            feature_group_fa82cd6651365a347475ba6f0702a224.addTo(map_5ae8776c3422a38d050bd8c248f9acc6);
+        
+    
+            var feature_group_e25912290cbe4c7062a41e97b67441e4 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_5033dabd771f1d8d4c64a45a2fb968a8 = L.heatLayer(
+                [[46.8928079504989, -114.04096236345]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_5033dabd771f1d8d4c64a45a2fb968a8.addTo(feature_group_e25912290cbe4c7062a41e97b67441e4);
+        
+    
+            var feature_group_b760e66faf75d759970d0cb2d3cbf024 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_80b8c17a11f798573915ac8a98c5ebe6 = L.heatLayer(
+                [[46.8806156326903, -114.021712267646]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_80b8c17a11f798573915ac8a98c5ebe6.addTo(feature_group_b760e66faf75d759970d0cb2d3cbf024);
+        
+    
+            var feature_group_74fedb52379eb280cf8e8d910ae0dea0 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_98a071b355d537162a73cf95cb908395 = L.heatLayer(
+                [[46.8515836074465, -114.018316465016], [46.8917037361603, -114.036751259498]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_98a071b355d537162a73cf95cb908395.addTo(feature_group_74fedb52379eb280cf8e8d910ae0dea0);
+        
+    
+            var feature_group_6fd0c30e726cbd07531d90a66e62d8ec = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_614c8cf850cdb26e240a503765d63df0 = L.heatLayer(
+                [[46.8457028099847, -114.021546017786]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_614c8cf850cdb26e240a503765d63df0.addTo(feature_group_6fd0c30e726cbd07531d90a66e62d8ec);
+        
+    
+            var feature_group_50fcd248bb651308814f74efbddf9d7d = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_f8e2a818ee0c376a3e44d7ac0da51a62 = L.heatLayer(
+                [[46.880048891511, -113.993272800656]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_f8e2a818ee0c376a3e44d7ac0da51a62.addTo(feature_group_50fcd248bb651308814f74efbddf9d7d);
+        
+    
+            var feature_group_313aa9c0ec32117ccaff569fbd0ceded = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_8e1174cbefd528fadd9a85efa3df49bb = L.heatLayer(
+                [[46.8880807208639, -114.036842668214], [46.8839116243792, -114.042019879809], [46.8361369356868, -114.015406134545], [46.835923644612, -114.037321927356], [46.8487515050305, -114.039594439433]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_8e1174cbefd528fadd9a85efa3df49bb.addTo(feature_group_313aa9c0ec32117ccaff569fbd0ceded);
+        
+    
+            var feature_group_e01f73cc14283ae565f640b5a0c4262b = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_5bd3e31a4525a5a0d1a432a68f4a6cb3 = L.heatLayer(
+                [[46.8643291705473, -114.013720678702]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_5bd3e31a4525a5a0d1a432a68f4a6cb3.addTo(feature_group_e01f73cc14283ae565f640b5a0c4262b);
+        
+    
+            var feature_group_db0c9964b45e942a27f3382d753ae49b = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_38ccced15b5074c71083c331043bbf72 = L.heatLayer(
+                [[46.8673135245167, -114.018928003296], [46.8681181487213, -113.982763328129]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_38ccced15b5074c71083c331043bbf72.addTo(feature_group_db0c9964b45e942a27f3382d753ae49b);
+        
+    
+            var feature_group_ef3f75b415cc84381398a007c13653c4 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_07010d28be27401a881b03b9fea7a645 = L.heatLayer(
+                [[46.8318058982701, -114.047297036226], [46.8461360649588, -114.021899361116]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_07010d28be27401a881b03b9fea7a645.addTo(feature_group_ef3f75b415cc84381398a007c13653c4);
+        
+    
+            var feature_group_6d777c3974835e9f7905b108b5b5ad6d = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_737099171056cc22ebb6a3930610330a = L.heatLayer(
+                [[46.8520946309958, -114.013044032725]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_737099171056cc22ebb6a3930610330a.addTo(feature_group_6d777c3974835e9f7905b108b5b5ad6d);
+        
+    
+            var feature_group_2eff1869fac0db9dc156c25a4fc5e681 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_29f77ad85ea7225064ec7a2dff8d1630 = L.heatLayer(
+                [[46.8495541256516, -114.037640356124], [46.8851747928558, -114.039674769632]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_29f77ad85ea7225064ec7a2dff8d1630.addTo(feature_group_2eff1869fac0db9dc156c25a4fc5e681);
+        
+    
+            var feature_group_056617f3999f4116a30a7b4b6bd4b0fc = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_d3dd1e147b59a0e8dc52f69eda703cd4 = L.heatLayer(
+                [[46.8859341522737, -114.036638426221]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_d3dd1e147b59a0e8dc52f69eda703cd4.addTo(feature_group_056617f3999f4116a30a7b4b6bd4b0fc);
+        
+    
+            var feature_group_e0b0fbc97a786681f76e2384c3bbcc4a = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_463df05e45f51a436c17f117c50e7042 = L.heatLayer(
+                [[46.8888685449805, -114.039302543731]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_463df05e45f51a436c17f117c50e7042.addTo(feature_group_e0b0fbc97a786681f76e2384c3bbcc4a);
+        
+    
+            var feature_group_8cbbc20735cf88b9c09c31261700c943 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_58e33856fdae1c347ed1c2839a21b1cc = L.heatLayer(
+                [[46.8850570256204, -114.039328775477]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_58e33856fdae1c347ed1c2839a21b1cc.addTo(feature_group_8cbbc20735cf88b9c09c31261700c943);
+        
+    
+            var feature_group_56720c242c99fc32f19f6f4dc79d9687 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_555944a790969f45d43ac3b98f181eab = L.heatLayer(
+                [[46.8863759260834, -114.038685335857]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_555944a790969f45d43ac3b98f181eab.addTo(feature_group_56720c242c99fc32f19f6f4dc79d9687);
+        
+    
+            var feature_group_4786e2972081cf183ab540b3547dc0c4 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_7eabf2c2014456d046e7c9348568e214 = L.heatLayer(
+                [[46.8504094366248, -114.016052107794], [46.8939580631179, -114.039290933608]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_7eabf2c2014456d046e7c9348568e214.addTo(feature_group_4786e2972081cf183ab540b3547dc0c4);
+        
+    
+            var feature_group_f8951dbbe4cec029207fac02a5b9ab71 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_e3c3933a9b5c72572fdf378854bd91bd = L.heatLayer(
+                [[46.8897857432825, -114.036624417708]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_e3c3933a9b5c72572fdf378854bd91bd.addTo(feature_group_f8951dbbe4cec029207fac02a5b9ab71);
+        
+    
+            var feature_group_d13ba78c6e80a7fb1179094eddfe7588 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_1050e2e7a1cd949a75c498e21513a63a = L.heatLayer(
+                [[46.8754259385078, -113.997156765256]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_1050e2e7a1cd949a75c498e21513a63a.addTo(feature_group_d13ba78c6e80a7fb1179094eddfe7588);
+        
+    
+            var feature_group_487e26b20f72c54bc6b1b18e54582be3 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_80b319e5e0eae35bdc522bdce4f4ddd9 = L.heatLayer(
+                [[46.8583625191768, -113.997427176552]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_80b319e5e0eae35bdc522bdce4f4ddd9.addTo(feature_group_487e26b20f72c54bc6b1b18e54582be3);
+        
+    
+            var feature_group_2a119106e63a639401071ba5c5d4f63d = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_69f6444f7bc2074ba13af8b400a24452 = L.heatLayer(
+                [[46.885563342094, -114.04406249393], [46.8880807208639, -114.036842668214]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_69f6444f7bc2074ba13af8b400a24452.addTo(feature_group_2a119106e63a639401071ba5c5d4f63d);
+        
+    
+            var feature_group_5972cbdc0358780cbfcc34a980b5c2b3 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_afe34ad2968f89259bf6067e92aa37fe = L.heatLayer(
+                [[46.8758891915046, -114.005474027306], [46.8859341522737, -114.036638426221], [46.8937109517172, -114.039902622088]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_afe34ad2968f89259bf6067e92aa37fe.addTo(feature_group_5972cbdc0358780cbfcc34a980b5c2b3);
+        
+    
+            var feature_group_025b1675210a0f075f2319f99bdefe5a = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_06b122bb6687b6997ef2ccf1be4c671c = L.heatLayer(
+                [[46.870016639069, -113.995598903547]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_06b122bb6687b6997ef2ccf1be4c671c.addTo(feature_group_025b1675210a0f075f2319f99bdefe5a);
+        
+    
+            var feature_group_b93f99d08ca01dd29ea5d39f79fdee2a = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_73fa7075865d8c94fbdf40def6125526 = L.heatLayer(
+                [[46.8510344522736, -114.017573378249]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_73fa7075865d8c94fbdf40def6125526.addTo(feature_group_b93f99d08ca01dd29ea5d39f79fdee2a);
+        
+    
+            var feature_group_3791421430126ff93de0fb8afd2f2cc1 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_63fb1fb2b38bfb6325fbe82875c4046a = L.heatLayer(
+                [[46.8780584729631, -114.018577057543], [46.8431213435168, -114.026768946443]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_63fb1fb2b38bfb6325fbe82875c4046a.addTo(feature_group_3791421430126ff93de0fb8afd2f2cc1);
+        
+    
+            var feature_group_07e6a42783687aa2e6c9ab3647b86343 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_3627110650bcb776e2c1c08017ce957f = L.heatLayer(
+                [[46.8780193134381, -114.006306690784]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_3627110650bcb776e2c1c08017ce957f.addTo(feature_group_07e6a42783687aa2e6c9ab3647b86343);
+        
+    
+            var feature_group_157dfd318510b9642d3f2cf7b380a28a = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_c457763a69d0e746e8eed5167ad5e3ea = L.heatLayer(
+                [[46.878189642968, -114.020602275398]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_c457763a69d0e746e8eed5167ad5e3ea.addTo(feature_group_157dfd318510b9642d3f2cf7b380a28a);
+        
+    
+            var feature_group_e93f321a0e0363f426b410c7545a9b94 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_7936ebb0a421b620147df9f66b576392 = L.heatLayer(
+                [[46.8520946309958, -114.013044032725], [46.8520141356797, -114.012021298232], [46.8520946309958, -114.013044032725]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_7936ebb0a421b620147df9f66b576392.addTo(feature_group_e93f321a0e0363f426b410c7545a9b94);
+        
+    
+            var feature_group_5f7d914583a29710c30f2aaae3fd72b8 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_5a193a07c84fcd789ca984de520091b2 = L.heatLayer(
+                [[46.8505188464914, -114.017797506278], [46.8782698026442, -113.993045695837]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_5a193a07c84fcd789ca984de520091b2.addTo(feature_group_5f7d914583a29710c30f2aaae3fd72b8);
+        
+    
+            var feature_group_2d54ee87d2f1a4e3f8fe88ab4803da51 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_f04e871b0b920a2e09006a598a2547db = L.heatLayer(
+                [[46.8559872821132, -114.077331222286]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_f04e871b0b920a2e09006a598a2547db.addTo(feature_group_2d54ee87d2f1a4e3f8fe88ab4803da51);
+        
+    
+            var feature_group_8fa33173c5dcee80b03ccaaa27cefb4a = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_e1837ccc888b0299566a2b12faac32b2 = L.heatLayer(
+                [[46.885360327664, -114.038576146296]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_e1837ccc888b0299566a2b12faac32b2.addTo(feature_group_8fa33173c5dcee80b03ccaaa27cefb4a);
+        
+    
+            var feature_group_3c9dc45a26ba4d4c37be90928bb20f10 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_7768d5b517fa909756e1d70449bab9ec = L.heatLayer(
+                [[46.870016639069, -113.995598903547], [46.8507375918534, -114.015447798072]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_7768d5b517fa909756e1d70449bab9ec.addTo(feature_group_3c9dc45a26ba4d4c37be90928bb20f10);
+        
+    
+            var feature_group_11ad8ad3cf16d1b29641f310f536bf3b = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_a0a23fbd20738c6a670661e1ec296579 = L.heatLayer(
+                [[46.9137401294148, -114.051687584968], [46.8381108342205, -114.016948571482]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_a0a23fbd20738c6a670661e1ec296579.addTo(feature_group_11ad8ad3cf16d1b29641f310f536bf3b);
+        
+    
+            var feature_group_1621e81eb4113e2cf4e5a591fff610ec = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_9f6abaeea34afdf4ef5200e6b98d81bb = L.heatLayer(
+                [[46.850678555581, -114.016534114828]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_9f6abaeea34afdf4ef5200e6b98d81bb.addTo(feature_group_1621e81eb4113e2cf4e5a591fff610ec);
+        
+    
+            var feature_group_76a3612617ac9b9b0c982453a96cdc57 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_c68220d9a7dfb54f24c78f951924a228 = L.heatLayer(
+                [[46.8939580631179, -114.039290933608], [46.8927887087524, -114.039920876474]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_c68220d9a7dfb54f24c78f951924a228.addTo(feature_group_76a3612617ac9b9b0c982453a96cdc57);
+        
+    
+            var feature_group_9efa0ed9e88d9be00072d3543b9a0b03 = L.featureGroup(
+                {}
+            );
+        
+    
+            var heat_map_91b70387f55cb21e98cdb7fdd182ff96 = L.heatLayer(
+                [[46.8510344522736, -114.017573378249]],
+                {"blur": 15, "gradient": {"0.4": "blue", "0.65": "lime", "1": "red"}, "maxZoom": 18, "minOpacity": 0.4, "radius": 15}
+            );
+        
+    
+            heat_map_91b70387f55cb21e98cdb7fdd182ff96.addTo(feature_group_9efa0ed9e88d9be00072d3543b9a0b03);
+        
+    
+            var layer_control_c159e880d9bb448c53654829c2bb5464_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_17853d58dba812c262164ef92b950712,
+                },
+                overlays :  {
+                    "All Dates Combined" : feature_group_fa82cd6651365a347475ba6f0702a224,
+                    "Week of 2023-01-03" : feature_group_e25912290cbe4c7062a41e97b67441e4,
+                    "Week of 2023-01-10" : feature_group_b760e66faf75d759970d0cb2d3cbf024,
+                    "Week of 2023-01-17" : feature_group_74fedb52379eb280cf8e8d910ae0dea0,
+                    "Week of 2023-01-31" : feature_group_6fd0c30e726cbd07531d90a66e62d8ec,
+                    "Week of 2023-03-07" : feature_group_50fcd248bb651308814f74efbddf9d7d,
+                    "Week of 2023-03-21" : feature_group_313aa9c0ec32117ccaff569fbd0ceded,
+                    "Week of 2023-03-28" : feature_group_e01f73cc14283ae565f640b5a0c4262b,
+                    "Week of 2023-04-04" : feature_group_db0c9964b45e942a27f3382d753ae49b,
+                    "Week of 2023-04-11" : feature_group_ef3f75b415cc84381398a007c13653c4,
+                    "Week of 2023-04-25" : feature_group_6d777c3974835e9f7905b108b5b5ad6d,
+                    "Week of 2023-05-09" : feature_group_2eff1869fac0db9dc156c25a4fc5e681,
+                    "Week of 2023-05-16" : feature_group_056617f3999f4116a30a7b4b6bd4b0fc,
+                    "Week of 2023-05-23" : feature_group_e0b0fbc97a786681f76e2384c3bbcc4a,
+                    "Week of 2023-06-06" : feature_group_8cbbc20735cf88b9c09c31261700c943,
+                    "Week of 2023-06-20" : feature_group_56720c242c99fc32f19f6f4dc79d9687,
+                    "Week of 2023-06-27" : feature_group_4786e2972081cf183ab540b3547dc0c4,
+                    "Week of 2023-07-04" : feature_group_f8951dbbe4cec029207fac02a5b9ab71,
+                    "Week of 2023-07-11" : feature_group_d13ba78c6e80a7fb1179094eddfe7588,
+                    "Week of 2023-07-18" : feature_group_487e26b20f72c54bc6b1b18e54582be3,
+                    "Week of 2023-08-22" : feature_group_2a119106e63a639401071ba5c5d4f63d,
+                    "Week of 2023-08-29" : feature_group_5972cbdc0358780cbfcc34a980b5c2b3,
+                    "Week of 2023-09-05" : feature_group_025b1675210a0f075f2319f99bdefe5a,
+                    "Week of 2024-01-09" : feature_group_b93f99d08ca01dd29ea5d39f79fdee2a,
+                    "Week of 2024-03-12" : feature_group_3791421430126ff93de0fb8afd2f2cc1,
+                    "Week of 2024-03-19" : feature_group_07e6a42783687aa2e6c9ab3647b86343,
+                    "Week of 2024-05-07" : feature_group_157dfd318510b9642d3f2cf7b380a28a,
+                    "Week of 2024-06-18" : feature_group_e93f321a0e0363f426b410c7545a9b94,
+                    "Week of 2024-07-02" : feature_group_5f7d914583a29710c30f2aaae3fd72b8,
+                    "Week of 2024-07-09" : feature_group_2d54ee87d2f1a4e3f8fe88ab4803da51,
+                    "Week of 2024-07-16" : feature_group_8fa33173c5dcee80b03ccaaa27cefb4a,
+                    "Week of 2024-07-23" : feature_group_3c9dc45a26ba4d4c37be90928bb20f10,
+                    "Week of 2024-07-30" : feature_group_11ad8ad3cf16d1b29641f310f536bf3b,
+                    "Week of 2024-08-13" : feature_group_1621e81eb4113e2cf4e5a591fff610ec,
+                    "Week of 2024-08-20" : feature_group_76a3612617ac9b9b0c982453a96cdc57,
+                    "Week of 2024-09-03" : feature_group_9efa0ed9e88d9be00072d3543b9a0b03,
+                },
+            };
+            let layer_control_c159e880d9bb448c53654829c2bb5464 = L.control.layers(
+                layer_control_c159e880d9bb448c53654829c2bb5464_layers.base_layers,
+                layer_control_c159e880d9bb448c53654829c2bb5464_layers.overlays,
+                {"autoZIndex": true, "collapsed": true, "position": "topright"}
+            ).addTo(map_5ae8776c3422a38d050bd8c248f9acc6);
+
+        
+</script>
+</html>
