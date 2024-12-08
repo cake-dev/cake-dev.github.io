@@ -185,7 +185,15 @@ function renderKmerTable(kmers) {
 
 function renderGraph(graphNodes, graphLinks, k, originalString) {
     // Create reconstruction display and controls
-    const controlsContainer = document.createElement('div');
+    // const controlsContainer = document.createElement('div');
+    // first, delete the container if it exists
+    var controlsContainer = document.getElementById('controlsContainer');
+    if (controlsContainer) {
+        controlsContainer.remove();
+    }
+    // then create the container
+    controlsContainer = document.createElement('div');
+    controlsContainer.id = 'controlsContainer';
     controlsContainer.style.cssText = `
         padding: 20px;
         margin: 20px 0;
@@ -194,7 +202,14 @@ function renderGraph(graphNodes, graphLinks, k, originalString) {
         align-items: center;
     `;
     
-    const reconstructionDisplay = document.createElement('div');
+    // const reconstructionDisplay = document.createElement('div');
+    // first, delete the display and area if it exists
+    var reconstructionDisplay = document.getElementById('reconstruction-display');
+    if (reconstructionDisplay) {
+        reconstructionDisplay.remove();
+    }
+    // then create the display
+    reconstructionDisplay = document.createElement('div');
     reconstructionDisplay.id = 'reconstruction-display';
     reconstructionDisplay.style.cssText = `
         flex-grow: 1;
@@ -207,7 +222,15 @@ function renderGraph(graphNodes, graphLinks, k, originalString) {
         min-height: 50px;
     `;
 
-    const startButton = document.createElement('button');
+    // const startButton = document.createElement('button');
+    // first, delete the button and area if it exists
+    var startButton = document.getElementById('startButton');
+    if (startButton) {
+        startButton.remove();
+    }
+    // then create the button
+    startButton = document.createElement('button');
+    startButton.id = 'startButton';
     startButton.textContent = 'Start Animation';
     startButton.style.cssText = `
         padding: 10px 20px;
