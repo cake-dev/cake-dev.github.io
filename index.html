@@ -1,5 +1,5 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
 	<!-- Google tag (gtag.js) -->
@@ -8,884 +8,278 @@
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
-
 		gtag('config', 'G-KJG4C364C7');
 	</script>
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Jake Bova - Data Geek</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="" />
-	<meta name="keywords" content="" />
-	<meta name="author" content="" />
+	<title>Jake Bova</title>
+	<meta name="description" content="Jake Bova has an MS in computer science from the University of Montana and works on machine learning for wildfire spread prediction and 3D fire visualization.">
+	<meta name="author" content="Jake Bova">
+	<meta name="color-scheme" content="light dark">
 
-	<!-- Facebook and Twitter integration -->
-	<meta property="og:title" content="" />
-	<meta property="og:image" content="" />
-	<meta property="og:url" content="" />
-	<meta property="og:site_name" content="" />
-	<meta property="og:description" content="" />
-	<meta name="twitter:title" content="" />
-	<meta name="twitter:image" content="" />
-	<meta name="twitter:url" content="" />
-	<meta name="twitter:card" content="" />
+	<meta property="og:title" content="Jake Bova">
+	<meta property="og:description" content="Machine learning and visualization for wildfire research, University of Montana.">
+	<meta property="og:image" content="https://jakebova.com/images/fireviz_img.png">
+	<meta property="og:url" content="https://jakebova.com/">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
 
-	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%23C2304E' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%23C2304E' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23C2304E'/%3E%3C/svg%3E">
 
-	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" rel="stylesheet">
-
-	<!-- Animate.css -->
-	<link rel="stylesheet" href="css/animate.css">
-	<!-- Icomoon Icon Fonts-->
-	<link rel="stylesheet" href="css/icomoon.css">
-	<!-- Bootstrap  -->
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<!-- Flexslider  -->
-	<link rel="stylesheet" href="css/flexslider.css">
-	<!-- Flaticons  -->
-	<link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
-	<!-- Owl Carousel -->
-	<link rel="stylesheet" href="css/owl.carousel.min.css">
-	<link rel="stylesheet" href="css/owl.theme.default.min.css">
-	<!-- Theme style  -->
-	<link rel="stylesheet" href="css/style.css">
-
-	<!-- Modernizr JS -->
-	<script src="js/modernizr-2.6.2.min.js"></script>
-	<!-- FOR IE9 below -->
-	<!--[if lt IE 9]>
-	<script src="js/respond.min.js"></script>
-	<![endif]-->
-
-	<style>
-		p {
-			color: black;
-		}
-	</style>
-
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/site.css">
 </head>
 
 <body>
-	<div id="colorlib-page">
-		<div class="container-wrap">
-			<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><i></i></a>
-			<aside id="colorlib-aside" role="complementary" class="border js-fullheight">
-				<div class="text-center">
-					<div class="author-img" style="background-image: url(images/jbheadshot.jpg);"></div>
-					<h1 id="colorlib-logo"><a href="index.html">Jake Bova</a></h1>
-					<span class="position"><a href="#">Computer Geek</a> in Montana</span>
+	<a class="skip" href="#work">Skip to content</a>
+
+	<header class="topbar" id="top">
+		<a class="topbar-name" href="#top">Jake Bova</a>
+		<nav aria-label="Sections">
+			<a href="#work">Work</a>
+			<a href="#experience">Experience</a>
+			<a href="#education">Education</a>
+			<a href="#contact">Contact</a>
+		</nav>
+	</header>
+
+	<section class="hero" aria-labelledby="hero-title">
+		<canvas class="hero-canvas" aria-hidden="true"></canvas>
+		<div class="hero-text">
+			<h1 id="hero-title">Jake Bova</h1>
+			<p class="hero-lede">I build machine learning models and 3D visualizations.</p>
+			<p class="hero-meta">MS in computer science from the University of Montana, in Missoula.</p>
+			<p class="hero-links">
+				<a href="mailto:developer.montana@gmail.com">Email me</a>
+				<a href="https://github.com/cake-dev" target="_blank" rel="noopener">GitHub</a>
+			</p>
+		</div>
+		<p class="hero-caption">Simulated fire perimeters, one line per time step, drawn over terrain contours.</p>
+	</section>
+
+	<main>
+		<section class="section" id="work" aria-labelledby="work-title">
+			<div class="section-head">
+				<h2 id="work-title">Research</h2>
+				<p>My thesis, papers, and an award from my work on wildfire science.</p>
+			</div>
+
+			<ol class="research">
+				<li class="research-item">
+					<a class="research-img research-cover" href="https://scholarworks.umt.edu/etd/12769/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+						<span class="cover-title">Real-Time Immersive Wildfire Simulation</span>
+						<span class="cover-meta">Master’s thesis<br>University of Montana, 2026</span>
+					</a>
+					<div class="research-body">
+						<p class="kind">Master’s thesis, 2026</p>
+						<h3><a href="https://scholarworks.umt.edu/etd/12769/" target="_blank" rel="noopener">Real-time immersive wildfire simulation: a game engine approach</a></h3>
+						<p>Fast models that account for how a fire changes the wind around it, shown in 3D in a game engine for training and public communication.</p>
+						<p class="research-link">Read on ScholarWorks</p>
+					</div>
+				</li>
+				<li class="research-item">
+					<a class="research-img" href="https://www.youtube.com/watch?v=wIOkTPBJmwQ" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+						<img src="images/fireviz_img.png" alt="" loading="lazy">
+					</a>
+					<div class="research-body">
+						<p class="kind kind-award">Award, 2025</p>
+						<h3><a href="https://www.youtube.com/watch?v=wIOkTPBJmwQ" target="_blank" rel="noopener">Unreal Engine fire visualization</a></h3>
+						<p>Winner of the SERDP/ESTCP Virtual Wildfire Modeling &amp; Immersive Training Prize Challenge 2025.</p>
+						<p class="research-link">Watch the video on YouTube</p>
+					</div>
+				</li>
+				<li class="research-item">
+					<a class="research-img" href="https://www.mdpi.com/2571-6255/9/1/2" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+						<img src="images/aerial_fire_perim.jpg" alt="" loading="lazy">
+					</a>
+					<div class="research-body">
+						<p class="kind">Journal paper, <em>Fire</em> (MDPI)</p>
+						<h3><a href="https://www.mdpi.com/2571-6255/9/1/2" target="_blank" rel="noopener">Investigating the impact of aerial firefighting on rate of wildfire spread</a></h3>
+						<p>Using machine learning to measure how aerial suppression changes how fast a fire grows.</p>
+						<p class="research-link">Read the paper</p>
+					</div>
+				</li>
+				<li class="research-item">
+					<a class="research-img" href="https://arxiv.org/abs/2502.12003" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+						<img src="images/wstsp_model.png" alt="" loading="lazy">
+					</a>
+					<div class="research-body">
+						<p class="kind">Preprint, arXiv</p>
+						<h3><a href="https://arxiv.org/abs/2502.12003" target="_blank" rel="noopener">Improved wildfire spread prediction with time-series data and the WSTS+ benchmark</a></h3>
+						<p>Time-series models for next-day fire spread, plus an expanded benchmark dataset.</p>
+						<p class="research-link">Read on arXiv</p>
+					</div>
+				</li>
+				<li class="research-item">
+					<a class="research-img" href="https://www.researchgate.net/publication/364763736_Predicting_fire_severity_in_Montana_using_a_random_forest_classification_scheme" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+						<img src="images/fire_severity.png" alt="" loading="lazy">
+					</a>
+					<div class="research-body">
+						<p class="kind">Paper, ResearchGate</p>
+						<h3><a href="https://www.researchgate.net/publication/364763736_Predicting_fire_severity_in_Montana_using_a_random_forest_classification_scheme" target="_blank" rel="noopener">Predicting fire severity in Montana using a random forest classification scheme</a></h3>
+						<p>A random forest classifier for burn severity across Montana fires.</p>
+						<p class="research-link">Read on ResearchGate</p>
+					</div>
+				</li>
+			</ol>
+
+			<div class="section-head section-head-sub">
+				<h2>Projects</h2>
+				<p>Interactive maps, visualizations, and analyses. Most run right in the browser.</p>
+			</div>
+
+			<ul class="projects">
+				<li>
+					<a class="project" href="antarctica/final_lake_pred.html">
+						<img src="images/antarctic_subglacial_lakes.png" alt="" loading="lazy">
+						<span class="project-title">Antarctic subglacial lake prediction</span>
+						<span class="project-kind">Machine learning</span>
+					</a>
+				</li>
+				<li>
+					<a class="project" href="missoula911/index.html">
+						<img src="images/911radiusmaplogo.png" alt="" loading="lazy">
+						<span class="project-title">Missoula 911 calls analysis</span>
+						<span class="project-kind">Data analysis</span>
+					</a>
+				</li>
+				<li>
+					<a class="project" href="Bioinfo/dbviz2.html">
+						<img src="images/dbgviz.png" alt="" loading="lazy">
+						<span class="project-title">De Bruijn graph visualizer</span>
+						<span class="project-kind">Bioinformatics</span>
+					</a>
+				</li>
+				<li>
+					<a class="project" href="ProjectFinal/Vanilla/quadlayout.html">
+						<img src="images/weather_dashboard.png" alt="" loading="lazy">
+						<span class="project-title">Live weather dashboard</span>
+						<span class="project-kind">Web app</span>
+					</a>
+				</li>
+				<li>
+					<a class="project" href="Project4/network_graph_d3.html">
+						<img src="images/stackoverflow_tag_network.png" alt="" loading="lazy">
+						<span class="project-title">Stack Overflow tag network</span>
+						<span class="project-kind">Network graph</span>
+					</a>
+				</li>
+				<li>
+					<a class="project" href="Project3/rastermap.html">
+						<img src="images/alaska_snowcrab.png" alt="" loading="lazy">
+						<span class="project-title">Alaskan snow crab study</span>
+						<span class="project-kind">Geospatial</span>
+					</a>
+				</li>
+				<li>
+					<a class="project" href="Project2/map.html">
+						<img src="images/western_wildfires.png" alt="" loading="lazy">
+						<span class="project-title">Western wildfire explorer</span>
+						<span class="project-kind">Interactive map</span>
+					</a>
+				</li>
+				<li>
+					<a class="project" href="Project1/bigfoot.html">
+						<img src="images/bigfoot_sightings.png" alt="" loading="lazy">
+						<span class="project-title">Did smartphones kill Bigfoot?</span>
+						<span class="project-kind">Data story</span>
+					</a>
+				</li>
+			</ul>
+			<p class="more">More code on <a href="https://github.com/cake-dev" target="_blank" rel="noopener">GitHub</a>.</p>
+		</section>
+
+		<section class="section" id="experience" aria-labelledby="experience-title">
+			<div class="section-head">
+				<h2 id="experience-title">Experience</h2>
+			</div>
+			<ol class="timeline">
+				<li>
+					<p class="when">2024 – 2026</p>
+					<div>
+						<h3>Graduate researcher</h3>
+						<p class="where">University of Montana</p>
+						<p>Wildfire management and prevention research using machine learning. Real-world fuel visualization using 3D tools.</p>
+					</div>
+				</li>
+				<li>
+					<p class="when">Summer 2023</p>
+					<div>
+						<h3>Software consultant intern</h3>
+						<p class="where">ATG Cognizant</p>
+						<p>Worked with other interns on small internal projects and produced recommendations and deliverables for an external client. After the internship, the client hired me as an independent contractor to continue the project.</p>
+					</div>
+				</li>
+				<li>
+					<p class="when">2022 – 2026</p>
+					<div>
+						<h3>Research assistant</h3>
+						<p class="where">University of Montana</p>
+						<p>Part of a research team pairing machine learning with large-scale geospatial data operations using an in-house toolkit. I gather and clean data, build predictive models, and create visualizations.</p>
+					</div>
+				</li>
+				<li>
+					<p class="when">2021 – 2022</p>
+					<div>
+						<h3>Tech consultant</h3>
+						<p class="where">Geek Squad</p>
+						<p>Troubleshot and fixed a wide range of consumer electronics issues, and explained technical problems to clients in plain terms.</p>
+					</div>
+				</li>
+			</ol>
+		</section>
+
+		<section class="section" id="education" aria-labelledby="education-title">
+			<div class="section-head">
+				<h2 id="education-title">Education</h2>
+			</div>
+			<ul class="edu">
+				<li>
+					<h3>Master of Science in Computer Science</h3>
+					<p class="where">University of Montana, August 2026</p>
+					<p>Research in machine learning for wildfire: fuel visualization, spread prediction, fire simulation, and more. Thesis: <a href="https://scholarworks.umt.edu/etd/12769/" target="_blank" rel="noopener">Real-time immersive wildfire simulation: a game engine approach</a>.</p>
+				</li>
+				<li>
+					<h3>Bachelor of Computer Science</h3>
+					<p class="where">University of Montana, 2024</p>
+					<p>Graduated magna cum laude with a minor in mathematics. Coursework in machine learning, statistics, web development, and database design.</p>
+				</li>
+				<li>
+					<h3>Associate Degree in Computer Programming</h3>
+					<p class="where">Pittsburgh Technical College, 2019</p>
+					<p>3.9 GPA, Dean’s List all 8 quarters.</p>
+				</li>
+				<li>
+					<h3>High school diploma</h3>
+					<p class="where">Frenchtown High School, 2014</p>
+					<p>National Honor Society, 3.8 GPA.</p>
+				</li>
+			</ul>
+		</section>
+
+		<section class="section contact" id="contact" aria-labelledby="contact-title">
+			<h2 id="contact-title">Get in touch</h2>
+			<p class="contact-main"><a href="mailto:developer.montana@gmail.com">developer.montana@gmail.com</a></p>
+			<dl class="contact-list">
+				<div>
+					<dt>University email</dt>
+					<dd><a href="mailto:jacob.bova@umontana.edu">jacob.bova@umontana.edu</a></dd>
 				</div>
-				<nav id="colorlib-main-menu" role="navigation" class="navbar">
-					<div id="navbar" class="collapse">
-						<ul>
-							<li class="active"><a href="#" data-nav-section="home">Home</a></li>
-							<!--<li><a href="#" data-nav-section="about">About</a></li>-->
-							<!-- <li><a href="#" data-nav-section="services">Services</a></li> -->
-							<!-- <li><a href="#" data-nav-section="skills">Skills</a></li> -->
-							<li><a href="#" data-nav-section="education">Education</a></li>
-							<li><a href="#" data-nav-section="experience">Experience</a></li>
-							<li><a href="#" data-nav-section="work">Work / Projects</a></li>
-							<li><a href="#" data-nav-section="contact">Contact</a></li>
-						</ul>
-					</div>
-				</nav>
+				<div>
+					<dt>GitHub</dt>
+					<dd><a href="https://github.com/cake-dev" target="_blank" rel="noopener">cake-dev</a></dd>
+				</div>
+			</dl>
+		</section>
+	</main>
 
-				<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-				<!-- <div class="colorlib-footer">
-					<p><small>&copy; 
-							<ul>
-								<li><a href="#"><i class="icon-facebook2"></i></a></li>
-								<li><a href="#"><i class="icon-twitter2"></i></a></li>
-								<li><a href="#"><i class="icon-instagram"></i></a></li>
-								<li><a href="#"><i class="icon-linkedin2"></i></a></li>
-							</ul>
-				</div> -->
+	<footer class="footer">
+		<p>© <span id="year">2026</span> Jake Bova, Missoula, Montana</p>
+	</footer>
 
-			</aside>
-
-			<div id="colorlib-main">
-				<section id="colorlib-hero" class="js-fullheight" data-section="home">
-					<div class="flexslider js-fullheight">
-						<ul class="slides">
-							<li style="background-image: url(images/Hidden-Lake-Mt-Bearhat-Montana.jpg);">
-								<div class="overlay"></div>
-								<div class="container-fluid">
-									<div class="row">
-										<div class="col-md-6 col-md-offset-3 col-md-pull-3 col-sm-12 col-xs-12 js-fullheight slider-text">
-											<div class="slider-text-inner js-fullheight">
-												<div class="desc">
-													<h1 class="white-text">Hi! <br>I'm Jake</h1>
-													<h2>Welcome to my page</h2>
-													<!-- <p><a class="btn btn-primary btn-learn white-button">Download CV <i class="icon-download4"></i></a></p> -->
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</li>
-							<li style="background-image: url(images/umontana-campus.jpg);">
-								<div class="overlay"></div>
-								<div class="container-fluid">
-									<div class="row">
-										<div class="col-md-6 col-md-offset-3 col-md-pull-3 col-sm-12 col-xs-12 js-fullheight slider-text">
-											<div class="slider-text-inner js-fullheight">
-												<div class="desc">
-													<h1>Hi! <br>I'm Jake</h1>
-													<h2>Welcome to my page</h2>
-													<!--<p><a class="btn btn-primary btn-learn">Download CV <i class="icon-download4"></i></a></p>-->
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</section>
-
-				<!--<section class="colorlib-about" data-section="about">
-					<div class="colorlib-narrow-content">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="row row-bottom-padded-sm animate-box" data-animate-effect="fadeInLeft">
-									<div class="col-md-12">
-										<div class="about-desc">
-											<span class="heading-meta">About Me</span>
-											<h2 class="colorlib-heading">Who Am I?</h2>
-											<p><strong>Hi I'm Jake Bova</strong>I am a highly motivated and skilled computer science student with a strong academic record and a passion for problem-solving. I have a broad range of experience in software development, including experience with multiple programming languages, web technologies, and mobile development. I am also proficient in using various cloud computing platforms.</p>
-
-											<p>In my previous roles as a software developer intern and tech support specialist, I have demonstrated my ability to learn quickly, adapt to new challenges, and work effectively as part of a team. I am also a team player and I am always willing to go the extra mile to get the job done.</p>
-												
-											<p>In addition to my software development skills, I have also gained experience in data science and machine learning. I have taken courses in machine learning and data mining, and I have applied these skills to solve real-world problems in my coursework and personal projects. For example, I built a machine learning model to predict wildfire severity. I am also interested in using machine learning to develop new products and services.</p>
-												
-											<p>I am eager to learn and grow as a data scientist, and I am confident that I have the skills and experience necessary to be successful in a challenging and rewarding career. I am looking for an opportunity to work on challenging and innovative projects in the data science and machine learning field, and I am excited to contribute to the success of a team.</p>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-4 animate-box" data-animate-effect="fadeInLeft">
-										<div class="services color-1">
-											<span class="icon2"><i class="icon-bulb"></i></span>
-											<h3>Software Development</h3>
-										</div>
-									</div>
-									<div class="col-md-4 animate-box" data-animate-effect="fadeInRight">
-										<div class="services color-2">
-											<span class="icon2"><i class="icon-globe-outline"></i></span>
-											<h3>Web Design</h3>
-										</div>
-									</div>
-									<div class="col-md-4 animate-box" data-animate-effect="fadeInTop">
-										<div class="services color-3">
-											<span class="icon2"><i class="icon-data"></i></span>
-											<h3>ML and AI</h3>
-										</div>
-									</div>
-									<div class="col-md-3 animate-box" data-animate-effect="fadeInBottom">
-										<div class="services color-4">
-											<span class="icon2"><i class="icon-phone3"></i></span>
-											<h3>Application</h3>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12 animate-box" data-animate-effect="fadeInLeft">
-										<div class="hire">
-											<h2>I am happy to know you <br>that 300+ projects done sucessfully!</h2>
-											<a href="#" class="btn-hire">Hire me</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>-->
-
-
-
-				<!-- <section class="colorlib-services" data-section="services">
-					<div class="colorlib-narrow-content">
-						<div class="row">
-							<div class="col-md-6 col-md-offset-3 col-md-pull-3 animate-box" data-animate-effect="fadeInLeft">
-								<span class="heading-meta">What I do?</span>
-								<h2 class="colorlib-heading">Some of my expertise</h2>
-							</div>
-						</div>
-						<div class="row row-pt-md">
-							<div class="col-md-4 text-center animate-box">
-								<div class="services color-1">
-									<span class="icon">
-										<i class="icon-bulb"></i>
-									</span>
-									<div class="desc">
-										<h3>Innovative Ideas</h3>
-										<p>Separated they live in Bookmarksgrove right at the coast of the Semantics</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 text-center animate-box">
-								<div class="services color-2">
-									<span class="icon">
-										<i class="icon-data"></i>
-									</span>
-									<div class="desc">
-										<h3>Software</h3>
-										<p>Separated they live in Bookmarksgrove right at the coast of the Semantics</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 text-center animate-box">
-								<div class="services color-3">
-									<span class="icon">
-										<i class="icon-phone3"></i>
-									</span>
-									<div class="desc">
-										<h3>Application</h3>
-										<p>Separated they live in Bookmarksgrove right at the coast of the Semantics</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 text-center animate-box">
-								<div class="services color-4">
-									<span class="icon">
-										<i class="icon-layers2"></i>
-									</span>
-									<div class="desc">
-										<h3>Graphic Design</h3>
-										<p>Separated they live in Bookmarksgrove right at the coast of the Semantics</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 text-center animate-box">
-								<div class="services color-5">
-									<span class="icon">
-										<i class="icon-data"></i>
-									</span>
-									<div class="desc">
-										<h3>Software</h3>
-										<p>Separated they live in Bookmarksgrove right at the coast of the Semantics</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 text-center animate-box">
-								<div class="services color-6">
-									<span class="icon">
-										<i class="icon-phone3"></i>
-									</span>
-									<div class="desc">
-										<h3>Application</h3>
-										<p>Separated they live in Bookmarksgrove right at the coast of the Semantics</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section> -->
-
-				<!-- <div id="colorlib-counter" class="colorlib-counters" style="background-image: url(images/cover_bg_1.jpg);" data-stellar-background-ratio="0.5">
-					<div class="overlay"></div>
-					<div class="colorlib-narrow-content">
-						<div class="row">
-						</div>
-						<div class="row">
-							<div class="col-md-3 text-center animate-box">
-								<span class="colorlib-counter js-counter" data-from="0" data-to="420" data-speed="5000" data-refresh-interval="50"></span>
-								<span class="colorlib-counter-label">Cups of coffee</span>
-							</div>
-							<div class="col-md-3 text-center animate-box">
-								<span class="colorlib-counter js-counter" data-from="0" data-to="10" data-speed="5000" data-refresh-interval="50"></span>
-								<span class="colorlib-counter-label">Projects</span>
-							</div>
-							<div class="col-md-3 text-center animate-box">
-								<span class="colorlib-counter js-counter" data-from="0" data-to="1" data-speed="5000" data-refresh-interval="50"></span>
-								<span class="colorlib-counter-label">Clients</span>
-							</div>
-							<div class="col-md-3 text-center animate-box">
-								<span class="colorlib-counter js-counter" data-from="0" data-to="10" data-speed="5000" data-refresh-interval="50"></span>
-								<span class="colorlib-counter-label">Partners</span>
-							</div>
-						</div>
-					</div>
-				</div> -->
-
-				<!-- <section class="colorlib-skills" data-section="skills">
-					<div class="colorlib-narrow-content">
-						<div class="row">
-							<div class="col-md-6 col-md-offset-3 col-md-pull-3 animate-box" data-animate-effect="fadeInLeft">
-								<span class="heading-meta">My Specialty</span>
-								<h2 class="colorlib-heading animate-box">My Skills</h2>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12 animate-box" data-animate-effect="fadeInLeft">
-								<p>
-									I have strong skills in Python, HTML5, Javascript, and System Analysis, with moderate skills in R and CMS & CRM.</p>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="progress-wrap">
-									<h3>Python</h3>
-									<div class="progress">
-										<div class="progress-bar color-1" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:75%">
-											<span>75%</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInRight">
-								<div class="progress-wrap">
-									<h3>R</h3>
-									<div class="progress">
-										<div class="progress-bar color-2" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:60%">
-											<span>60%</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="progress-wrap">
-									<h3>HTML5</h3>
-									<div class="progress">
-										<div class="progress-bar color-3" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width:85%">
-											<span>85%</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInRight">
-								<div class="progress-wrap">
-									<h3>Javascript</h3>
-									<div class="progress">
-										<div class="progress-bar color-4" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:90%">
-											<span>90%</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="progress-wrap">
-									<h3>CMS & CRM</h3>
-									<div class="progress">
-										<div class="progress-bar color-5" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-											<span>70%</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInRight">
-								<div class="progress-wrap">
-									<h3>System Analysis</h3>
-									<div class="progress">
-										<div class="progress-bar color-6" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:80%">
-											<span>80%</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section> -->
-
-				<section class="colorlib-education" data-section="education">
-					<div class="colorlib-narrow-content">
-						<div class="row">
-							<div class="col-md-6 col-md-offset-3 col-md-pull-3 animate-box" data-animate-effect="fadeInLeft">
-								<span class="heading-meta">Education</span>
-								<h2 class="colorlib-heading animate-box">Education</h2>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12 animate-box" data-animate-effect="fadeInLeft">
-								<div class="fancy-collapse-panel">
-									<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-										<div class="panel panel-default">
-											<div class="panel-heading" role="tab" id="headingOne">
-												<h4 class="panel-title">
-													<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Master of Computer Science
-													</a>
-												</h4>
-											</div>
-											<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-												<div class="panel-body">
-													<div class="row">
-														<div class="col-md-6">
-															<p>Currently working towards a Master's in Computer Science at the University of Montana.</p>
-														</div>
-														<div class="col-md-6">
-															<p>Research areas include machine learning in the wildfire space, fuel visualization, spread prediction, fire simulation, and more.</p>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading" role="tab" id="headingTwo">
-												<h4 class="panel-title">
-													<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">Bachelor Degree of Computer Science
-													</a>
-												</h4>
-											</div>
-											<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-												<div class="panel-body">
-													<div class="row">
-														<div class="col-md-6">
-															<p>Graduated Magna Cum Laude May, 2024 with Computer Science and Mathematics minor.</p>
-														</div>
-														<div class="col-md-6">
-															<p>Coursework including machine learning, statistics, web development, database design</p>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading" role="tab" id="headingThree">
-												<h4 class="panel-title">
-													<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Associate Degree in Computer Programming
-													</a>
-												</h4>
-											</div>
-											<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-												<div class="panel-body">
-													<p>I obtained my Associate Degree in Computer Programming from Pittsburgh Technical College in 2019. I graduated with a 3.9 GPA and was on the Dean's List for all 8 quarters.</p>
-												</div>
-											</div>
-										</div>
-										<div class="panel panel-default">
-											<div class="panel-heading" role="tab" id="headingFour">
-												<h4 class="panel-title">
-													<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">High School Secondary Education
-													</a>
-												</h4>
-											</div>
-											<div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-												<div class="panel-body">
-													<p>I graduated from Frenchtown High School in 2014. I was a member of the National Honor Society and graduated with a 3.8 GPA.</p>
-												</div>
-											</div>
-										</div>
-
-										<!-- <div class="panel panel-default">
-											<div class="panel-heading" role="tab" id="headingFour">
-												<h4 class="panel-title">
-													<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Diploma in Information Technology
-													</a>
-												</h4>
-											</div>
-											<div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-												<div class="panel-body">
-													<p>Far far away, behind the word <strong>mountains</strong>, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-												</div>
-											</div>
-										</div>
-
-										<div class="panel panel-default">
-											<div class="panel-heading" role="tab" id="headingFive">
-												<h4 class="panel-title">
-													<a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">High School Secondary Education
-													</a>
-												</h4>
-											</div>
-											<div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-												<div class="panel-body">
-													<p>Far far away, behind the word <strong>mountains</strong>, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-												</div>
-											</div>
-										</div> -->
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				<section class="colorlib-experience" data-section="experience">
-					<div class="colorlib-narrow-content">
-						<div class="row">
-							<div class="col-md-6 col-md-offset-3 col-md-pull-3 animate-box" data-animate-effect="fadeInLeft">
-								<span class="heading-meta">Experience</span>
-								<h2 class="colorlib-heading animate-box">Work Experience</h2>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<div class="timeline-centered">
-									<article class="timeline-entry animate-box" data-animate-effect="fadeInLeft">
-										<div class="timeline-entry-inner">
-
-											<div class="timeline-icon color-4">
-												<i class="icon-pen2"></i>
-											</div>
-
-											<div class="timeline-label">
-												<h2><a href="#">Graduate Research - University of Montana</a> <span>2024-present</span></h2>
-												<p>Wildfire management and prevention research using machine learning.  Real world fuel visualization using 3D tools.</p>
-											</div>
-										</div>
-									</article>
-
-									<article class="timeline-entry animate-box" data-animate-effect="fadeInLeft">
-										<div class="timeline-entry-inner">
-
-											<div class="timeline-icon color-1">
-												<i class="icon-pen2"></i>
-											</div>
-
-											<div class="timeline-label">
-												<h2><a href="#">Software Consultant Intern - ATG Cognizant</a> <span>Summer 2023</span></h2>
-												<p>Worked with other interns on small internal projects, as well as producing recommendations and deliverables for an external client.  Following the internship, the client hired me as an independent contractor to continue working on the project.</p>
-											</div>
-										</div>
-									</article>
-
-
-									<article class="timeline-entry animate-box" data-animate-effect="fadeInRight">
-										<div class="timeline-entry-inner">
-											<div class="timeline-icon color-2">
-												<i class="icon-pen2"></i>
-											</div>
-											<div class="timeline-label">
-												<h2><a href="#">Research Assistant - University of Montana</a> <span>2022-present</span></h2>
-												<p>Part of a research team that leverages machine learning paired with large scale geospatial data operations using an in-house toolkit. Duties include cleaning and gathering data, constructing predictive models, and creating visualizations of relevant information.</p>											</div>
-										</div>
-									</article>
-
-									<article class="timeline-entry animate-box" data-animate-effect="fadeInLeft">
-										<div class="timeline-entry-inner">
-											<div class="timeline-icon color-3">
-												<i class="icon-pen2"></i>
-											</div>
-											<div class="timeline-label">
-												<h2><a href="#">Geek Squad Tech Consultant</a> <span>2021-2022</span></h2>
-												<p>Troubleshoot and fix a variety of consumer electronics related issues.  Communicate technical terms to clients in understandable and informative ways.</p>
-											</div>
-										</div>
-									</article>
-
-									<article class="timeline-entry begin animate-box" data-animate-effect="fadeInBottom">
-										<div class="timeline-entry-inner">
-											<div class="timeline-icon color-none">
-											</div>
-										</div>
-									</article>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				<section class="colorlib-work" data-section="work">
-					<div class="colorlib-narrow-content">
-						<div class="row">
-							<div class="col-md-6 col-md-offset-3 col-md-pull-3 animate-box" data-animate-effect="fadeInLeft">
-								<span class="heading-meta">My Work</span>
-								<h2 class="colorlib-heading animate-box">Recent Work</h2>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/fireviz_img.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://www.youtube.com/watch?v=wIOkTPBJmwQ" target="_blank">Unreal Engine Fire Visualization</a></h3>
-											<span>Winner of the SERDP/ESTCP Virtual Wildfire Modeling & Immersive Training Prize Challenge 2025</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/aerial_fire_perim.jpg);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://www.mdpi.com/2571-6255/9/1/2" target="_blank">Investigating the Impact of Aerial Firefighting on Rate of Wildfire Spread</a></h3>
-											<span>Fire Science ML</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/wstsp_model.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://arxiv.org/abs/2502.12003" target="_blank">Improved Wildfire Spread Prediction with Time-Series Data and the WSTS+ Benchmark</a></h3>
-											<span>Time Series ML</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/antarctic_subglacial_lakes.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="antarctica/final_lake_pred.html" target="_blank">Antarctica Subglacial Lakes Prediction</a></h3>
-											<span>Antarctic Subglacial Lakes</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/911radiusmaplogo.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="missoula911/index.html" target="_blank">Missoula 911 Calls Analysis</a></h3>
-											<span>Missoula 911</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/dbgviz.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="Bioinfo/dbviz2.html" target="_blank">DeBruijn Graph Visualizer</a></h3>
-											<span>K-mer DeBruijn Graph</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/fire_severity.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://www.researchgate.net/publication/364763736_Predicting_fire_severity_in_Montana_using_a_random_forest_classification_scheme" target="_blank">Predicting fire severity in Montana</a></h3>
-											<span>Research</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/weather_dashboard.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://cake-dev.github.io/ProjectFinal/Vanilla/quadlayout.html" target="_blank">Live Weather Dashboard</a></h3>
-											<span>Website</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInRight">
-								<div class="project" style="background-image: url(images/stackoverflow_tag_network.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://cake-dev.github.io/Project4/network_graph_d3.html" target="_blank">Stack Overflow Dev Network</a></h3>
-											<span>Animation</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInTop">
-								<div class="project" style="background-image: url(images/alaska_snowcrab.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://cake-dev.github.io/Project3/rastermap.html" target="_blank">Alaskan Snowcrab Study</a></h3>
-											<span>Illustration</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInBottom">
-								<div class="project" style="background-image: url(images/western_wildfires.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://cake-dev.github.io/Project2/map.html" target="_blank">Western Wildfire Explorer</a></h3>
-											<span>Application</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-								<div class="project" style="background-image: url(images/bigfoot_sightings.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://cake-dev.github.io/Project1/bigfoot.html" target="_blank">Did Smarthphones Kill Bigfoot?</a></h3>
-											<span>Graphic, Logo</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6 animate-box" data-animate-effect="fadeInRight">
-								<div class="project" style="background-image: url(images/github_logo.png);">
-									<div class="desc">
-										<div class="con">
-											<h3><a href="https://github.com/cake-dev" target="_blank">My GitHub Profile</a></h3>
-											<span>Web Design</span>
-											<!-- <p class="icon">
-												<span><a href="#"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-											</p> -->
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- <div class="row">
-							<div class="col-md-12 animate-box">
-								<p><a href="#" class="btn btn-primary btn-lg btn-load-more">Load more <i class="icon-reload"></i></a></p>
-							</div>
-						</div> -->
-					</div>
-				</section>
-
-
-				<section class="colorlib-contact" data-section="contact">
-					<div class="colorlib-narrow-content">
-						<div class="row">
-							<div class="col-md-6 col-md-offset-3 col-md-pull-3 animate-box" data-animate-effect="fadeInLeft">
-								<span class="heading-meta">Get in Touch</span>
-								<h2 class="colorlib-heading">Contact</h2>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<div class="colorlib-feature colorlib-feature-sm animate-box" data-animate-effect="fadeInLeft">
-									<div class="colorlib-icon">
-										<i class="icon-mail"></i>
-									</div>
-									<div class="colorlib-text">
-										<p>developer.montana@gmail.com</p>
-									</div>
-								</div>
-
-								<div class="colorlib-feature colorlib-feature-sm animate-box" data-animate-effect="fadeInLeft">
-									<div class="colorlib-icon">
-										<i class="icon-mail"></i>
-									</div>
-									<div class="colorlib-text">
-										<p>jacob.bova@umontana.edu</p>
-									</div>
-								</div>
-
-								<div class="colorlib-feature colorlib-feature-sm animate-box" data-animate-effect="fadeInLeft">
-									<div class="colorlib-icon">
-										<i class="icon-map"></i>
-									</div>
-									<div class="colorlib-text">
-										<p>32 Campus Dr, Missoula, MT 59812</p>
-									</div>
-								</div>
-
-								<!-- <div class="colorlib-feature colorlib-feature-sm animate-box" data-animate-effect="fadeInLeft">
-									<div class="colorlib-icon">
-										<i class="icon-phone"></i>
-									</div>
-									<div class="colorlib-text">
-										<p><a href="tel://">+123 456 7890</p>
-									</div>
-								</div> -->
-							</div>
-							<!-- <div class="col-md-7 col-md-push-1">
-								<div class="row">
-									<div class="col-md-10 col-md-offset-1 col-md-pull-1 animate-box" data-animate-effect="fadeInRight">
-										<form action="">
-											<div class="form-group">
-												<input type="text" class="form-control" placeholder="Name">
-											</div>
-											<div class="form-group">
-												<input type="text" class="form-control" placeholder="Email">
-											</div>
-											<div class="form-group">
-												<input type="text" class="form-control" placeholder="Subject">
-											</div>
-											<div class="form-group">
-												<textarea name="" id="message" cols="30" rows="7" class="form-control" placeholder="Message"></textarea>
-											</div>
-											<div class="form-group">
-												<input type="submit" class="btn btn-primary btn-send-message" value="Send Message">
-											</div>
-										</form>
-									</div>
-
-								</div>
-							</div> -->
-						</div>
-					</div>
-				</section>
-
-			</div><!-- end:colorlib-main -->
-		</div><!-- end:container-wrap -->
-	</div><!-- end:colorlib-page -->
-
-	<!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
-	<!-- jQuery Easing -->
-	<script src="js/jquery.easing.1.3.js"></script>
-	<!-- Bootstrap -->
-	<script src="js/bootstrap.min.js"></script>
-	<!-- Waypoints -->
-	<script src="js/jquery.waypoints.min.js"></script>
-	<!-- Flexslider -->
-	<script src="js/jquery.flexslider-min.js"></script>
-	<!-- Owl carousel -->
-	<script src="js/owl.carousel.min.js"></script>
-	<!-- Counters -->
-	<script src="js/jquery.countTo.js"></script>
-
-
-	<!-- MAIN JS -->
-	<script src="js/main.js"></script>
-
+	<script src="assets/site.js"></script>
 </body>
 
 </html>
